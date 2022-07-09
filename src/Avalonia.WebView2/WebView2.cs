@@ -20,6 +20,24 @@ public class WebView2 : NativeControlHost, IHwndHost, IDisposable
         IsVisibleProperty.Changed.Subscribe(IsVisibleChanged);
     }
 
+    protected Window? Window { get; private set; }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        if (e.Root is Window window)
+        {
+            Window = window;
+        }
+        base.OnAttachedToVisualTree(e);
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromVisualTree(e);
+        Window = null;
+        Dispose();
+    }
+
     /// <summary>
     /// The <see cref="AvaloniaProperty" /> which backs the <see cref="CreationProperties" /> property.
     /// </summary>
@@ -47,7 +65,7 @@ public class WebView2 : NativeControlHost, IHwndHost, IDisposable
     /// <summary>
     /// The <see cref="AvaloniaProperty" /> which backs the <see cref="Source" /> property.
     /// </summary>
-    public static readonly StyledProperty<Uri> SourceProperty = AvaloniaProperty.Register<WebView2, Uri>(nameof(Source), validate: SourcePropertyValid);
+    public static readonly DirectProperty<WebView2, Uri?> SourceProperty = AvaloniaProperty.RegisterDirect<WebView2, Uri?>(nameof(Source), x => x._Source, (x, y) => x.Source = y);
 
     /// <summary>
     /// The <see cref="AvaloniaProperty" /> which backs the <see cref="CanGoBack" /> property.
@@ -62,7 +80,7 @@ public class WebView2 : NativeControlHost, IHwndHost, IDisposable
     /// <summary>
     /// The <see cref="AvaloniaProperty" /> which backs the <see cref="ZoomFactor" /> property.
     /// </summary>
-    public static readonly StyledProperty<double> ZoomFactorProperty = AvaloniaProperty.Register<WebView2, double>(nameof(ZoomFactor), 1.0D);
+    public static readonly DirectProperty<WebView2, double> ZoomFactorProperty = AvaloniaProperty.RegisterDirect<WebView2, double>(nameof(ZoomFactor), x => x._ZoomFactor, (x, y) => x.ZoomFactor = y);
 
     /// <summary>
     /// The <see cref="AvaloniaProperty" /> which backs the <see cref="DefaultBackgroundColor" /> property.
@@ -84,7 +102,17 @@ public class WebView2 : NativeControlHost, IHwndHost, IDisposable
     /// Note that the control's <see cref="CoreWebView2" /> will be null until initialized.
     /// See the <see cref="WebView2" /> class documentation for an initialization overview.
     /// </summary>
-    public WebView2() => AttachedToVisualTree += _implicitInitGate.OnSynchronizationContextExists;
+    public WebView2()
+    {
+
+    }
+
+    public override void Render(DrawingContext context)
+    {
+        base.Render(context);
+        OnWindowPositionChanged(Bounds);
+        _implicitInitGate.OnSynchronizationContextExists();
+    }
 
     /// <summary>
     /// Gets or sets a bag of options which are used during initialization of the control's <see cref="CoreWebView2" />.
@@ -115,6 +143,11 @@ public class WebView2 : NativeControlHost, IHwndHost, IDisposable
         }
     }
 
+    public void Test()
+    {
+
+    }
+
     /// <summary>
     /// This is overridden from <see cref="IPlatformHandle" /> and is called to instruct us to create our HWND.
     /// </summary>
@@ -125,7 +158,8 @@ public class WebView2 : NativeControlHost, IHwndHost, IDisposable
     {
         if (OperatingSystem.IsWindows())
         {
-            IntPtr windowExW = NativeMethods.CreateWindowExW(NativeMethods.WS_EX.TRANSPARENT, "static", string.Empty, NativeMethods.WS.CLIPCHILDREN | NativeMethods.WS.VISIBLE | NativeMethods.WS.CHILD, 0, 0, 0, 0, parent.Handle, IntPtr.Zero, Marshal.GetHINSTANCE(typeof(NativeMethods).Module), IntPtr.Zero);
+            var hwnd = Window!.PlatformImpl.Handle.Handle;
+            IntPtr windowExW = NativeMethods.CreateWindowExW(NativeMethods.WS_EX.TRANSPARENT, "static", string.Empty, NativeMethods.WS.CLIPCHILDREN | NativeMethods.WS.VISIBLE | NativeMethods.WS.CHILD, 0, 0, 0, 0, hwnd, IntPtr.Zero, Marshal.GetHINSTANCE(typeof(NativeMethods).Module), IntPtr.Zero);
             if (CoreWebView2Controller != null)
                 ReparentController(windowExW);
             if (!_hwndTaskSource.Task.IsCompleted)
@@ -169,7 +203,7 @@ public class WebView2 : NativeControlHost, IHwndHost, IDisposable
                 var webView2Controller = CoreWebView2Controller;
                 if (webView2Controller != null)
                 {
-                    webView2Controller.MoveFocus(CoreWebView2MoveFocusReason.Programmatic);
+                    //webView2Controller.MoveFocus(CoreWebView2MoveFocusReason.Programmatic);
                     break;
                 }
                 break;
@@ -182,6 +216,11 @@ public class WebView2 : NativeControlHost, IHwndHost, IDisposable
                     return IntPtr.Zero;
                 }
                 break;
+                //case NativeMethods.WM.WINDOWPOSCHANGING:
+                //    break;
+                //case NativeMethods.WM.GETOBJECT:
+                //    handled = true;
+                //    break;
         }
         return IntPtr.Zero;
     }
@@ -362,8 +401,8 @@ public class WebView2 : NativeControlHost, IHwndHost, IDisposable
                     SyncControllerWithParentWindow();
                 bool flag = Source != null;
                 if (Source == null)
-                    SetCurrentValueFromCore(SourceProperty, new Uri(CoreWebView2.Source));
-                if (ZoomFactor != ZoomFactorProperty.GetDefaultValue(typeof(WebView2)))
+                    SetCurrentValueFromCore(SourceProperty, new(CoreWebView2.Source));
+                if (ZoomFactor != DefaultZoomFactor)
                     CoreWebView2Controller.ZoomFactor = ZoomFactor;
                 if (DefaultBackgroundColor != DefaultBackgroundColorProperty.GetDefaultValue(typeof(WebView2)))
                     CoreWebView2Controller.DefaultBackgroundColor = DefaultBackgroundColor;
@@ -515,7 +554,14 @@ public class WebView2 : NativeControlHost, IHwndHost, IDisposable
     /// <param name="value">The new local value.</param>
     public void SetCurrentValue<T>(AvaloniaProperty<T> property, T value)
     {
-
+        if (property == SourceProperty)
+        {
+            _Source = value is Uri value2 ? value2 : null;
+        }
+        else if (property == ZoomFactorProperty)
+        {
+            _ZoomFactor = ConvertibleHelper.Convert<double, T>(value);
+        }
     }
 
     /// <summary>
@@ -594,7 +640,9 @@ public class WebView2 : NativeControlHost, IHwndHost, IDisposable
     /// </summary>
     public virtual void UpdateWindowPos()
     {
-
+        if (disposedValue) return;
+        HandleRef handle = new(null, PlatformHandle!.Handle);
+        NativeMethods.ShowWindowAsync(handle, 5);
     }
 
     /// <summary>
@@ -648,6 +696,8 @@ public class WebView2 : NativeControlHost, IHwndHost, IDisposable
         }
     }
 
+    Uri? _Source;
+
     /// <summary>
     /// The top-level <see cref="Uri" /> which the WebView is currently displaying (or will display once initialization of its <see cref="CoreWebView2" /> is finished).
     /// Generally speaking, getting this property is equivalent to getting the <see cref="CoreWebView2.Source" /> property and setting this property (to a different value) is equivalent to calling the <see cref="CoreWebView2.Navigate(string)" /> method.
@@ -663,10 +713,14 @@ public class WebView2 : NativeControlHost, IHwndHost, IDisposable
     /// <exception cref="ArgumentException">Thrown if the property is set to a relative <see cref="Uri" /> (i.e. a <see cref="Uri" /> whose <see cref="Uri.IsAbsoluteUri" /> property is <c>false</c>).</exception>
     /// <seealso cref="WebView2" />
     [Category("Common")]
-    public Uri Source
+    public Uri? Source
     {
-        get => GetValue(SourceProperty);
-        set => SetValue(SourceProperty, value);
+        get => _Source;
+        set
+        {
+            if (SourcePropertyValid(value))
+                SetAndRaise(SourceProperty, ref _Source, value);
+        }
     }
 
     /// <summary>
@@ -679,9 +733,8 @@ public class WebView2 : NativeControlHost, IHwndHost, IDisposable
     /// <remarks>
     /// Note that we unfortunately can't treat null as invalid here because null is valid prior to initialization.
     /// </remarks>
-    static bool SourcePropertyValid(object val)
+    static bool SourcePropertyValid(Uri? uri)
     {
-        var uri = (Uri?)val;
         return uri == null || uri.IsAbsoluteUri;
     }
 
@@ -692,7 +745,7 @@ public class WebView2 : NativeControlHost, IHwndHost, IDisposable
     /// 2) The CoreWebView changed its own source and we're just updating the dependency property to match.
     /// We use <see cref="IsPropertyChangingFromCore(AvaloniaProperty)" /> to distinguish the two cases.
     /// </summary>
-    static void SourcePropertyChanged(AvaloniaPropertyChangedEventArgs<Uri> e)
+    static void SourcePropertyChanged(AvaloniaPropertyChangedEventArgs<Uri?> e)
     {
         if (e.Sender is WebView2 control)
         {
@@ -700,8 +753,8 @@ public class WebView2 : NativeControlHost, IHwndHost, IDisposable
                 return;
             if (!e.NewValue.HasValue)
                 throw new NotImplementedException("The Source property cannot be set to null.");
-            if (control.CoreWebView2 != null && (!e.OldValue.HasValue || e.OldValue.Value.AbsoluteUri != e.NewValue.Value.AbsoluteUri))
-                control.CoreWebView2.Navigate(e.NewValue.Value.AbsoluteUri);
+            if (control.CoreWebView2 != null && (!e.OldValue.HasValue || e.OldValue.Value!.AbsoluteUri != e.NewValue.Value!.AbsoluteUri))
+                control.CoreWebView2.Navigate(e.NewValue.Value!.AbsoluteUri);
             control._implicitInitGate.RunWhenOpen(() => control.EnsureCoreWebView2Async());
         }
     }
@@ -728,7 +781,7 @@ public class WebView2 : NativeControlHost, IHwndHost, IDisposable
         var source = CoreWebView2?.Source;
         if (!string.IsNullOrWhiteSpace(source))
         {
-            SetCurrentValueFromCore(SourceProperty, new Uri(source));
+            SetCurrentValueFromCore(SourceProperty, new(source));
             var sourceChanged = SourceChanged;
             if (sourceChanged == null)
                 return;
@@ -931,6 +984,10 @@ public class WebView2 : NativeControlHost, IHwndHost, IDisposable
         e.Handled = eventArgs.Handled;
     }
 
+    const double DefaultZoomFactor = 1.0D;
+
+    double _ZoomFactor = DefaultZoomFactor;
+
     /// <summary>
     /// The zoom factor for the WebView.
     /// This property directly exposes <see cref="CoreWebView2Controller.ZoomFactor" />, see its documentation for more info.
@@ -941,8 +998,8 @@ public class WebView2 : NativeControlHost, IHwndHost, IDisposable
     [Category("Common")]
     public double ZoomFactor
     {
-        get => GetValue(ZoomFactorProperty);
-        set => SetValue(ZoomFactorProperty, value);
+        get => _ZoomFactor;
+        set => SetAndRaise(ZoomFactorProperty, ref _ZoomFactor, value);
     }
 
     /// <summary>
@@ -1247,6 +1304,9 @@ public class WebView2 : NativeControlHost, IHwndHost, IDisposable
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool DestroyWindow(IntPtr hwnd);
 
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        public static extern bool ShowWindowAsync(HandleRef hWnd, int nCmdShow);
+
         [Flags]
         public enum WS : uint
         {
@@ -1267,6 +1327,9 @@ public class WebView2 : NativeControlHost, IHwndHost, IDisposable
         {
             SETFOCUS = 7,
             PAINT = 15, // 0x0000000F
+
+            WINDOWPOSCHANGING = 0x0046,
+            GETOBJECT = 0x003D,
         }
 
         public struct Rect

@@ -76,7 +76,7 @@ internal sealed class ImplicitInitGate : ISupportInitialize
     /// The best one I know of right now is <see cref="Control.OnAttachedToVisualTreeCore(VisualTreeAttachmentEventArgs)" />.
     /// When the handler is called, the gate will re-evaluate its state and potentially allow any pending initialization action.
     /// </summary>
-    public void OnSynchronizationContextExists(object? sender, VisualTreeAttachmentEventArgs e)
+    public void OnSynchronizationContextExists()
     {
         Trace.Assert(SyncContextOpen, "Expected UI thread to have a SynchronizationContext by the time this event fires.");
         OnDataChanged();

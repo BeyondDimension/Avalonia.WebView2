@@ -18,10 +18,10 @@
 				   FontWeight="Bold" />
 		</Grid>
 		<Grid Grid.Row="1" Background="BlueViolet">
-			<wv2:WebView2 Source="https://www.bing.com" />
+			<wv2:WebView2 x:Name="WebView2" Source="https://www.bing.com" />
 		</Grid>
 		<Grid Grid.Row="2">
-			<Label HorizontalAlignment="Center"
+			<Button x:Name="Button" HorizontalAlignment="Center"
 				   VerticalAlignment="Center"
 				   Content="Welcome to Avalonia!"
 				   FontSize="12"
