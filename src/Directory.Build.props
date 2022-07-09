@@ -1,5 +1,6 @@
 <Project>
 	<PropertyGroup>
+		<NoWarn>NU1507</NoWarn>
 		<LangVersion>latest</LangVersion>
 		<Nullable>enable</Nullable>
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
@@ -12,6 +13,7 @@
 		<RepositoryType>git</RepositoryType>
 		<RepositoryUrl>$(PackageProjectUrl).git</RepositoryUrl>
 		<PublishRepositoryUrl>true</PublishRepositoryUrl>
+		<CheckEolTargetFramework>false</CheckEolTargetFramework>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)'=='Release'">
 		<AllowedReferenceRelatedFileExtensions>

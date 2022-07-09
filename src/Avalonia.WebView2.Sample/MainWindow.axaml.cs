@@ -1,34 +1,31 @@
-using Avalonia;
-using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
-using _WebView2 = Avalonia.Controls.WebView2;
+using AvaloniaWebView2 = Avalonia.Controls.WebView2;
 
-namespace Avalonia.WebView2.Sample
+namespace Avalonia.WebView2.Sample;
+
+public partial class MainWindow : Window
 {
-    public partial class MainWindow : Window
+    readonly Button Button;
+    readonly AvaloniaWebView2 WebView2;
+
+    public MainWindow()
     {
-        Button Button;
-        _WebView2 WebView2;
-
-        public MainWindow()
-        {
-            InitializeComponent();
+        InitializeComponent();
 #if DEBUG
-            this.AttachDevTools();
+        this.AttachDevTools();
 #endif
-            WebView2 = this.FindControl<_WebView2>("WebView2");
-            Button = this.FindControl<Button>("Button");
-            Button.Click += Button_Click;
-        }
+        WebView2 = this.FindControl<AvaloniaWebView2>("WebView2");
+        Button = this.FindControl<Button>("Button");
+        Button.Click += Button_Click;
+    }
 
-        private void Button_Click(object? sender, Interactivity.RoutedEventArgs e)
-        {
-            WebView2.Test();
-        }
+    private void Button_Click(object? sender, RoutedEventArgs e)
+    {
+        WebView2.Test();
+    }
 
-        private void InitializeComponent()
-        {
-            AvaloniaXamlLoader.Load(this);
-        }
+    private void InitializeComponent()
+    {
+        AvaloniaXamlLoader.Load(this);
     }
 }

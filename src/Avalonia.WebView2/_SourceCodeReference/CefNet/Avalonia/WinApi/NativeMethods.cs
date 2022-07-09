@@ -1,9 +1,9 @@
 // MIT License Copyright(c) 2020 CefNet
 // https://github.com/CefNet/CefNet/blob/103.0.22181.155/CefNet.Avalonia/WinApi/NativeMethods.cs
 
-namespace CefNet.WinApi;
+namespace MS.Win32;
 
-static class NativeMethods
+static partial class NativeMethods
 {
     [DllImport("user32.dll", SetLastError = true)]
     public static extern uint GetWindowThreadProcessId(IntPtr hWnd, IntPtr pPid);
@@ -24,4 +24,10 @@ static class NativeMethods
 
     [DllImport("user32.dll", CharSet = CharSet.Auto)]
     public static extern IntPtr CallWindowProc(IntPtr lpPrevWndFunc, IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam);
+
+    [DllImport("Dwmapi.dll", CharSet = CharSet.Auto)]
+    public static unsafe extern int DwmGetWindowAttribute(IntPtr hwnd, DWMWINDOWATTRIBUTE attribute, void* value, int size);
+
+    [DllImport("Dwmapi.dll", CharSet = CharSet.Auto, PreserveSig = false)]
+    public static extern bool DwmIsCompositionEnabled();
 }

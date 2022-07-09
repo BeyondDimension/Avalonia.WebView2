@@ -41,7 +41,7 @@ internal sealed class ImplicitInitGate : ISupportInitialize
     /// Although it's a rare corner case, it's possible to create a `Window` w/ `WebView2` before an app's event loop starts.
     /// This sub-gate handles that corner case.
     /// </remarks>
-    bool SyncContextOpen => SynchronizationContext.Current != null;
+    static bool SyncContextOpen => SynchronizationContext.Current != null;
 
     /// <summary>
     /// An action which will trigger initialization next time the gate is open (and only once).
@@ -78,7 +78,7 @@ internal sealed class ImplicitInitGate : ISupportInitialize
     /// </summary>
     public void OnSynchronizationContextExists()
     {
-        Trace.Assert(SyncContextOpen, "Expected UI thread to have a SynchronizationContext by the time this event fires.");
+        Trace.Assert(ImplicitInitGate.SyncContextOpen, "Expected UI thread to have a SynchronizationContext by the time this event fires.");
         OnDataChanged();
     }
 

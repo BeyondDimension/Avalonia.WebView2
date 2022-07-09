@@ -1,7 +1,4 @@
 #if !NET5_0_OR_GREATER
-#if NET5_0_OR_GREATER
-using S_OperatingSystem = System.OperatingSystem;
-#endif
 
 // https://github.com/BeyondDimension/OperatingSystem2/blob/2.0.0/OperatingSystem2.windows.cs
 

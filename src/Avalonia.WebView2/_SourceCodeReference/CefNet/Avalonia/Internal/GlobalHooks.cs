@@ -3,17 +3,11 @@
 
 namespace CefNet.Internal;
 
-using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.VisualTree;
-using System.Windows.Interop;
-
 sealed class GlobalHooks
 {
     static bool IsInitialized;
 
-    static readonly Dictionary<IntPtr, GlobalHooks> _HookedWindows = new();
+    internal static readonly Dictionary<IntPtr, GlobalHooks> _HookedWindows = new();
     static readonly List<WeakReference<WebView2>> _Views = new();
 
     internal static void Initialize(WebView2 view)
@@ -43,8 +37,8 @@ sealed class GlobalHooks
         }
     }
 
-    WindowsHwndSource _source;
-    WeakReference<Window> _windowRef;
+    readonly WindowsHwndSource _source;
+    readonly WeakReference<Window> _windowRef;
 
     GlobalHooks(WindowsHwndSource source, Window window)
     {
@@ -62,7 +56,7 @@ sealed class GlobalHooks
         return IntPtr.Zero;
     }
 
-    IEnumerable<(WebView2 webView, Window window)> GetViews(IntPtr hwnd)
+    internal IEnumerable<(WebView2 webView, Window window)> GetViews(IntPtr hwnd)
     {
         if (hwnd != _source.Handle)
             yield break;

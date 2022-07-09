@@ -1,9 +1,6 @@
 // MIT License Copyright(c) 2020 CefNet
 // https://github.com/CefNet/CefNet/blob/103.0.22181.155/CefNet.Avalonia/Internal/WindowsHwndSource.cs
 
-using System.Runtime.ConstrainedExecution;
-using CefNet.WinApi;
-
 namespace CefNet.Internal;
 
 internal delegate IntPtr WindowsWindowProcDelegate(IntPtr hwnd, int message, IntPtr wParam, IntPtr lParam, ref bool handled);
@@ -52,7 +49,7 @@ internal sealed class WindowsHwndSource : CriticalFinalizerObject, IDisposable
         if (hWndProcHook != IntPtr.Zero)
         {
             const int GWLP_WNDPROC = -4;
-            NativeMethods.SetWindowLong(this.Handle, GWLP_WNDPROC, hWndProcHook);
+            NativeMethods.SetWindowLong(Handle, GWLP_WNDPROC, hWndProcHook);
         }
         _disposed = true;
     }

@@ -3,8 +3,6 @@
 // See the LICENSE file in the project root for more information.
 // https://github.com/dotnet/wpf/blob/v6.0.6/src/Microsoft.DotNet.Wpf/src/WindowsBase/System/Windows/Input/KeyInterop.cs
 
-using MS.Win32;
-
 namespace System.Windows.Input;
 
 /// <summary>

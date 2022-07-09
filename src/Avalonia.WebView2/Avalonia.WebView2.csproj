@@ -1,7 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net461;netcoreapp3.0;net5.0;net5.0-windows;net6.0;net6.0-windows</TargetFrameworks>
+		<TargetFrameworks>netstandard2.0;net461;netcoreapp3.0;net5.0;net5.0-windows;net6.0;net6.0-windows</TargetFrameworks>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<RootNamespace>Avalonia.Controls</RootNamespace>
 		<PackageId>WebView2.Avalonia</PackageId>
 		<Description>
@@ -9,12 +10,16 @@
 			This package is necessary for Avalonia applications. To learn more about package versions checkout https://aka.ms/wv2-packageversion. To learn best practices checkout: https://aka.ms/wv2-bestpractices.
 		</Description>
 		<PackageTags>Web WebView Native native package Edge avalonia avaloniaui dotnet framework core Webview2</PackageTags>
-		<Version>1.0.1264.42-preview.220709</Version>
+		<Version>1.0.1264.42-preview.220710</Version>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(Configuration)'=='Release'">
+	<PropertyGroup Condition=" '$(Configuration)'=='Release' ">
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+	</PropertyGroup>
+
+	<PropertyGroup Condition=" $(TargetFramework.StartsWith('netstandard')) ">
+		<DefineConstants>DISABLE_WEBVIEW2_CORE;$(DefineConstants)</DefineConstants>
 	</PropertyGroup>
 
 	<ItemGroup>

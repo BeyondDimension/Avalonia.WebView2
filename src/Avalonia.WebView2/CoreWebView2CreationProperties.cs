@@ -12,7 +12,7 @@ namespace Avalonia.Controls;
 /// *before* you set the <see cref="WebView2.Source" /> property to anything.
 /// See the <see cref="WebView2" /> class documentation for an initialization overview.
 /// </remarks>
-public class CoreWebView2CreationProperties : AvaloniaObject
+public partial class CoreWebView2CreationProperties : AvaloniaObject
 {
     static CoreWebView2CreationProperties()
     {
@@ -46,7 +46,9 @@ public class CoreWebView2CreationProperties : AvaloniaObject
     /// </summary>
     public static readonly StyledProperty<bool?> IsInPrivateModeEnabledProperty = AvaloniaProperty.Register<CoreWebView2CreationProperties, bool?>(nameof(IsInPrivateModeEnabled));
 
+#if !DISABLE_WEBVIEW2_CORE
     Task<CoreWebView2Environment?>? _task;
+#endif
 
     /// <summary>
     /// Gets or sets the value to pass as the browserExecutableFolder parameter of <see cref="CoreWebView2Environment.CreateAsync(string,string,CoreWebView2EnvironmentOptions)" /> when creating an environment with this instance.
@@ -95,9 +97,12 @@ public class CoreWebView2CreationProperties : AvaloniaObject
 
     static void EnvironmentPropertyChanged(AvaloniaPropertyChangedEventArgs<string> e)
     {
+#if !DISABLE_WEBVIEW2_CORE
         ((CoreWebView2CreationProperties)e.Sender)._task = null;
+#endif
     }
 
+#if !DISABLE_WEBVIEW2_CORE
     /// <summary>
     /// Create a <see cref="CoreWebView2Environment" /> using the current values of this instance's properties.
     /// </summary>
@@ -129,4 +134,5 @@ public class CoreWebView2CreationProperties : AvaloniaObject
         }
         return controllerOptions;
     }
+#endif
 }
