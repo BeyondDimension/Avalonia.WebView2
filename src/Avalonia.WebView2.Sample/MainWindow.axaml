@@ -1,0 +1,31 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+		xmlns:wv2="clr-namespace:Avalonia.Controls;assembly=Avalonia.WebView2"
+        x:Class="Avalonia.WebView2.Sample.MainWindow"
+        Title="Avalonia.WebView2.Sample">
+	<Grid RowDefinitions="Auto * Auto">
+		<Grid Grid.Row="0"
+			  Margin="6,6,6,6"
+			  HorizontalAlignment="Stretch"
+			  VerticalAlignment="Top">
+			<Label HorizontalAlignment="Center"
+				   VerticalAlignment="Center"
+				   Content="Microsoft Edge WebView2"
+				   FontSize="14"
+				   FontWeight="Bold" />
+		</Grid>
+		<Grid Grid.Row="1" Background="BlueViolet">
+			<wv2:WebView2 Source="https://www.bing.com" />
+		</Grid>
+		<Grid Grid.Row="2">
+			<Label HorizontalAlignment="Center"
+				   VerticalAlignment="Center"
+				   Content="Welcome to Avalonia!"
+				   FontSize="12"
+				   FontWeight="Bold" />
+		</Grid>
+	</Grid>
+</Window>

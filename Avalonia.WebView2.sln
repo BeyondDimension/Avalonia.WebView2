@@ -1,0 +1,40 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32611.2
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Avalonia.WebView2", "src\Avalonia.WebView2\Avalonia.WebView2.csproj", "{6CF83C84-E05F-4D12-8FC6-5013BBB0DB45}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_Root", "_Root", "{61E7D838-59FC-4F8B-9A75-EC048B6BCFD2}"
+	ProjectSection(SolutionItems) = preProject
+		src\.editorconfig = src\.editorconfig
+		.gitignore = .gitignore
+		src\Directory.Build.props = src\Directory.Build.props
+		src\Directory.Packages.props = src\Directory.Packages.props
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Avalonia.WebView2.Sample", "src\Avalonia.WebView2.Sample\Avalonia.WebView2.Sample.csproj", "{A08F349B-7924-440B-A3B6-A06A07BD3568}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6CF83C84-E05F-4D12-8FC6-5013BBB0DB45}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6CF83C84-E05F-4D12-8FC6-5013BBB0DB45}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6CF83C84-E05F-4D12-8FC6-5013BBB0DB45}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6CF83C84-E05F-4D12-8FC6-5013BBB0DB45}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A08F349B-7924-440B-A3B6-A06A07BD3568}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A08F349B-7924-440B-A3B6-A06A07BD3568}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A08F349B-7924-440B-A3B6-A06A07BD3568}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A08F349B-7924-440B-A3B6-A06A07BD3568}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F80CD13F-5A1C-4F58-BDCA-4C2991EE56F4}
+	EndGlobalSection
+EndGlobal

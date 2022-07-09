@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net6.0-windows</TargetFramework>
+	</PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="Avalonia" />
+		<PackageReference Include="Avalonia.Desktop" />
+		<!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
+		<PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" />
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Avalonia.WebView2\Avalonia.WebView2.csproj" />
+	</ItemGroup>
+	<ItemGroup>
+		<None Include="..\..\ref\Microsoft.Web.WebView2\runtimes\win-x64\native\WebView2Loader.dll" CopyToOutputDirectory="PreserveNewest" />
+	</ItemGroup>
+</Project>

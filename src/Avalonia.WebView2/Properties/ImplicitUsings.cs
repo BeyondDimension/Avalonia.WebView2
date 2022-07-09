@@ -1,0 +1,13 @@
+global using Avalonia.Platform;
+global using Avalonia.Interactivity;
+global using Avalonia.Input;
+global using Avalonia.Media;
+global using System.ComponentModel;
+global using System.Drawing;
+global using System.Diagnostics;
+global using System.Windows.Input;
+global using System.Runtime.Versioning;
+global using System.Runtime.CompilerServices;
+global using System.Runtime.InteropServices;
+global using Microsoft.Web.WebView2.Core;
+global using Color = System.Drawing.Color;

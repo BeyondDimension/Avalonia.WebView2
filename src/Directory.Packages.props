@@ -1,0 +1,9 @@
+<Project>
+	<ItemGroup>
+		<PackageVersion Include="StyleCop.Analyzers" Version="1.2.0-beta.435" />
+		<PackageVersion Include="Avalonia" Version="0.10.16" />
+		<PackageVersion Include="Avalonia.Desktop" Version="0.10.16" />
+		<PackageVersion Include="Avalonia.Diagnostics" Version="0.10.16" />
+		<PackageVersion Include="Microsoft.SourceLink.GitHub" Version="1.1.1" />
+	</ItemGroup>
+</Project>

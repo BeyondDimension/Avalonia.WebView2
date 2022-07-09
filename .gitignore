@@ -348,3 +348,11 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+
+# Microsoft.Web.WebView2.Core
+*.winmd
+native_uap
+Microsoft.Web.WebView2.WinForms.dll
+Microsoft.Web.WebView2.WinForms.xml
+Microsoft.Web.WebView2.Wpf.dll
+Microsoft.Web.WebView2.Wpf.xml
