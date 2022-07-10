@@ -47,7 +47,7 @@ public partial class CoreWebView2CreationProperties : AvaloniaObject
     public static readonly StyledProperty<bool?> IsInPrivateModeEnabledProperty = AvaloniaProperty.Register<CoreWebView2CreationProperties, bool?>(nameof(IsInPrivateModeEnabled));
 
 #if !DISABLE_WEBVIEW2_CORE
-    Task<CoreWebView2Environment?>? _task;
+    Task<CoreWebView2Environment>? _task;
 #endif
 
     /// <summary>
@@ -111,11 +111,13 @@ public partial class CoreWebView2CreationProperties : AvaloniaObject
     /// As long as no other properties on this instance are changed, repeated calls to this method will return the same task/environment as earlier calls.
     /// If some other property is changed then the next call to this method will return a different task/environment.
     /// </remarks>
-    internal Task<CoreWebView2Environment?> CreateEnvironmentAsync()
+    public Task<CoreWebView2Environment> CreateEnvironmentAsync()
     {
         if (_task == null && (BrowserExecutableFolder != null || UserDataFolder != null || Language != null))
             _task = CoreWebView2Environment.CreateAsync(BrowserExecutableFolder, UserDataFolder, new CoreWebView2EnvironmentOptions(language: Language));
-        return _task ?? Task.FromResult<CoreWebView2Environment?>(null);
+        else
+            _task = CoreWebView2Environment.CreateAsync();
+        return _task;
     }
 
     /// <summary>

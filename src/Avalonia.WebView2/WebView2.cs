@@ -45,39 +45,39 @@ public partial class WebView2 : NativeControlHost, IHwndHost, ISupportInitialize
 #endif
     }
 
-    protected internal virtual unsafe void OnUpdateRootBounds()
-    {
-        if (this.GetVisualRoot() is Window window)
-        {
-            RECT windowBounds;
-            DpiScale scale = OffscreenGraphics.DpiScale;
+    //protected internal virtual unsafe void OnUpdateRootBounds()
+    //{
+    //    if (this.GetVisualRoot() is Window window)
+    //    {
+    //        RECT windowBounds;
+    //        DpiScale scale = OffscreenGraphics.DpiScale;
 
-            if (NativeMethods.DwmIsCompositionEnabled()
-                && NativeMethods.DwmGetWindowAttribute(window.PlatformImpl.Handle.Handle, DWMWINDOWATTRIBUTE.ExtendedFrameBounds, &windowBounds, sizeof(RECT)) == 0)
-            {
-                windowBounds = new RECT
-                {
-                    Left = (int)Math.Floor(windowBounds.Left / scale.DpiScaleX),
-                    Top = (int)Math.Floor(windowBounds.Top / scale.DpiScaleY),
-                    Right = (int)Math.Ceiling(windowBounds.Right / scale.DpiScaleX),
-                    Bottom = (int)Math.Ceiling(windowBounds.Bottom / scale.DpiScaleY),
-                };
-            }
-            else
-            {
-                Rect bounds = window.Bounds;
-                PixelPoint pos = window.Position;
-                windowBounds = new RECT
-                {
-                    Left = (int)Math.Floor(pos.X / scale.DpiScaleX),
-                    Top = (int)Math.Floor(pos.Y / scale.DpiScaleY),
-                    Right = (int)Math.Ceiling(bounds.Right / scale.DpiScaleX),
-                    Bottom = (int)Math.Ceiling(bounds.Bottom / scale.DpiScaleY),
-                };
-            }
-            OnWindowPositionChanged(windowBounds.ToCefRect());
-        }
-    }
+    //        if (NativeMethods.DwmIsCompositionEnabled()
+    //            && NativeMethods.DwmGetWindowAttribute(window.PlatformImpl.Handle.Handle, DWMWINDOWATTRIBUTE.ExtendedFrameBounds, &windowBounds, sizeof(RECT)) == 0)
+    //        {
+    //            windowBounds = new RECT
+    //            {
+    //                Left = (int)Math.Floor(windowBounds.Left / scale.DpiScaleX),
+    //                Top = (int)Math.Floor(windowBounds.Top / scale.DpiScaleY),
+    //                Right = (int)Math.Ceiling(windowBounds.Right / scale.DpiScaleX),
+    //                Bottom = (int)Math.Ceiling(windowBounds.Bottom / scale.DpiScaleY),
+    //            };
+    //        }
+    //        else
+    //        {
+    //            Rect bounds = window.Bounds;
+    //            PixelPoint pos = window.Position;
+    //            windowBounds = new RECT
+    //            {
+    //                Left = (int)Math.Floor(pos.X / scale.DpiScaleX),
+    //                Top = (int)Math.Floor(pos.Y / scale.DpiScaleY),
+    //                Right = (int)Math.Ceiling(bounds.Right / scale.DpiScaleX),
+    //                Bottom = (int)Math.Ceiling(bounds.Bottom / scale.DpiScaleY),
+    //            };
+    //        }
+    //        OnWindowPositionChanged(windowBounds.ToCefRect());
+    //    }
+    //}
 
     protected virtual void Initialize()
     {
@@ -107,9 +107,15 @@ public partial class WebView2 : NativeControlHost, IHwndHost, ISupportInitialize
     bool _allowExternalDrop = true;
     double _zoomFactor = 1.0;
     Color _defaultBackgroundColor = Color.White;
-    bool _inInit;
     Uri? _source;
     bool _browserCrashed;
+    readonly ImplicitInitGate _implicitInitGate = new();
+
+    public override void Render(DrawingContext context)
+    {
+        base.Render(context);
+        _implicitInitGate.OnSynchronizationContextExists();
+    }
 
     protected virtual void Dispose(bool disposing)
     {
@@ -230,8 +236,6 @@ public partial class WebView2 : NativeControlHost, IHwndHost, ISupportInitialize
     CoreWebView2Environment? Environment { get; set; }
 
     CoreWebView2ControllerOptions? ControllerOptions { get; set; }
-
-    public async void EnsureCoreWebView2(CoreWebView2Environment? environment = null, CoreWebView2ControllerOptions? controllerOptions = null) => await EnsureCoreWebView2Async(environment, controllerOptions);
 
     /// <summary>
     /// Explicitly trigger initialization of the control's <see cref="P:Avalonia.Controls.WebView2.CoreWebView2" />.
@@ -549,21 +553,13 @@ public partial class WebView2 : NativeControlHost, IHwndHost, ISupportInitialize
     public override void BeginInit()
     {
         base.BeginInit();
-        _inInit = true;
+        _implicitInitGate.BeginInit();
     }
 
     public override void EndInit()
     {
+        _implicitInitGate.EndInit();
         base.EndInit();
-        _inInit = false;
-        if (_source == null)
-            return;
-#if !DISABLE_WEBVIEW2_CORE
-        if (!IsInitialized)
-            EnsureCoreWebView2();
-        else
-            CoreWebView2?.Navigate(_source.AbsoluteUri);
-#endif
     }
 
     /// <summary>
@@ -587,7 +583,7 @@ public partial class WebView2 : NativeControlHost, IHwndHost, ISupportInitialize
                 {
                     return;
                 }
-                throw new NotImplementedException("Setting Source to null is not implemented yet.");
+                throw new NotImplementedException("The Source property cannot be set to null.");
             }
             else
             {
@@ -595,22 +591,15 @@ public partial class WebView2 : NativeControlHost, IHwndHost, ISupportInitialize
                 {
                     throw new ArgumentException("Only absolute URI is allowed", "Source");
                 }
-                if (IsInitialized && _source != null && _source.AbsoluteUri == value.AbsoluteUri)
+                if (_source == null || _source.AbsoluteUri != value.AbsoluteUri)
                 {
-                    return;
-                }
-                SetAndRaise(SourceProperty, ref _source, value);
-                if (_inInit)
-                {
-                    return;
+                    SetAndRaise(SourceProperty, ref _source, value);
+#if !DISABLE_WEBVIEW2_CORE
+                    if (CoreWebView2 != null) CoreWebView2.Navigate(value.AbsoluteUri);
+#endif
                 }
 #if !DISABLE_WEBVIEW2_CORE
-                if (!IsInitialized)
-                {
-                    EnsureCoreWebView2(null, null);
-                    return;
-                }
-                CoreWebView2!.Navigate(value.AbsoluteUri);
+                _implicitInitGate.RunWhenOpen(() => EnsureCoreWebView2Async());
 #endif
             }
         }
@@ -1052,24 +1041,22 @@ public partial class WebView2 : NativeControlHost, IHwndHost, ISupportInitialize
     //}
 
     internal void OnWindowPositionChanged(CefRect rect)
-        => OnWindowPositionChanged(rect.Width, rect.Height);
+        => OnWindowPositionChanged(rect.X, rect.Y, rect.Width, rect.Height);
 
     internal void OnWindowPositionChanged(Rect rect)
-        => OnWindowPositionChanged(rect.Width, rect.Height);
+        => OnWindowPositionChanged(rect.X, rect.Y, rect.Width, rect.Height);
 
     /// <summary>
     /// This is overridden from <see cref="IHwndHost" /> and called when our control's location has changed.
     /// The HwndHost takes care of updating the HWND we created.
     /// What we need to do is move our CoreWebView2 to match the new location.
     /// </summary>
-    protected virtual void OnWindowPositionChanged(double width, double height)
+    protected virtual void OnWindowPositionChanged(double x, double y, double width, double height)
     {
 #if !DISABLE_WEBVIEW2_CORE
         if (_coreWebView2Controller != null)
         {
-            int w = ToSize(width);
-            int h = ToSize(height);
-            var rectangle = new Rectangle(0, 0, w, h);
+            var rectangle = new Rectangle(ToSize(x), ToSize(y), ToSize(width), ToSize(height));
             _coreWebView2Controller.Bounds = rectangle;
             _coreWebView2Controller.NotifyParentWindowPositionChanged();
         }

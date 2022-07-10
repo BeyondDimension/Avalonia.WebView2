@@ -11,14 +11,14 @@
 			  Margin="6,6,6,6"
 			  HorizontalAlignment="Stretch"
 			  VerticalAlignment="Top">
-			<Label HorizontalAlignment="Center"
+			<Label x:Name="Title" HorizontalAlignment="Center"
 				   VerticalAlignment="Center"
 				   Content="Microsoft Edge WebView2"
 				   FontSize="14"
 				   FontWeight="Bold" />
 		</Grid>
 		<Grid Grid.Row="1" Background="BlueViolet">
-			<wv2:WebView2 x:Name="WebView2" Source="https://www.bing.com" />
+			<wv2:WebView2 x:Name="WebView2" Source="https://www.bing.com" CreationProperties="{Binding CreationProperties}" />
 		</Grid>
 		<Grid Grid.Row="2">
 			<Button x:Name="Button" HorizontalAlignment="Center"
