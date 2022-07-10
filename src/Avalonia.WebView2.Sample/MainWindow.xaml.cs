@@ -36,9 +36,9 @@ public partial class MainWindow : Window
     {
         if (architecture != Unknown)
         {
-            return $"Microsoft Edge WebView2 {browserVersion} {architecture} for Avalonia";
+            return $"Microsoft Edge WebView2 {browserVersion} {architecture} for Avalonia on {System.Environment.OSVersion.VersionString}";
         }
-        return $"Microsoft Edge WebView2 {browserVersion} for Avalonia";
+        return $"Microsoft Edge WebView2 {browserVersion} for Avalonia on {System.Environment.OSVersion.VersionString}";
     }
 
     void SetTitle(string browserVersion, Architecture architecture = Unknown) => Title.Content = base.Title = GetTitle(browserVersion, architecture);

@@ -11,10 +11,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<None Remove="WebView2Compat.xaml" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<Compile Include="..\Avalonia.WebView2\Properties\AssemblyInfo.OS.cs">
 			<Link>Properties\AssemblyInfo.OS.cs</Link>
 		</Compile>

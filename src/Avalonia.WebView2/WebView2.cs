@@ -1,3 +1,5 @@
+using Avalonia.Media.Immutable;
+
 namespace Avalonia.Controls;
 
 /// <summary>
@@ -17,8 +19,20 @@ public partial class WebView2 : NativeControlHost, IHwndHost, ISupportInitialize
         this.GetPropertyChangedObservable(BoundsProperty).Subscribe(OnBoundsChanged);
     }
 
-    static int ToSize(double d)
+    int ToSize(double d, bool ignoreDPI = false)
     {
+        if (!ignoreDPI)
+        {
+            var window = Window;
+            if (window != null)
+            {
+                var screen = window.Screens.ScreenFromWindow(window.PlatformImpl);
+                if (screen != null)
+                {
+                    d *= screen.PixelDensity;
+                }
+            }
+        }
         if (double.IsNaN(d) || d <= 0D) return 0;
         return Convert.ToInt32(Math.Ceiling(d));
     }
@@ -98,6 +112,7 @@ public partial class WebView2 : NativeControlHost, IHwndHost, ISupportInitialize
     public override void Render(DrawingContext context)
     {
         base.Render(context);
+        //context.DrawRectangle(new Media.Pen(new ImmutableSolidColorBrush(Avalonia.Media.Color.FromArgb(_defaultBackgroundColor.A, _defaultBackgroundColor.R, _defaultBackgroundColor.G, _defaultBackgroundColor.B))), base.Bounds);
         _implicitInitGate.OnSynchronizationContextExists();
     }
 
@@ -865,118 +880,17 @@ public partial class WebView2 : NativeControlHost, IHwndHost, ISupportInitialize
     }
 #endif
 
-    protected IPlatformHandle? PlatformHandle { get; set; }
-
     readonly TaskCompletionSource<IntPtr> _hwndTaskSource = new();
 
-    /// <summary>
-    /// This is overridden from <see cref="IPlatformHandle" /> and is called to instruct us to create our HWND.
-    /// </summary>
-    /// <param name="parent">The HWND that we should use as the parent of the one we create.</param>
-    /// <returns>The HWND that we created.</returns>
-    /// <seealso cref="NativeControlHost.CreateNativeControlCore(IPlatformHandle)" />
     protected override IPlatformHandle CreateNativeControlCore(IPlatformHandle parent)
     {
-#if !DISABLE_WEBVIEW2_CORE
-#if !WINDOWS
-        if (OperatingSystem.IsWindows())
-#endif
-        {
-            var hwnd = Window!.PlatformImpl.Handle.Handle;
-            IntPtr windowExW = NativeMethods.CreateWindowExW(NativeMethods.WS_EX.TRANSPARENT, "static", string.Empty, NativeMethods.WS.CLIPCHILDREN | NativeMethods.WS.VISIBLE | NativeMethods.WS.CHILD, 0, 0, 0, 0, hwnd, IntPtr.Zero, Marshal.GetHINSTANCE(typeof(NativeMethods).Module), IntPtr.Zero);
-            var error = Marshal.GetLastWin32Error();
-            if (error != 0) throw new Win32Exception(error);
-            if (_coreWebView2Controller != null)
-                ReparentController(windowExW);
-            //if (!_hwndTaskSource.Task.IsCompleted)
-            //    _hwndTaskSource.SetResult(windowExW);
-            return PlatformHandle = new PlatformHandle(windowExW, "HWND");
-        }
-#endif
-        return base.CreateNativeControlCore(parent);
+        return new PlatformHandle(IntPtr.Zero, null);
     }
 
-    /// <summary>
-    /// This is overridden from <see cref="IPlatformHandle" /> and is called to instruct us to destroy our HWND.
-    /// </summary>
-    /// <param name="control">Our HWND that we need to destroy.</param>
-    /// <seealso cref="NativeControlHost.DestroyNativeControlCore(IPlatformHandle)" />
     protected override void DestroyNativeControlCore(IPlatformHandle control)
     {
-#if !DISABLE_WEBVIEW2_CORE
-        PlatformHandle = null;
-#if !WINDOWS
-        if (OperatingSystem.IsWindows())
-#endif
-        {
-            if (_coreWebView2Controller != null)
-                ReparentController(IntPtr.Zero);
-            NativeMethods.DestroyWindow(control.Handle);
-        }
-#endif
-        ((INativeControlHostDestroyableControlHandle?)control)?.Destroy();
+        base.DestroyNativeControlCore(control);
     }
-
-#if !DISABLE_WEBVIEW2_CORE
-    /// <summary>
-    /// Changes our controller's ParentWindow to the given HWND, along with any other necessary associated work.
-    /// </summary>
-    /// <param name="hwnd">The new HWND to set as the controller's parent.  IntPtr.Zero means that the controller will have no parent and the CoreWebView2 will be hidden.</param>
-    /// <param name="sync">Whether or not to call <see cref="SyncControllerWithParentWindow" /> as required.  Defaults to true.  If you pass false then you should call it yourself if required.</param>
-    /// <remarks>
-    /// Reparenting the controller isn't necessarily as simple as changing its ParentWindow property,
-    /// and this method exists to ensure that any other work that needs to be done at the same time gets done.
-    /// The reason that SyncControllerWithParentWindow isn't baked directly into this method is because
-    /// sometimes we want to call the Sync functionality without necessarily reparenting (e.g. during initialization).
-    /// </remarks>
-    void ReparentController(IntPtr hwnd, bool sync = true)
-    {
-        if (hwnd == IntPtr.Zero)
-        {
-            if (_coreWebView2Controller != null)
-            {
-                _coreWebView2Controller.IsVisible = false;
-                _coreWebView2Controller.ParentWindow = IntPtr.Zero;
-            }
-        }
-        else
-        {
-            if (_coreWebView2Controller != null)
-            {
-                _coreWebView2Controller.ParentWindow = hwnd;
-            }
-            if (!sync)
-                return;
-            SyncControllerWithParentWindow();
-        }
-    }
-#endif
-
-    /// <summary>
-    /// Updates the child window's size, visibility, and position to reflect the current state of the element.
-    /// </summary>
-    public virtual void UpdateWindowPos()
-    {
-
-    }
-
-#if !DISABLE_WEBVIEW2_CORE
-    /// <summary>
-    /// Syncs visual/windowing information between the controller and its parent HWND.
-    /// This should be called any time a new, non-null HWND is set as the controller's parent,
-    /// including when the controller is first created.
-    /// </summary>
-    void SyncControllerWithParentWindow()
-    {
-        UpdateWindowPos();
-        if (_coreWebView2Controller != null)
-        {
-            if (KeyboardDevice.Instance?.FocusedElement == this)
-                _coreWebView2Controller.MoveFocus(CoreWebView2MoveFocusReason.Programmatic);
-            _coreWebView2Controller.IsVisible = IsVisible;
-        }
-    }
-#endif
 
     protected Window? Window { get; set; }
 
