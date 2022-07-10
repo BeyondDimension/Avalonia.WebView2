@@ -878,10 +878,14 @@ public partial class WebView2 : NativeControlHost, IHwndHost, ISupportInitialize
     protected override IPlatformHandle CreateNativeControlCore(IPlatformHandle parent)
     {
 #if !DISABLE_WEBVIEW2_CORE
+#if !WINDOWS
         if (OperatingSystem.IsWindows())
+#endif
         {
             var hwnd = Window!.PlatformImpl.Handle.Handle;
-            IntPtr windowExW = NativeMethods.CreateWindowExW(NativeMethods.WS_EX.TRANSPARENT, null, string.Empty, NativeMethods.WS.CLIPCHILDREN | NativeMethods.WS.VISIBLE | NativeMethods.WS.CHILD, 0, 0, 0, 0, hwnd, IntPtr.Zero, Marshal.GetHINSTANCE(typeof(NativeMethods).Module), IntPtr.Zero);
+            IntPtr windowExW = NativeMethods.CreateWindowExW(NativeMethods.WS_EX.TRANSPARENT, "static", string.Empty, NativeMethods.WS.CLIPCHILDREN | NativeMethods.WS.VISIBLE | NativeMethods.WS.CHILD, 0, 0, 0, 0, hwnd, IntPtr.Zero, Marshal.GetHINSTANCE(typeof(NativeMethods).Module), IntPtr.Zero);
+            var error = Marshal.GetLastWin32Error();
+            if (error != 0) throw new Win32Exception(error);
             if (_coreWebView2Controller != null)
                 ReparentController(windowExW);
             //if (!_hwndTaskSource.Task.IsCompleted)
@@ -901,14 +905,16 @@ public partial class WebView2 : NativeControlHost, IHwndHost, ISupportInitialize
     {
 #if !DISABLE_WEBVIEW2_CORE
         PlatformHandle = null;
+#if !WINDOWS
         if (OperatingSystem.IsWindows())
+#endif
         {
             if (_coreWebView2Controller != null)
                 ReparentController(IntPtr.Zero);
             NativeMethods.DestroyWindow(control.Handle);
         }
 #endif
-        base.DestroyNativeControlCore(control);
+        ((INativeControlHostDestroyableControlHandle?)control)?.Destroy();
     }
 
 #if !DISABLE_WEBVIEW2_CORE

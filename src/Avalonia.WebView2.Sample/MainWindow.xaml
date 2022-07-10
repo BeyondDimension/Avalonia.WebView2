@@ -3,6 +3,7 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:Avalonia.WebView2.Sample"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:wv2="clr-namespace:Avalonia.Controls;assembly=Avalonia.WebView2"
     Title="Avalonia.WebView2.Sample"
@@ -23,10 +24,10 @@
                 FontWeight="Bold" />
         </Grid>
         <Grid Grid.Row="1" Background="BlueViolet">
-            <wv2:WebView2
+            <local:WebView2Compat x:Name="WebView2Compat" />
+            <!--<wv2:WebView2
                 x:Name="WebView2"
-                CreationProperties="{Binding CreationProperties}"
-                Source="https://www.bing.com" />
+                Source="https://www.bing.com" />-->
         </Grid>
         <Grid Grid.Row="2">
             <Button

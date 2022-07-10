@@ -7,20 +7,8 @@ public partial class MainWindow : Window
 {
     readonly Button Button;
     readonly AvaloniaWebView2 WebView2;
+    readonly WebView2Compat WebView2Compat;
     readonly new Label Title;
-
-    static string GetUserDataFolder()
-    {
-        var path = Path.Combine(AppContext.BaseDirectory, "AppData", "WebView2", "UserData");
-        if (!Directory.Exists(path)) Directory.CreateDirectory(path);
-        return path;
-    }
-
-    public CoreWebView2CreationProperties CreationProperties { get; } = new()
-    {
-        Language = "en",
-        UserDataFolder = GetUserDataFolder(),
-    };
 
     public CoreWebView2Environment Environment { get; }
 
@@ -33,10 +21,11 @@ public partial class MainWindow : Window
 #endif
         Title = this.FindControl<Label>("Title");
         WebView2 = this.FindControl<AvaloniaWebView2>("WebView2");
+        WebView2Compat = this.FindControl<WebView2Compat>("WebView2Compat");
         Button = this.FindControl<Button>("Button");
 
         Button.Click += Button_Click;
-        Environment = CreationProperties.CreateEnvironmentAsync().GetAwaiter().GetResult();
+        Environment = AvaloniaWebView2.DefaultCreationProperties!.CreateEnvironmentAsync().GetAwaiter().GetResult();
         Environment.ProcessInfosChanged += Environment_ProcessInfosChanged;
         SetTitle(Environment.BrowserVersionString);
     }
@@ -89,7 +78,7 @@ public partial class MainWindow : Window
     void Button_Click(object? sender, RoutedEventArgs e)
     {
 #if DEBUG
-        WebView2.Test();
+        (WebView2 ?? WebView2Compat?.WebView2)?.Test();
 #endif
     }
 
