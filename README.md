@@ -1,4 +1,4 @@
-# Avalonia.WebView2
+# Avalonia.WebView2 [![NuGet version (WebView2.Avalonia)](https://img.shields.io/nuget/v/WebView2.Avalonia.svg)](https://www.nuget.org/packages/WebView2.Avalonia/)
 Build .NET Avalonia Microsoft Edge WebView2 HTML5 Desktop Hybrid Apps
 
 ## Supported OS versions
