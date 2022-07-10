@@ -113,11 +113,17 @@ public partial class CoreWebView2CreationProperties : AvaloniaObject
     /// </remarks>
     public Task<CoreWebView2Environment> CreateEnvironmentAsync()
     {
-        if (_task == null && (BrowserExecutableFolder != null || UserDataFolder != null || Language != null))
-            _task = CoreWebView2Environment.CreateAsync(BrowserExecutableFolder, UserDataFolder, new CoreWebView2EnvironmentOptions(language: Language));
-        else
-            _task = CoreWebView2Environment.CreateAsync();
-        return _task;
+        lock (this)
+        {
+            if (_task == null)
+            {
+                if (BrowserExecutableFolder != null || UserDataFolder != null || Language != null)
+                    _task = CoreWebView2Environment.CreateAsync(BrowserExecutableFolder, UserDataFolder, new CoreWebView2EnvironmentOptions(language: Language));
+                else
+                    _task = CoreWebView2Environment.CreateAsync();
+            }
+            return _task;
+        }
     }
 
     /// <summary>

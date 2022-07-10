@@ -24,10 +24,4 @@ static partial class NativeMethods
 
     [DllImport("user32.dll", CharSet = CharSet.Auto)]
     public static extern IntPtr CallWindowProc(IntPtr lpPrevWndFunc, IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam);
-
-    [DllImport("Dwmapi.dll", CharSet = CharSet.Auto)]
-    public static unsafe extern int DwmGetWindowAttribute(IntPtr hwnd, DWMWINDOWATTRIBUTE attribute, void* value, int size);
-
-    [DllImport("Dwmapi.dll", CharSet = CharSet.Auto, PreserveSig = false)]
-    public static extern bool DwmIsCompositionEnabled();
 }

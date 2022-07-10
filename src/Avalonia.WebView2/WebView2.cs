@@ -13,75 +13,57 @@ public partial class WebView2 : NativeControlHost, IHwndHost, ISupportInitialize
             return;
         }
 
-        Initialize();
-
         this.GetPropertyChangedObservable(IsVisibleProperty).Subscribe(IsVisibleChanged);
         this.GetPropertyChangedObservable(BoundsProperty).Subscribe(OnBoundsChanged);
     }
 
-    internal OffscreenGraphics? OffscreenGraphics { get; set; }
+    static int ToSize(double d)
+    {
+        if (double.IsNaN(d) || d <= 0D) return 0;
+        return Convert.ToInt32(Math.Ceiling(d));
+    }
+
+    Rectangle GetBounds()
+    {
+        var bounds = base.Bounds;
+        int x = ToSize(bounds.X);
+        int y = ToSize(bounds.Y);
+        int w = ToSize(bounds.Width);
+        int h = ToSize(bounds.Height);
+        return new(x, y, w, h);
+    }
+
+    public new Rectangle Bounds
+    {
+        get
+        {
+            if (Window != null)
+            {
+                var point = this.TranslatePoint(new(0, 0), Window);
+                if (point.HasValue)
+                {
+                    var pointValue = point.Value;
+                    int x = ToSize(pointValue.X);
+                    int y = ToSize(pointValue.Y);
+                    var bounds = base.Bounds;
+                    int w = ToSize(bounds.Width);
+                    int h = ToSize(bounds.Height);
+                    return new(x, y, w, h);
+                }
+            }
+            return GetBounds();
+        }
+    }
 
     protected virtual void OnBoundsChanged(EventArgs e)
     {
 #if !DISABLE_WEBVIEW2_CORE
         if (_coreWebView2Controller != null)
         {
-            //OnUpdateRootBounds();
-            if (OffscreenGraphics != null)
-            {
-                var bounds = Bounds;
-                if (OffscreenGraphics.SetSize((int)bounds.Width, (int)bounds.Height))
-                {
-                    double scaling = VisualRoot?.RenderScaling ?? 1.0;
-                    OffscreenGraphics.DpiScale = new DpiScale(scaling, scaling);
-                    OnWindowPositionChanged(bounds);
-                    //BrowserObject?.Host.WasResized();
-                    //if (Interlocked.Exchange(ref _fixResizeGlitchesFlag, 1) != 0)
-                    //    return;
-                    //CefNetApi.Post(CefThreadId.UI, FixResizeGlitches, 30);
-                }
-            }
+            var bounds = Bounds;
+            OnWindowPositionChanged(bounds);
         }
 #endif
-    }
-
-    //protected internal virtual unsafe void OnUpdateRootBounds()
-    //{
-    //    if (this.GetVisualRoot() is Window window)
-    //    {
-    //        RECT windowBounds;
-    //        DpiScale scale = OffscreenGraphics.DpiScale;
-
-    //        if (NativeMethods.DwmIsCompositionEnabled()
-    //            && NativeMethods.DwmGetWindowAttribute(window.PlatformImpl.Handle.Handle, DWMWINDOWATTRIBUTE.ExtendedFrameBounds, &windowBounds, sizeof(RECT)) == 0)
-    //        {
-    //            windowBounds = new RECT
-    //            {
-    //                Left = (int)Math.Floor(windowBounds.Left / scale.DpiScaleX),
-    //                Top = (int)Math.Floor(windowBounds.Top / scale.DpiScaleY),
-    //                Right = (int)Math.Ceiling(windowBounds.Right / scale.DpiScaleX),
-    //                Bottom = (int)Math.Ceiling(windowBounds.Bottom / scale.DpiScaleY),
-    //            };
-    //        }
-    //        else
-    //        {
-    //            Rect bounds = window.Bounds;
-    //            PixelPoint pos = window.Position;
-    //            windowBounds = new RECT
-    //            {
-    //                Left = (int)Math.Floor(pos.X / scale.DpiScaleX),
-    //                Top = (int)Math.Floor(pos.Y / scale.DpiScaleY),
-    //                Right = (int)Math.Ceiling(bounds.Right / scale.DpiScaleX),
-    //                Bottom = (int)Math.Ceiling(bounds.Bottom / scale.DpiScaleY),
-    //            };
-    //        }
-    //        OnWindowPositionChanged(windowBounds.ToCefRect());
-    //    }
-    //}
-
-    protected virtual void Initialize()
-    {
-        OffscreenGraphics = new OffscreenGraphics();
     }
 
     protected override void OnInitialized()
@@ -95,8 +77,10 @@ public partial class WebView2 : NativeControlHost, IHwndHost, ISupportInitialize
     /// </summary>
     protected static bool IsInDesignMode => Design.IsDesignMode;
 
+    public static CoreWebView2CreationProperties? DefaultCreationProperties { get; set; }
+
     bool disposedValue;
-    CoreWebView2CreationProperties? _creationProperties;
+    CoreWebView2CreationProperties? _creationProperties = DefaultCreationProperties;
     internal Task? _initTask;
 #if !DISABLE_WEBVIEW2_CORE
     bool _isExplicitEnvironment;
@@ -123,20 +107,16 @@ public partial class WebView2 : NativeControlHost, IHwndHost, ISupportInitialize
         {
             if (disposing)
             {
-                // TODO: 释放托管状态(托管对象)
                 if (IsInitialized)
                     UnsubscribeHandlersAndCloseController();
             }
 
-            // TODO: 释放未托管的资源(未托管的对象)并重写终结器
-            // TODO: 将大型字段设置为 null
             disposedValue = true;
         }
     }
 
     public void Dispose()
     {
-        // 不要更改此代码。请将清理代码放入“Dispose(bool disposing)”方法中
         Dispose(disposing: true);
         GC.SuppressFinalize(this);
     }
@@ -145,10 +125,6 @@ public partial class WebView2 : NativeControlHost, IHwndHost, ISupportInitialize
     {
         IsInitialized = false;
         _browserCrashed = browserCrashed;
-        //this.HandleDestroyed -= new EventHandler(this.WebView2_HandleDestroyed);
-        //this.HandleCreated -= new EventHandler(this.WebView2_HandleCreated);
-        //if (this._parentForm != null)
-        //    this._parentForm.LocationChanged -= new EventHandler(this.WebView2_WindowPositionChanged);
         if (!_browserCrashed)
         {
 #if !DISABLE_WEBVIEW2_CORE
@@ -159,7 +135,7 @@ public partial class WebView2 : NativeControlHost, IHwndHost, ISupportInitialize
             CoreWebView2.ContentLoading -= new EventHandler<CoreWebView2ContentLoadingEventArgs>(CoreWebView2_ContentLoading);
             CoreWebView2.ProcessFailed -= new EventHandler<CoreWebView2ProcessFailedEventArgs>(CoreWebView2_ProcessFailed);
             _coreWebView2Controller!.ZoomFactorChanged -= new EventHandler<object>(CoreWebView2Controller_ZoomFactorChanged);
-            _coreWebView2Controller.MoveFocusRequested -= new EventHandler<CoreWebView2MoveFocusRequestedEventArgs>(CoreWebView2Controller_MoveFocusRequested);
+            //_coreWebView2Controller.MoveFocusRequested -= new EventHandler<CoreWebView2MoveFocusRequestedEventArgs>(CoreWebView2Controller_MoveFocusRequested);
             _coreWebView2Controller.AcceleratorKeyPressed -= new EventHandler<CoreWebView2AcceleratorKeyPressedEventArgs>(CoreWebView2Controller_AcceleratorKeyPressed);
             _coreWebView2Controller.Close();
 #endif
@@ -185,12 +161,12 @@ public partial class WebView2 : NativeControlHost, IHwndHost, ISupportInitialize
             switch ((NativeMethods.WM)msg)
             {
                 case NativeMethods.WM.SETFOCUS:
-                    //var webView2Controller = CoreWebView2Controller;
-                    //if (webView2Controller != null)
-                    //{
-                    //    //webView2Controller.MoveFocus(CoreWebView2MoveFocusReason.Programmatic);
-                    //    break;
-                    //}
+#if !DISABLE_WEBVIEW2_CORE
+                    if (_coreWebView2Controller != null)
+                    {
+                        _coreWebView2Controller.MoveFocus(CoreWebView2MoveFocusReason.Programmatic);
+                    }
+#endif
                     break;
                 case NativeMethods.WM.PAINT:
                     if (!IsInDesignMode)
@@ -207,7 +183,6 @@ public partial class WebView2 : NativeControlHost, IHwndHost, ISupportInitialize
                     //    handled = true;
                     //    break;
             }
-            return IntPtr.Zero;
         }
         return IntPtr.Zero;
     }
@@ -296,12 +271,6 @@ public partial class WebView2 : NativeControlHost, IHwndHost, ISupportInitialize
         return _initTask;
     }
 
-    static int ToSize(double d)
-    {
-        if (double.IsNaN(d) || d <= 0) return 1;
-        return Convert.ToInt32(Math.Ceiling(d));
-    }
-
     /// <summary>
     /// This is the function which implements the actual background initialization task.
     /// Cannot be called if the control is already initialized or has been disposed.
@@ -360,7 +329,6 @@ public partial class WebView2 : NativeControlHost, IHwndHost, ISupportInitialize
             sender._coreWebView2Controller.ZoomFactor = sender._zoomFactor;
             sender._coreWebView2Controller.DefaultBackgroundColor = sender._defaultBackgroundColor;
             OnBoundsChanged(EventArgs.Empty);
-            //sender._coreWebView2Controller.Bounds = new Rectangle(0, 0, ToSize(sender.Width), ToSize(sender.Height));
             sender._coreWebView2Controller.IsVisible = sender.IsVisible;
             try
             {
@@ -369,7 +337,7 @@ public partial class WebView2 : NativeControlHost, IHwndHost, ISupportInitialize
             catch (NotImplementedException)
             {
             }
-            sender._coreWebView2Controller.MoveFocusRequested += new EventHandler<CoreWebView2MoveFocusRequestedEventArgs>(sender.CoreWebView2Controller_MoveFocusRequested);
+            //sender._coreWebView2Controller.MoveFocusRequested += new EventHandler<CoreWebView2MoveFocusRequestedEventArgs>(sender.CoreWebView2Controller_MoveFocusRequested);
             sender._coreWebView2Controller.AcceleratorKeyPressed += new EventHandler<CoreWebView2AcceleratorKeyPressedEventArgs>(sender.CoreWebView2Controller_AcceleratorKeyPressed);
             sender._coreWebView2Controller.ZoomFactorChanged += new EventHandler<object>(sender.CoreWebView2Controller_ZoomFactorChanged);
             sender.CoreWebView2!.NavigationCompleted += new EventHandler<CoreWebView2NavigationCompletedEventArgs>(sender.CoreWebView2_NavigationCompleted);
@@ -378,8 +346,6 @@ public partial class WebView2 : NativeControlHost, IHwndHost, ISupportInitialize
             sender.CoreWebView2.WebMessageReceived += new EventHandler<CoreWebView2WebMessageReceivedEventArgs>(sender.CoreWebView2_WebMessageReceived);
             sender.CoreWebView2.ContentLoading += new EventHandler<CoreWebView2ContentLoadingEventArgs>(sender.CoreWebView2_ContentLoading);
             sender.CoreWebView2.ProcessFailed += new EventHandler<CoreWebView2ProcessFailedEventArgs>(sender.CoreWebView2_ProcessFailed);
-            //sender.HandleDestroyed += new EventHandler(sender.WebView2_HandleDestroyed);
-            //sender.HandleCreated += new EventHandler(sender.WebView2_HandleCreated);
             if (sender.Focusable)
                 sender._coreWebView2Controller.MoveFocus(CoreWebView2MoveFocusReason.Programmatic);
             int num = sender._source != null ? 1 : 0;
@@ -433,17 +399,17 @@ public partial class WebView2 : NativeControlHost, IHwndHost, ISupportInitialize
         e.Handled = eventArgs.Handled;
     }
 
-    void CoreWebView2Controller_MoveFocusRequested(object? sender,
-     CoreWebView2MoveFocusRequestedEventArgs e)
-    {
-        //bool forward = e.Reason == CoreWebView2MoveFocusReason.Next || e.Reason == CoreWebView2MoveFocusReason.Programmatic;
-        //Control control = (Control)this.FindForm() ?? this.Parent;
-        //e.Handled = control == null || control.SelectNextControl((Control)this, forward, true, true, true);
-        //if (this._lastMoveFocusReason == CoreWebView2MoveFocusReason.Programmatic)
-        //    return;
-        //this._coreWebView2Controller.MoveFocus(this._lastMoveFocusReason);
-        //this._lastMoveFocusReason = CoreWebView2MoveFocusReason.Programmatic;
-    }
+    //void CoreWebView2Controller_MoveFocusRequested(object? sender,
+    // CoreWebView2MoveFocusRequestedEventArgs e)
+    //{
+    //    bool forward = e.Reason == CoreWebView2MoveFocusReason.Next || e.Reason == CoreWebView2MoveFocusReason.Programmatic;
+    //    Control control = (Control)this.FindForm() ?? this.Parent;
+    //    e.Handled = control == null || control.SelectNextControl((Control)this, forward, true, true, true);
+    //    if (this._lastMoveFocusReason == CoreWebView2MoveFocusReason.Programmatic)
+    //        return;
+    //    this._coreWebView2Controller.MoveFocus(this._lastMoveFocusReason);
+    //    this._lastMoveFocusReason = CoreWebView2MoveFocusReason.Programmatic;
+    //}
 #endif
 
     /// <summary>
@@ -915,7 +881,7 @@ public partial class WebView2 : NativeControlHost, IHwndHost, ISupportInitialize
         if (OperatingSystem.IsWindows())
         {
             var hwnd = Window!.PlatformImpl.Handle.Handle;
-            IntPtr windowExW = NativeMethods.CreateWindowExW(NativeMethods.WS_EX.TRANSPARENT, "static", string.Empty, NativeMethods.WS.CLIPCHILDREN | NativeMethods.WS.VISIBLE | NativeMethods.WS.CHILD, 0, 0, 0, 0, hwnd, IntPtr.Zero, Marshal.GetHINSTANCE(typeof(NativeMethods).Module), IntPtr.Zero);
+            IntPtr windowExW = NativeMethods.CreateWindowExW(NativeMethods.WS_EX.TRANSPARENT, null, string.Empty, NativeMethods.WS.CLIPCHILDREN | NativeMethods.WS.VISIBLE | NativeMethods.WS.CHILD, 0, 0, 0, 0, hwnd, IntPtr.Zero, Marshal.GetHINSTANCE(typeof(NativeMethods).Module), IntPtr.Zero);
             if (_coreWebView2Controller != null)
                 ReparentController(windowExW);
             //if (!_hwndTaskSource.Task.IsCompleted)
@@ -1025,38 +991,16 @@ public partial class WebView2 : NativeControlHost, IHwndHost, ISupportInitialize
         Dispose();
     }
 
-    //protected virtual void OnSizeChanged() => OnSizeChanged(ToSize(Width), ToSize(Height));
-
-    //protected virtual void OnSizeChanged(Rectangle bounds)
-    //{
-    //    if (!IsInitialized || _browserCrashed)
-    //        return;
-    //    _coreWebView2Controller.Bounds = bounds;
-    //}
-
-    //protected virtual void OnSizeChanged(int width, int height)
-    //{
-    //    var bounds = new Rectangle(0, 0, width, height);
-    //    OnSizeChanged(bounds);
-    //}
-
-    internal void OnWindowPositionChanged(CefRect rect)
-        => OnWindowPositionChanged(rect.X, rect.Y, rect.Width, rect.Height);
-
-    internal void OnWindowPositionChanged(Rect rect)
-        => OnWindowPositionChanged(rect.X, rect.Y, rect.Width, rect.Height);
-
     /// <summary>
     /// This is overridden from <see cref="IHwndHost" /> and called when our control's location has changed.
     /// The HwndHost takes care of updating the HWND we created.
     /// What we need to do is move our CoreWebView2 to match the new location.
     /// </summary>
-    protected virtual void OnWindowPositionChanged(double x, double y, double width, double height)
+    protected virtual void OnWindowPositionChanged(Rectangle rectangle)
     {
 #if !DISABLE_WEBVIEW2_CORE
         if (_coreWebView2Controller != null)
         {
-            var rectangle = new Rectangle(ToSize(x), ToSize(y), ToSize(width), ToSize(height));
             _coreWebView2Controller.Bounds = rectangle;
             _coreWebView2Controller.NotifyParentWindowPositionChanged();
         }

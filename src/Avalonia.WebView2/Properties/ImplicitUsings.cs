@@ -21,7 +21,6 @@ global using System.Runtime.ConstrainedExecution;
 global using System.Windows.Interop;
 global using CefNet;
 global using CefNet.Internal;
-global using CefNet.WinApi;
 global using MS.Win32;
 global using Color = System.Drawing.Color;
 #if NET5_0_OR_GREATER

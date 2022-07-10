@@ -1,9 +1,13 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<OutputType>WinExe</OutputType>
 		<TargetFramework>net6.0-windows</TargetFramework>
 	</PropertyGroup>
+
+	<ItemGroup>
+	  <AvaloniaXaml Include="**\*.xaml" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<Compile Include="..\Avalonia.WebView2\Properties\AssemblyInfo.OS.cs">
@@ -21,14 +25,14 @@
 		<PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" />
 	</ItemGroup>
 
-	<ItemGroup>
+	<!--<ItemGroup>
 		<ProjectReference Include="..\Avalonia.WebView2\Avalonia.WebView2.csproj" />
 		<Reference Include="Microsoft.Web.WebView2.Core">
 			<HintPath>..\..\ref\Microsoft.Web.WebView2\lib\netcoreapp3.0\Microsoft.Web.WebView2.Core.dll</HintPath>
 		</Reference>
-	</ItemGroup>
+	</ItemGroup>-->
 
-	<ItemGroup>
+	<!--<ItemGroup>
 		<None Include="..\..\ref\Microsoft.Web.WebView2\runtimes\win-x64\native\WebView2Loader.dll" CopyToOutputDirectory="PreserveNewest" />
-	</ItemGroup>
+	</ItemGroup>-->
 </Project>

@@ -1,0 +1,41 @@
+<Window
+    x:Class="Avalonia.WebView2.Sample.MainWindow"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:wv2="clr-namespace:Avalonia.Controls;assembly=Avalonia.WebView2"
+    Title="Avalonia.WebView2.Sample"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
+    <Grid RowDefinitions="Auto * Auto">
+        <Grid
+            Grid.Row="0"
+            Margin="6,6,6,6"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Top">
+            <Label
+                x:Name="Title"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                FontSize="14"
+                FontWeight="Bold" />
+        </Grid>
+        <Grid Grid.Row="1" Background="BlueViolet">
+            <wv2:WebView2
+                x:Name="WebView2"
+                CreationProperties="{Binding CreationProperties}"
+                Source="https://www.bing.com" />
+        </Grid>
+        <Grid Grid.Row="2">
+            <Button
+                x:Name="Button"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Content="Debug Button"
+                FontSize="12"
+                FontWeight="Bold" />
+        </Grid>
+    </Grid>
+</Window>
