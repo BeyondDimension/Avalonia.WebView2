@@ -206,22 +206,18 @@ public partial class WebView2 : WebView2BaseType, IHwndHost, ISupportInitialize,
         {
             switch ((NativeMethods.WM)msg)
             {
-                case NativeMethods.WM.SETFOCUS:
-#if !DISABLE_WEBVIEW2_CORE
-                    if (_coreWebView2Controller != null)
-                    {
-                        _coreWebView2Controller.MoveFocus(CoreWebView2MoveFocusReason.Programmatic);
-                    }
-#endif
-                    break;
+                //                case NativeMethods.WM.SETFOCUS:
+                //#if !DISABLE_WEBVIEW2_CORE
+                //                    if (_coreWebView2Controller != null)
+                //                    {
+                //                        _coreWebView2Controller.MoveFocus(CoreWebView2MoveFocusReason.Programmatic);
+                //                    }
+                //#endif
+                //                    break;
                 case NativeMethods.WM.PAINT:
-                    if (!IsInDesignMode)
-                    {
-                        NativeMethods.BeginPaint(hwnd, out var lpPaint);
-                        NativeMethods.EndPaint(hwnd, ref lpPaint);
-                        handled = true;
-                        return IntPtr.Zero;
-                    }
+                    NativeMethods.BeginPaint(hwnd, out var lpPaint);
+                    NativeMethods.EndPaint(hwnd, ref lpPaint);
+                    handled = true;
                     break;
                     //case NativeMethods.WM.WINDOWPOSCHANGING:
                     //    break;
