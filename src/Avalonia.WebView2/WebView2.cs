@@ -48,31 +48,38 @@ public partial class WebView2 : WebView2BaseType, IHwndHost, ISupportInitialize,
         DefaultBackgroundColor = _defaultBackgroundColorDefaultValue;
     }
 
-    int ToSize(double d, bool ignoreDPI = false)
+    protected Screen? Screen
     {
-        if (!ignoreDPI)
+        get
         {
             var window = Window;
             if (window != null)
             {
                 var screen = window.Screens.ScreenFromWindow(window.PlatformImpl);
-                if (screen != null)
-                {
-                    d *= screen.PixelDensity;
-                }
+                return screen;
             }
+            return null;
+        }
+    }
+
+    protected int ToSize(double d, Screen? screen)
+    {
+        if (screen != null)
+        {
+            d *= screen.PixelDensity;
         }
         if (double.IsNaN(d) || d <= 0D) return 0;
         return Convert.ToInt32(Math.Ceiling(d));
     }
 
-    Rectangle GetBounds()
+    protected Rectangle GetBounds()
     {
         var bounds = base.Bounds;
-        int x = ToSize(bounds.X);
-        int y = ToSize(bounds.Y);
-        int w = ToSize(bounds.Width);
-        int h = ToSize(bounds.Height);
+        var screen = Screen;
+        int x = ToSize(bounds.X, screen);
+        int y = ToSize(bounds.Y, screen);
+        int w = ToSize(bounds.Width, screen);
+        int h = ToSize(bounds.Height, screen);
         return new(x, y, w, h);
     }
 
@@ -85,12 +92,13 @@ public partial class WebView2 : WebView2BaseType, IHwndHost, ISupportInitialize,
                 var point = this.TranslatePoint(new(0, 0), Window);
                 if (point.HasValue)
                 {
+                    var screen = Screen;
                     var pointValue = point.Value;
-                    int x = ToSize(pointValue.X);
-                    int y = ToSize(pointValue.Y);
+                    int x = ToSize(pointValue.X, screen);
+                    int y = ToSize(pointValue.Y, screen);
                     var bounds = base.Bounds;
-                    int w = ToSize(bounds.Width);
-                    int h = ToSize(bounds.Height);
+                    int w = ToSize(bounds.Width, screen);
+                    int h = ToSize(bounds.Height, screen);
                     return new(x, y, w, h);
                 }
             }

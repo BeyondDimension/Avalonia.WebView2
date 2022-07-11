@@ -1,6 +1,7 @@
 global using Avalonia;
 global using Avalonia.Controls;
 global using Avalonia.Controls.Platform;
+global using Avalonia.Controls.Primitives;
 global using Avalonia.Controls.ApplicationLifetimes;
 global using Avalonia.VisualTree;
 global using Avalonia.Platform;

@@ -10,7 +10,7 @@
 			This package is necessary for Avalonia applications. To learn more about package versions checkout https://aka.ms/wv2-packageversion. To learn best practices checkout: https://aka.ms/wv2-bestpractices.
 		</Description>
 		<PackageTags>Web WebView Native native package Edge avalonia avaloniaui dotnet framework core Webview2</PackageTags>
-		<Version>1.0.1264.42-preview.220711.5</Version>
+		<Version>1.0.1264.42-preview.220711.6</Version>
 		<GenerateAssemblyInfo>true</GenerateAssemblyInfo>
 	</PropertyGroup>
 
@@ -24,22 +24,16 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<AvaloniaXaml Include="**\*.xaml" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="Avalonia" />
 		<PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="all" />
 	</ItemGroup>
 
-	<ItemGroup Condition=" $(TargetFramework.StartsWith('net4')) ">
+	<ItemGroup Condition=" $(TargetFramework.StartsWith('net4')) OR $(TargetFramework.StartsWith('netcoreapp')) OR $(TargetFramework.StartsWith('net5')) OR $(TargetFramework.StartsWith('net6')) ">
 		<PackageReference Include="WebView2.NativeAssets.Win32" />
-		<!--<Reference Include="Microsoft.Web.WebView2.Core">
-			<HintPath>..\..\ref\Microsoft.Web.WebView2\lib\net45\Microsoft.Web.WebView2.Core.dll</HintPath>
-		</Reference>-->
-	</ItemGroup>
-
-	<ItemGroup Condition=" $(TargetFramework.StartsWith('netcoreapp')) OR $(TargetFramework.StartsWith('net5')) OR $(TargetFramework.StartsWith('net6')) ">
-		<PackageReference Include="WebView2.NativeAssets.Win32" />
-		<!--<Reference Include="Microsoft.Web.WebView2.Core">
-			<HintPath>..\..\ref\Microsoft.Web.WebView2\lib\netcoreapp3.0\Microsoft.Web.WebView2.Core.dll</HintPath>
-		</Reference>-->
 	</ItemGroup>
 
 </Project>

@@ -9,15 +9,15 @@
     d:DesignWidth="800"
     mc:Ignorable="d">
     <Grid>
-        <wv2:WebView2
-            x:Name="WebView2"
-            Fill="Violet"
-            Source="https://www.bing.com" />
         <TextBlock
             x:Name="TextBlock"
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
             FontSize="24"
             Text="Loading…" />
+        <wv2:WebView2
+            x:Name="WebView2"
+            Fill="Violet"
+            Source="https://www.bing.com" />
     </Grid>
 </UserControl>

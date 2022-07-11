@@ -3,13 +3,12 @@ namespace Avalonia.WebView2.Sample;
 public partial class MainWindow : Window
 {
     readonly Button Button;
-    readonly AvaloniaWebView2 WebView2;
     readonly WebView2Compat WebView2Compat;
     readonly new Label Title;
     readonly TextBox UrlTextBox;
     readonly TextBlock AboutTextBlock;
 
-    public AvaloniaWebView2? WebView => WebView2 ?? WebView2Compat?.WebView2;
+    AvaloniaWebView2? WebView => WebView2Compat?.WebView2;
 
     public CoreWebView2Environment? Environment { get; }
 
@@ -21,7 +20,6 @@ public partial class MainWindow : Window
         this.AttachDevTools();
 #endif
         Title = this.FindControl<Label>("Title");
-        WebView2 = this.FindControl<AvaloniaWebView2>("WebView2");
         WebView2Compat = this.FindControl<WebView2Compat>("WebView2Compat");
         Button = this.FindControl<Button>("Button");
         UrlTextBox = this.FindControl<TextBox>("UrlTextBox");
