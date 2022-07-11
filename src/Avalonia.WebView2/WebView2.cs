@@ -179,6 +179,7 @@ public partial class WebView2 : WebView2BaseType, IHwndHost, ISupportInitialize,
             CoreWebView2.SourceChanged -= new EventHandler<CoreWebView2SourceChangedEventArgs>(CoreWebView2_SourceChanged);
             CoreWebView2.WebMessageReceived -= new EventHandler<CoreWebView2WebMessageReceivedEventArgs>(CoreWebView2_WebMessageReceived);
             CoreWebView2.ContentLoading -= new EventHandler<CoreWebView2ContentLoadingEventArgs>(CoreWebView2_ContentLoading);
+            CoreWebView2.DOMContentLoaded -= new EventHandler<CoreWebView2DOMContentLoadedEventArgs>(CoreWebView2_DOMContentLoaded);
             CoreWebView2.ProcessFailed -= new EventHandler<CoreWebView2ProcessFailedEventArgs>(CoreWebView2_ProcessFailed);
             _coreWebView2Controller!.ZoomFactorChanged -= new EventHandler<object>(CoreWebView2Controller_ZoomFactorChanged);
             //_coreWebView2Controller.MoveFocusRequested -= new EventHandler<CoreWebView2MoveFocusRequestedEventArgs>(CoreWebView2Controller_MoveFocusRequested);
@@ -372,7 +373,7 @@ public partial class WebView2 : WebView2BaseType, IHwndHost, ISupportInitialize,
             sender._coreWebView2Controller.ZoomFactor = sender._zoomFactor;
             sender._coreWebView2Controller.DefaultBackgroundColor = sender._defaultBackgroundColor;
             OnBoundsChanged(EventArgs.Empty);
-            sender._coreWebView2Controller.IsVisible = false;
+            sender._coreWebView2Controller.IsVisible = IsVisible;
             try
             {
                 sender._coreWebView2Controller.AllowExternalDrop = sender._allowExternalDrop;
@@ -388,6 +389,7 @@ public partial class WebView2 : WebView2BaseType, IHwndHost, ISupportInitialize,
             sender.CoreWebView2.SourceChanged += new EventHandler<CoreWebView2SourceChangedEventArgs>(sender.CoreWebView2_SourceChanged);
             sender.CoreWebView2.WebMessageReceived += new EventHandler<CoreWebView2WebMessageReceivedEventArgs>(sender.CoreWebView2_WebMessageReceived);
             sender.CoreWebView2.ContentLoading += new EventHandler<CoreWebView2ContentLoadingEventArgs>(sender.CoreWebView2_ContentLoading);
+            sender.CoreWebView2.DOMContentLoaded += new EventHandler<CoreWebView2DOMContentLoadedEventArgs>(sender.CoreWebView2_DOMContentLoaded);
             sender.CoreWebView2.ProcessFailed += new EventHandler<CoreWebView2ProcessFailedEventArgs>(sender.CoreWebView2_ProcessFailed);
             if (sender.Focusable)
                 sender._coreWebView2Controller.MoveFocus(CoreWebView2MoveFocusReason.Programmatic);
@@ -839,6 +841,8 @@ public partial class WebView2 : WebView2BaseType, IHwndHost, ISupportInitialize,
     /// </summary>
     /// <seealso cref="E:Microsoft.Web.WebView2.Core.CoreWebView2.ContentLoading" />
     public event EventHandler<CoreWebView2ContentLoadingEventArgs>? ContentLoading;
+
+    public event EventHandler<CoreWebView2DOMContentLoadedEventArgs>? DOMContentLoaded;
 #endif
 
     /// <summary>
@@ -884,8 +888,15 @@ public partial class WebView2 : WebView2BaseType, IHwndHost, ISupportInitialize,
 
     void CoreWebView2_ContentLoading(object? sender, CoreWebView2ContentLoadingEventArgs e)
     {
-        if (_coreWebView2Controller != null && !_coreWebView2Controller.IsVisible) _coreWebView2Controller.IsVisible = true;
         var contentLoading = ContentLoading;
+        if (contentLoading == null)
+            return;
+        contentLoading(this, e);
+    }
+
+    void CoreWebView2_DOMContentLoaded(object? sender, CoreWebView2DOMContentLoadedEventArgs e)
+    {
+        var contentLoading = DOMContentLoaded;
         if (contentLoading == null)
             return;
         contentLoading(this, e);
