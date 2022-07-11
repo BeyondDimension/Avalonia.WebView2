@@ -8,5 +8,13 @@
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
-    <wv2:WebView2 x:Name="WebView2" Source="https://www.bing.com" />
+    <Grid>
+        <wv2:WebView2 x:Name="WebView2" Source="https://www.bing.com" />
+        <TextBlock
+            x:Name="TextBlock"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            FontSize="24"
+            Text="Loading…" />
+    </Grid>
 </UserControl>

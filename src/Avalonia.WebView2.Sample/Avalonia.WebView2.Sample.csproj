@@ -27,6 +27,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\Avalonia.Ref\Avalonia.Desktop\Avalonia.Desktop.csproj" />
+		<ProjectReference Include="..\Avalonia.Ref\Avalonia.Native\Avalonia.Native.csproj" />
+		<ProjectReference Include="..\Avalonia.Ref\Avalonia.X11\Avalonia.X11.csproj" />
 		<ProjectReference Include="..\Avalonia.WebView2\Avalonia.WebView2.csproj" />
 	</ItemGroup>
 

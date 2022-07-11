@@ -1,4 +1,6 @@
 using Avalonia.Media.Immutable;
+using AvaloniaColor = Avalonia.Media.Color;
+using WebView2BaseType = Avalonia.Controls.Shapes.Rectangle;
 
 namespace Avalonia.Controls;
 
@@ -6,8 +8,35 @@ namespace Avalonia.Controls;
 /// The Microsoft Edge WebView2 control allows you to embed web technologies (HTML, CSS, and JavaScript) in your native apps. The WebView2 control uses Microsoft Edge as the rendering engine to display the web content in native apps.
 /// With WebView2, you can embed web code in different parts of your native app, or build all of the native app within a single WebView2 instance.
 /// </summary>
-public partial class WebView2 : NativeControlHost, IHwndHost, ISupportInitialize, IDisposable
+public partial class WebView2 : WebView2BaseType, IHwndHost, ISupportInitialize, IDisposable
 {
+    public static bool IsSupported { get; private set; }
+
+    public static string? VersionString { get; private set; }
+
+    static WebView2()
+    {
+#if !DISABLE_WEBVIEW2_CORE
+#if !WINDOWS
+        if (OperatingSystem.IsWindows())
+#endif
+        {
+            try
+            {
+                VersionString = CoreWebView2Environment.GetAvailableBrowserVersionString();
+                if (!string.IsNullOrEmpty(VersionString)) IsSupported = true;
+            }
+            catch (WebView2RuntimeNotFoundException)
+            {
+                // Exception Info: Microsoft.Web.WebView2.Core.WebView2RuntimeNotFoundException: Couldn't find a compatible Webview2 Runtime installation to host WebViews.
+                // ---> System.IO.FileNotFoundException: 系统找不到指定的文件。 (0x80070002)
+                // --- End of inner exception stack trace ---
+                // at Microsoft.Web.WebView2.Core.CoreWebView2Environment.CreateAsync(String browserExecutableFolder, String userDataFolder, CoreWebView2EnvironmentOptions options)
+            }
+        }
+#endif
+    }
+
     public WebView2()
     {
         if (IsInDesignMode)
@@ -17,6 +46,8 @@ public partial class WebView2 : NativeControlHost, IHwndHost, ISupportInitialize
 
         this.GetPropertyChangedObservable(IsVisibleProperty).Subscribe(IsVisibleChanged);
         this.GetPropertyChangedObservable(BoundsProperty).Subscribe(OnBoundsChanged);
+
+        DefaultBackgroundColor = _defaultBackgroundColorDefaultValue;
     }
 
     int ToSize(double d, bool ignoreDPI = false)
@@ -104,7 +135,8 @@ public partial class WebView2 : NativeControlHost, IHwndHost, ISupportInitialize
 #endif
     bool _allowExternalDrop = true;
     double _zoomFactor = 1.0;
-    Color _defaultBackgroundColor = Color.White;
+    static readonly Color _defaultBackgroundColorDefaultValue = Color.White;
+    Color _defaultBackgroundColor;
     Uri? _source;
     bool _browserCrashed;
     readonly ImplicitInitGate _implicitInitGate = new();
@@ -112,7 +144,6 @@ public partial class WebView2 : NativeControlHost, IHwndHost, ISupportInitialize
     public override void Render(DrawingContext context)
     {
         base.Render(context);
-        //context.DrawRectangle(new Media.Pen(new ImmutableSolidColorBrush(Avalonia.Media.Color.FromArgb(_defaultBackgroundColor.A, _defaultBackgroundColor.R, _defaultBackgroundColor.G, _defaultBackgroundColor.B))), base.Bounds);
         _implicitInitGate.OnSynchronizationContextExists();
     }
 
@@ -302,6 +333,7 @@ public partial class WebView2 : NativeControlHost, IHwndHost, ISupportInitialize
     /// <remarks>All the event handlers added here need to be removed in <see cref="M:Avalonia.Controls.WebView2.Dispose(System.Boolean)" />.</remarks>
     async Task InitCoreWebView2Async(CoreWebView2Environment? environment = null, CoreWebView2ControllerOptions? controllerOptions = null)
     {
+        if (!IsSupported) return;
         WebView2 sender = this;
         try
         {
@@ -327,7 +359,7 @@ public partial class WebView2 : NativeControlHost, IHwndHost, ISupportInitialize
             }
             else if (sender.CreationProperties != null)
                 sender.ControllerOptions = sender.CreationProperties.CreateCoreWebView2ControllerOptions(sender.Environment);
-            if (sender._defaultBackgroundColor != Color.White)
+            if (sender._defaultBackgroundColor != _defaultBackgroundColorDefaultValue)
                 System.Environment.SetEnvironmentVariable("WEBVIEW2_DEFAULT_BACKGROUND_COLOR", Color.FromArgb(sender.DefaultBackgroundColor.ToArgb()).Name);
             if (sender.ControllerOptions != null)
             {
@@ -344,7 +376,7 @@ public partial class WebView2 : NativeControlHost, IHwndHost, ISupportInitialize
             sender._coreWebView2Controller.ZoomFactor = sender._zoomFactor;
             sender._coreWebView2Controller.DefaultBackgroundColor = sender._defaultBackgroundColor;
             OnBoundsChanged(EventArgs.Empty);
-            sender._coreWebView2Controller.IsVisible = sender.IsVisible;
+            sender._coreWebView2Controller.IsVisible = false;
             try
             {
                 sender._coreWebView2Controller.AllowExternalDrop = sender._allowExternalDrop;
@@ -639,6 +671,7 @@ public partial class WebView2 : NativeControlHost, IHwndHost, ISupportInitialize
                 _coreWebView2Controller.DefaultBackgroundColor = value;
             else
                 _defaultBackgroundColor = value;
+            Fill = new ImmutableSolidColorBrush(AvaloniaColor.FromArgb(_defaultBackgroundColor.A, _defaultBackgroundColor.R, _defaultBackgroundColor.G, _defaultBackgroundColor.B));
         }
     }
 #else
@@ -855,6 +888,7 @@ public partial class WebView2 : NativeControlHost, IHwndHost, ISupportInitialize
 
     void CoreWebView2_ContentLoading(object? sender, CoreWebView2ContentLoadingEventArgs e)
     {
+        if (_coreWebView2Controller != null && !_coreWebView2Controller.IsVisible) _coreWebView2Controller.IsVisible = true;
         var contentLoading = ContentLoading;
         if (contentLoading == null)
             return;
@@ -881,16 +915,6 @@ public partial class WebView2 : NativeControlHost, IHwndHost, ISupportInitialize
 #endif
 
     readonly TaskCompletionSource<IntPtr> _hwndTaskSource = new();
-
-    protected override IPlatformHandle CreateNativeControlCore(IPlatformHandle parent)
-    {
-        return new PlatformHandle(IntPtr.Zero, null);
-    }
-
-    protected override void DestroyNativeControlCore(IPlatformHandle control)
-    {
-        base.DestroyNativeControlCore(control);
-    }
 
     protected Window? Window { get; set; }
 

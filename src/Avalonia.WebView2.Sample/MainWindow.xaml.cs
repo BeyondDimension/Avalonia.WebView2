@@ -1,6 +1,3 @@
-using Avalonia.Markup.Xaml;
-using AvaloniaWebView2 = Avalonia.Controls.WebView2;
-
 namespace Avalonia.WebView2.Sample;
 
 public partial class MainWindow : Window
@@ -9,8 +6,11 @@ public partial class MainWindow : Window
     readonly AvaloniaWebView2 WebView2;
     readonly WebView2Compat WebView2Compat;
     readonly new Label Title;
+    readonly TextBox UrlTextBox;
 
-    public CoreWebView2Environment Environment { get; }
+    public AvaloniaWebView2? WebView => WebView2 ?? WebView2Compat?.WebView2;
+
+    public CoreWebView2Environment? Environment { get; }
 
     public MainWindow()
     {
@@ -23,25 +23,44 @@ public partial class MainWindow : Window
         WebView2 = this.FindControl<AvaloniaWebView2>("WebView2");
         WebView2Compat = this.FindControl<WebView2Compat>("WebView2Compat");
         Button = this.FindControl<Button>("Button");
+        UrlTextBox = this.FindControl<TextBox>("UrlTextBox");
 
         Button.Click += Button_Click;
-        Environment = AvaloniaWebView2.DefaultCreationProperties!.CreateEnvironmentAsync().GetAwaiter().GetResult();
-        Environment.ProcessInfosChanged += Environment_ProcessInfosChanged;
-        SetTitle(Environment.BrowserVersionString);
+        if (AvaloniaWebView2.IsSupported)
+        {
+            UrlTextBox.KeyDown += UrlTextBox_KeyDown;
+            Environment = AvaloniaWebView2.DefaultCreationProperties!.CreateEnvironmentAsync().GetAwaiter().GetResult();
+            Environment.ProcessInfosChanged += Environment_ProcessInfosChanged;
+            SetTitle(Environment.BrowserVersionString);
+        }
+        else
+        {
+            SetTitle(null);
+        }
     }
+
+    void UrlTextBox_KeyDown(object? sender, KeyEventArgs e)
+    {
+        if (e.Key == Key.Enter)
+        {
+            var url = UrlTextBox.Text;
+            if (!IsHttpUrl(url)) url = $"{Prefix_HTTPS}{url}";
+            WebView?.CoreWebView2?.Navigate(url);
+        }
+    }
+
+    const string Prefix_HTTPS = "https://";
+    const string Prefix_HTTP = "http://";
+
+    static bool IsHttpUrl([NotNullWhen(true)] string? url, bool httpsOnly = false) => url != null &&
+       (url.StartsWith(Prefix_HTTPS, StringComparison.OrdinalIgnoreCase) ||
+             (!httpsOnly && url.StartsWith(Prefix_HTTP, StringComparison.OrdinalIgnoreCase)));
 
     const Architecture Unknown = (Architecture)int.MinValue;
 
-    static string GetTitle(string browserVersion, Architecture architecture = Unknown)
-    {
-        if (architecture != Unknown)
-        {
-            return $"Microsoft Edge WebView2 {browserVersion} {architecture} for Avalonia on {System.Environment.OSVersion.VersionString}";
-        }
-        return $"Microsoft Edge WebView2 {browserVersion} for Avalonia on {System.Environment.OSVersion.VersionString}";
-    }
+    static string GetTitle(string? browserVersion, Architecture architecture = Unknown) => $"Microsoft Edge WebView2{(string.IsNullOrEmpty(browserVersion) ? null : $" {browserVersion}")}{(architecture == Unknown ? null : $" {architecture}")} for Avalonia on {System.Environment.OSVersion.VersionString}";
 
-    void SetTitle(string browserVersion, Architecture architecture = Unknown) => Title.Content = base.Title = GetTitle(browserVersion, architecture);
+    void SetTitle(string? browserVersion, Architecture architecture = Unknown) => Title.Content = base.Title = GetTitle(browserVersion, architecture);
 
     void InitializeComponent()
     {
@@ -50,7 +69,7 @@ public partial class MainWindow : Window
 
     void Environment_ProcessInfosChanged(object? sender, object e)
     {
-        var processInfos = Environment.GetProcessInfos();
+        var processInfos = Environment!.GetProcessInfos();
         foreach (var processInfo in processInfos)
         {
             try
@@ -78,7 +97,7 @@ public partial class MainWindow : Window
     void Button_Click(object? sender, RoutedEventArgs e)
     {
 #if DEBUG
-        (WebView2 ?? WebView2Compat?.WebView2)?.Test();
+        WebView?.Test();
 #endif
     }
 
