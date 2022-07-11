@@ -11,4 +11,8 @@ Microsoft Edge WebView2 控件允许在本机应用中嵌入 web 技术(HTML、C
 
 使用 WebView2 可以在本机应用的不同部分嵌入 Web 代码，或在单个 WebView2 实例中生成所有本机应用。
 
-<img src="https://docs.microsoft.com/zh-cn/microsoft-edge/webview2/media/webview2/what-webview.png" />
+![应用示意图，其中本机 UI 区域位于左上角，WebView2 UI 区域位于右上角底部。](https://docs.microsoft.com/zh-cn/microsoft-edge/webview2/media/webview2/what-webview.png)
+
+## Screenshots
+![Win11 Sample Screenshot](https://raw.githubusercontent.com/BeyondDimension/Avalonia.WebView2/main/res/screenshots/Avalonia.WebView2.Sample.Win11.webp)  
+![Win7 Sample Screenshot](https://raw.githubusercontent.com/BeyondDimension/Avalonia.WebView2/main/res/screenshots/Avalonia.WebView2.Sample.Win7.webp)
