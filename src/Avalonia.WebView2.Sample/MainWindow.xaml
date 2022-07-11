@@ -10,27 +10,34 @@
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
-    <Grid RowDefinitions="Auto Auto * Auto">
-        <Label
-            x:Name="Title"
-            Grid.Row="0"
-            Margin="6,6,6,6"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"
-            FontSize="14"
-            FontWeight="Bold" />
-        <TextBox
-            x:Name="UrlTextBox"
-            Grid.Row="1"
-            Watermark="Enter the URL address and press enter to navigate" />
-        <local:WebView2Compat x:Name="WebView2Compat" Grid.Row="2" />
-        <Button
-            x:Name="Button"
-            Grid.Row="3"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"
-            Content="Debug Button"
-            FontSize="12"
-            FontWeight="Bold" />
-    </Grid>
+    <TabControl>
+        <TabItem VerticalContentAlignment="Center" Header="WebView2">
+            <Grid RowDefinitions="Auto Auto * Auto">
+                <Label
+                    x:Name="Title"
+                    Grid.Row="0"
+                    Margin="6,6,6,6"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    FontSize="14"
+                    FontWeight="Bold" />
+                <TextBox
+                    x:Name="UrlTextBox"
+                    Grid.Row="1"
+                    Watermark="Enter the URL address and press enter to navigate" />
+                <local:WebView2Compat x:Name="WebView2Compat" Grid.Row="2" />
+                <Button
+                    x:Name="Button"
+                    Grid.Row="3"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Content="Debug Button"
+                    FontSize="12"
+                    FontWeight="Bold" />
+            </Grid>
+        </TabItem>
+        <TabItem VerticalContentAlignment="Center" Header="About">
+            <TextBlock x:Name="AboutTextBlock" Text="" />
+        </TabItem>
+    </TabControl>
 </Window>

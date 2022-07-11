@@ -10,7 +10,8 @@
 			This package is necessary for Avalonia applications. To learn more about package versions checkout https://aka.ms/wv2-packageversion. To learn best practices checkout: https://aka.ms/wv2-bestpractices.
 		</Description>
 		<PackageTags>Web WebView Native native package Edge avalonia avaloniaui dotnet framework core Webview2</PackageTags>
-		<Version>1.0.1264.42-preview.220711.4</Version>
+		<Version>1.0.1264.42-preview.220711.5</Version>
+		<GenerateAssemblyInfo>true</GenerateAssemblyInfo>
 	</PropertyGroup>
 
 	<PropertyGroup Condition=" '$(Configuration)'=='Release' ">

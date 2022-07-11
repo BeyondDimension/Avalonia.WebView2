@@ -7,6 +7,7 @@ public partial class MainWindow : Window
     readonly WebView2Compat WebView2Compat;
     readonly new Label Title;
     readonly TextBox UrlTextBox;
+    readonly TextBlock AboutTextBlock;
 
     public AvaloniaWebView2? WebView => WebView2 ?? WebView2Compat?.WebView2;
 
@@ -24,7 +25,9 @@ public partial class MainWindow : Window
         WebView2Compat = this.FindControl<WebView2Compat>("WebView2Compat");
         Button = this.FindControl<Button>("Button");
         UrlTextBox = this.FindControl<TextBox>("UrlTextBox");
+        AboutTextBlock = this.FindControl<TextBlock>("AboutTextBlock");
 
+        AboutTextBlock.Text = $"OSArchitecture: {RuntimeInformation.OSArchitecture}{System.Environment.NewLine}ProcessArchitecture: {RuntimeInformation.ProcessArchitecture}{System.Environment.NewLine}Avalonia: {GetVersion(typeof(Window).Assembly)}{System.Environment.NewLine}Avalonia.WebView2: {GetVersion(typeof(AvaloniaWebView2).Assembly)}{System.Environment.NewLine}Microsoft.Web.WebView2.Core: {GetVersion(typeof(CoreWebView2).Assembly)}";
         Button.Click += Button_Click;
         if (AvaloniaWebView2.IsSupported)
         {
@@ -36,6 +39,27 @@ public partial class MainWindow : Window
         else
         {
             SetTitle(null);
+        }
+    }
+
+    static string? GetVersion(Assembly assembly)
+    {
+        try
+        {
+            var attr = assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>();
+            if (attr != null)
+                return attr.InformationalVersion;
+            var attr2 = assembly.GetCustomAttribute<AssemblyFileVersionAttribute>();
+            if (attr2 != null)
+                return attr2.Version;
+            var attr3 = assembly.GetCustomAttribute<AssemblyVersionAttribute>();
+            if (attr3 != null)
+                return attr3.Version;
+            return null;
+        }
+        catch (Exception e)
+        {
+            return e.ToString();
         }
     }
 

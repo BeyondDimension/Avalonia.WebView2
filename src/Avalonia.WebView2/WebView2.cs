@@ -1,5 +1,3 @@
-using Avalonia.Media.Immutable;
-using AvaloniaColor = Avalonia.Media.Color;
 using WebView2BaseType = Avalonia.Controls.Shapes.Rectangle;
 
 namespace Avalonia.Controls;
@@ -140,12 +138,6 @@ public partial class WebView2 : WebView2BaseType, IHwndHost, ISupportInitialize,
     Uri? _source;
     bool _browserCrashed;
     readonly ImplicitInitGate _implicitInitGate = new();
-
-    public override void Render(DrawingContext context)
-    {
-        base.Render(context);
-        _implicitInitGate.OnSynchronizationContextExists();
-    }
 
     protected virtual void Dispose(bool disposing)
     {
@@ -918,17 +910,49 @@ public partial class WebView2 : WebView2BaseType, IHwndHost, ISupportInitialize,
     {
         if (e.Root is Window window)
         {
-            Window = window;
-            _hwndTaskSource.TrySetResult(window.PlatformImpl.Handle.Handle);
+            var prevWindow = Window;
+            var isSameWindow = prevWindow == window;
+            if (prevWindow != null)
+            {
+                if (!isSameWindow)
+                {
+                    prevWindow.Closed -= Window_Closed;
+                }
+            }
+            if (!isSameWindow)
+            {
+                // Different windows cannot be reinitialized successfully
+                Window = window;
+                Window.Closed += Window_Closed;
+                _hwndTaskSource.TrySetResult(window.PlatformImpl.Handle.Handle);
+                _implicitInitGate.OnSynchronizationContextExists();
+            }
         }
+#if !DISABLE_WEBVIEW2_CORE
+        if (_coreWebView2Controller != null)
+        {
+            if (!_coreWebView2Controller.IsVisible)
+                _coreWebView2Controller.IsVisible = true;
+        }
+#endif
         base.OnAttachedToVisualTree(e);
+    }
+
+    void Window_Closed(object? sender, EventArgs e)
+    {
+        Dispose();
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
-        Window = null;
-        Dispose();
+#if !DISABLE_WEBVIEW2_CORE
+        if (_coreWebView2Controller != null)
+        {
+            if (_coreWebView2Controller.IsVisible)
+                _coreWebView2Controller.IsVisible = false;
+        }
+#endif
     }
 
     /// <summary>
