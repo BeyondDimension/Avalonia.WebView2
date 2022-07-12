@@ -149,6 +149,7 @@ public partial class WebView2 : WebView2BaseType, IHwndHost, ISupportInitialize,
     static readonly Color _defaultBackgroundColorDefaultValue = Color.White;
     Color _defaultBackgroundColor;
     Uri? _source;
+    string? _htmlSource;
     bool _browserCrashed;
     readonly ImplicitInitGate _implicitInitGate = new();
 
@@ -158,8 +159,7 @@ public partial class WebView2 : WebView2BaseType, IHwndHost, ISupportInitialize,
         {
             if (disposing)
             {
-                if (IsInitialized)
-                    UnsubscribeHandlersAndCloseController();
+                UnsubscribeHandlersAndCloseController();
             }
 
             disposedValue = true;
@@ -174,7 +174,6 @@ public partial class WebView2 : WebView2BaseType, IHwndHost, ISupportInitialize,
 
     void UnsubscribeHandlersAndCloseController(bool browserCrashed = false)
     {
-        IsInitialized = false;
         _browserCrashed = browserCrashed;
         if (!_browserCrashed)
         {
@@ -397,14 +396,17 @@ public partial class WebView2 : WebView2BaseType, IHwndHost, ISupportInitialize,
             sender.CoreWebView2.ProcessFailed += new EventHandler<CoreWebView2ProcessFailedEventArgs>(sender.CoreWebView2_ProcessFailed);
             if (sender.Focusable)
                 sender._coreWebView2Controller.MoveFocus(CoreWebView2MoveFocusReason.Programmatic);
-            int num = sender._source != null ? 1 : 0;
-            if (sender._source == null)
-                sender._source = new Uri(sender.CoreWebView2.Source);
-            sender.IsInitialized = true;
+
             sender.CoreWebView2InitializationCompleted?.Invoke(sender, new CoreWebView2InitializationCompletedEventArgs());
-            if (num == 0)
-                return;
-            sender.CoreWebView2.Navigate(sender._source.AbsoluteUri);
+
+            if (sender._source != null)
+            {
+                sender.CoreWebView2.Navigate(sender._source.AbsoluteUri);
+            }
+            else if (sender._htmlSource != null)
+            {
+                sender.CoreWebView2.NavigateToString(sender._htmlSource);
+            }
         }
         catch (Exception ex)
         {
@@ -478,7 +480,7 @@ public partial class WebView2 : WebView2BaseType, IHwndHost, ISupportInitialize,
     protected override void OnGotFocus(GotFocusEventArgs e)
     {
         base.OnGotFocus(e);
-        if (IsInitialized)
+        if (_coreWebView2Controller != null)
         {
             if (!_browserCrashed)
             {
@@ -499,11 +501,6 @@ public partial class WebView2 : WebView2BaseType, IHwndHost, ISupportInitialize,
         _lastMoveFocusReason = CoreWebView2MoveFocusReason.Programmatic;
 #endif
     }
-
-    /// <summary>
-    /// True if initialization finished successfully and the control is not disposed yet.
-    /// </summary>
-    protected new bool IsInitialized { get; set; }
 
 #if !DISABLE_WEBVIEW2_CORE
     /// <summary>
@@ -608,9 +605,41 @@ public partial class WebView2 : WebView2BaseType, IHwndHost, ISupportInitialize,
                 }
                 if (_source == null || _source.AbsoluteUri != value.AbsoluteUri)
                 {
+                    _htmlSource = null;
                     SetAndRaise(SourceProperty, ref _source, value);
 #if !DISABLE_WEBVIEW2_CORE
                     if (CoreWebView2 != null) CoreWebView2.Navigate(value.AbsoluteUri);
+#endif
+                }
+#if !DISABLE_WEBVIEW2_CORE
+                _implicitInitGate.RunWhenOpen(() => EnsureCoreWebView2Async());
+#endif
+            }
+        }
+    }
+
+    [Browsable(true)]
+    public string? HtmlSource
+    {
+        get => _htmlSource;
+        set
+        {
+            if (value == null)
+            {
+                if (_htmlSource == null)
+                {
+                    return;
+                }
+                throw new NotImplementedException("The HtmlSource property cannot be set to null.");
+            }
+            else
+            {
+                if (_htmlSource == null || _htmlSource != value)
+                {
+                    _source = null;
+                    SetAndRaise(HtmlSourceProperty, ref _htmlSource, value);
+#if !DISABLE_WEBVIEW2_CORE
+                    if (CoreWebView2 != null) CoreWebView2.NavigateToString(value);
 #endif
                 }
 #if !DISABLE_WEBVIEW2_CORE
@@ -689,13 +718,14 @@ public partial class WebView2 : WebView2BaseType, IHwndHost, ISupportInitialize,
     /// <seealso cref="M:Microsoft.Web.WebView2.Core.CoreWebView2.ExecuteScriptAsync(System.String)" />
     public async Task<string> ExecuteScriptAsync(string script)
     {
-        VerifyInitializedGuard();
         VerifyBrowserNotCrashedGuard();
 #if !DISABLE_WEBVIEW2_CORE
-        return await CoreWebView2!.ExecuteScriptAsync(script);
-#else
-        return await Task.FromResult(string.Empty);
+        if (CoreWebView2 != null)
+        {
+            return await CoreWebView2.ExecuteScriptAsync(script);
+        }
 #endif
+        return await Task.FromResult(string.Empty);
     }
 
     /// <summary>
@@ -707,10 +737,12 @@ public partial class WebView2 : WebView2BaseType, IHwndHost, ISupportInitialize,
     /// <seealso cref="M:Microsoft.Web.WebView2.Core.CoreWebView2.Reload" />
     public void Reload()
     {
-        VerifyInitializedGuard();
         VerifyBrowserNotCrashedGuard();
 #if !DISABLE_WEBVIEW2_CORE
-        CoreWebView2!.Reload();
+        if (CoreWebView2 != null)
+        {
+            CoreWebView2!.Reload();
+        }
 #endif
     }
 
@@ -750,10 +782,12 @@ public partial class WebView2 : WebView2BaseType, IHwndHost, ISupportInitialize,
     /// <seealso cref="M:Microsoft.Web.WebView2.Core.CoreWebView2.NavigateToString(System.String)" />
     public void NavigateToString(string htmlContent)
     {
-        VerifyInitializedGuard();
         VerifyBrowserNotCrashedGuard();
 #if !DISABLE_WEBVIEW2_CORE
-        CoreWebView2!.NavigateToString(htmlContent);
+        if (CoreWebView2 != null)
+        {
+            CoreWebView2.NavigateToString(htmlContent);
+        }
 #endif
     }
 
@@ -769,12 +803,6 @@ public partial class WebView2 : WebView2BaseType, IHwndHost, ISupportInitialize,
 #else
     { }
 #endif
-
-    void VerifyInitializedGuard()
-    {
-        if (!IsInitialized)
-            throw new InvalidOperationException("The instance of CoreWebView2 is uninitialized and unable to complete this operation. See EnsureCoreWebView2Async.");
-    }
 
 #if !DISABLE_WEBVIEW2_CORE
     void VerifyNotClosedGuard()

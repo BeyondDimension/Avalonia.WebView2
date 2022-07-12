@@ -17,6 +17,8 @@ partial class WebView2
     /// </summary>
     public static readonly DirectProperty<WebView2, Uri?> SourceProperty = AvaloniaProperty.RegisterDirect<WebView2, Uri?>(nameof(Source), x => x._source, (x, y) => x.Source = y);
 
+    public static readonly DirectProperty<WebView2, string?> HtmlSourceProperty = AvaloniaProperty.RegisterDirect<WebView2, string?>(nameof(HtmlSource), x => x._htmlSource, (x, y) => x.HtmlSource = y);
+
     /// <summary>
     /// The <see cref="AvaloniaProperty" /> which backs the <see cref="CanGoBack" /> property.
     /// </summary>
