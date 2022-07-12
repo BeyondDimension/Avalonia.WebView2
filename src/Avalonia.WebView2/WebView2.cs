@@ -12,7 +12,7 @@ public partial class WebView2 : WebView2BaseType, IHwndHost, ISupportInitialize,
 
     public static string? VersionString { get; private set; }
 
-    static WebView2()
+    public static void RefreshIsSupported()
     {
 #if !DISABLE_WEBVIEW2_CORE
 #if !WINDOWS
@@ -33,6 +33,11 @@ public partial class WebView2 : WebView2BaseType, IHwndHost, ISupportInitialize,
             }
         }
 #endif
+    }
+
+    static WebView2()
+    {
+        RefreshIsSupported();
     }
 
     public WebView2()
@@ -294,8 +299,8 @@ public partial class WebView2 : WebView2BaseType, IHwndHost, ISupportInitialize,
     /// </exception>
     public Task EnsureCoreWebView2Async(CoreWebView2Environment? environment = null, CoreWebView2ControllerOptions? controllerOptions = null)
     {
-        if (IsInDesignMode)
-            return Task.FromResult(0);
+        if (IsInDesignMode || !IsSupported)
+            return Task.CompletedTask;
         VerifyNotClosedGuard();
         VerifyBrowserNotCrashedGuard();
         if (!CheckAccess())
@@ -330,7 +335,6 @@ public partial class WebView2 : WebView2BaseType, IHwndHost, ISupportInitialize,
     /// <remarks>All the event handlers added here need to be removed in <see cref="M:Avalonia.Controls.WebView2.Dispose(System.Boolean)" />.</remarks>
     async Task InitCoreWebView2Async(CoreWebView2Environment? environment = null, CoreWebView2ControllerOptions? controllerOptions = null)
     {
-        if (!IsSupported) return;
         WebView2 sender = this;
         try
         {

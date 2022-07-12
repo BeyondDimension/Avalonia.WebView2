@@ -10,7 +10,7 @@
 			This package is necessary for Avalonia applications. To learn more about package versions checkout https://aka.ms/wv2-packageversion. To learn best practices checkout: https://aka.ms/wv2-bestpractices.
 		</Description>
 		<PackageTags>Web WebView Native native package Edge avalonia avaloniaui dotnet framework core Webview2</PackageTags>
-		<Version>1.0.1264.42-preview.220711.6</Version>
+		<Version>1.0.1264.42-preview.220712.8</Version>
 		<GenerateAssemblyInfo>true</GenerateAssemblyInfo>
 	</PropertyGroup>
 
@@ -19,21 +19,14 @@
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 	</PropertyGroup>
 
-	<PropertyGroup Condition=" $(TargetFramework.StartsWith('netstandard')) ">
-		<DefineConstants>DISABLE_WEBVIEW2_CORE;$(DefineConstants)</DefineConstants>
-	</PropertyGroup>
-
 	<ItemGroup>
 		<AvaloniaXaml Include="**\*.xaml" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Avalonia" />
-		<PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="all" />
-	</ItemGroup>
-
-	<ItemGroup Condition=" $(TargetFramework.StartsWith('net4')) OR $(TargetFramework.StartsWith('netcoreapp')) OR $(TargetFramework.StartsWith('net5')) OR $(TargetFramework.StartsWith('net6')) ">
 		<PackageReference Include="WebView2.NativeAssets.Win32" />
+		<PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="all" />
 	</ItemGroup>
 
 </Project>
