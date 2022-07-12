@@ -178,17 +178,23 @@ public partial class WebView2 : WebView2BaseType, IHwndHost, ISupportInitialize,
         if (!_browserCrashed)
         {
 #if !DISABLE_WEBVIEW2_CORE
-            CoreWebView2!.NavigationCompleted -= new EventHandler<CoreWebView2NavigationCompletedEventArgs>(CoreWebView2_NavigationCompleted);
-            CoreWebView2.NavigationStarting -= new EventHandler<CoreWebView2NavigationStartingEventArgs>(CoreWebView2_NavigationStarting);
-            CoreWebView2.SourceChanged -= new EventHandler<CoreWebView2SourceChangedEventArgs>(CoreWebView2_SourceChanged);
-            CoreWebView2.WebMessageReceived -= new EventHandler<CoreWebView2WebMessageReceivedEventArgs>(CoreWebView2_WebMessageReceived);
-            CoreWebView2.ContentLoading -= new EventHandler<CoreWebView2ContentLoadingEventArgs>(CoreWebView2_ContentLoading);
-            CoreWebView2.DOMContentLoaded -= new EventHandler<CoreWebView2DOMContentLoadedEventArgs>(CoreWebView2_DOMContentLoaded);
-            CoreWebView2.ProcessFailed -= new EventHandler<CoreWebView2ProcessFailedEventArgs>(CoreWebView2_ProcessFailed);
-            _coreWebView2Controller!.ZoomFactorChanged -= new EventHandler<object>(CoreWebView2Controller_ZoomFactorChanged);
-            //_coreWebView2Controller.MoveFocusRequested -= new EventHandler<CoreWebView2MoveFocusRequestedEventArgs>(CoreWebView2Controller_MoveFocusRequested);
-            _coreWebView2Controller.AcceleratorKeyPressed -= new EventHandler<CoreWebView2AcceleratorKeyPressedEventArgs>(CoreWebView2Controller_AcceleratorKeyPressed);
-            _coreWebView2Controller.Close();
+            if (CoreWebView2 != null)
+            {
+                CoreWebView2.NavigationCompleted -= new EventHandler<CoreWebView2NavigationCompletedEventArgs>(CoreWebView2_NavigationCompleted);
+                CoreWebView2.NavigationStarting -= new EventHandler<CoreWebView2NavigationStartingEventArgs>(CoreWebView2_NavigationStarting);
+                CoreWebView2.SourceChanged -= new EventHandler<CoreWebView2SourceChangedEventArgs>(CoreWebView2_SourceChanged);
+                CoreWebView2.WebMessageReceived -= new EventHandler<CoreWebView2WebMessageReceivedEventArgs>(CoreWebView2_WebMessageReceived);
+                CoreWebView2.ContentLoading -= new EventHandler<CoreWebView2ContentLoadingEventArgs>(CoreWebView2_ContentLoading);
+                CoreWebView2.DOMContentLoaded -= new EventHandler<CoreWebView2DOMContentLoadedEventArgs>(CoreWebView2_DOMContentLoaded);
+                CoreWebView2.ProcessFailed -= new EventHandler<CoreWebView2ProcessFailedEventArgs>(CoreWebView2_ProcessFailed);
+            }
+            if (_coreWebView2Controller != null)
+            {
+                _coreWebView2Controller.ZoomFactorChanged -= new EventHandler<object>(CoreWebView2Controller_ZoomFactorChanged);
+                //_coreWebView2Controller.MoveFocusRequested -= new EventHandler<CoreWebView2MoveFocusRequestedEventArgs>(CoreWebView2Controller_MoveFocusRequested);
+                _coreWebView2Controller.AcceleratorKeyPressed -= new EventHandler<CoreWebView2AcceleratorKeyPressedEventArgs>(CoreWebView2Controller_AcceleratorKeyPressed);
+                _coreWebView2Controller.Close();
+            }
 #endif
         }
 #if !DISABLE_WEBVIEW2_CORE
@@ -387,13 +393,13 @@ public partial class WebView2 : WebView2BaseType, IHwndHost, ISupportInitialize,
             //sender._coreWebView2Controller.MoveFocusRequested += new EventHandler<CoreWebView2MoveFocusRequestedEventArgs>(sender.CoreWebView2Controller_MoveFocusRequested);
             sender._coreWebView2Controller.AcceleratorKeyPressed += new EventHandler<CoreWebView2AcceleratorKeyPressedEventArgs>(sender.CoreWebView2Controller_AcceleratorKeyPressed);
             sender._coreWebView2Controller.ZoomFactorChanged += new EventHandler<object>(sender.CoreWebView2Controller_ZoomFactorChanged);
-            sender.CoreWebView2!.NavigationCompleted += new EventHandler<CoreWebView2NavigationCompletedEventArgs>(sender.CoreWebView2_NavigationCompleted);
-            sender.CoreWebView2.NavigationStarting += new EventHandler<CoreWebView2NavigationStartingEventArgs>(sender.CoreWebView2_NavigationStarting);
-            sender.CoreWebView2.SourceChanged += new EventHandler<CoreWebView2SourceChangedEventArgs>(sender.CoreWebView2_SourceChanged);
-            sender.CoreWebView2.WebMessageReceived += new EventHandler<CoreWebView2WebMessageReceivedEventArgs>(sender.CoreWebView2_WebMessageReceived);
-            sender.CoreWebView2.ContentLoading += new EventHandler<CoreWebView2ContentLoadingEventArgs>(sender.CoreWebView2_ContentLoading);
-            sender.CoreWebView2.DOMContentLoaded += new EventHandler<CoreWebView2DOMContentLoadedEventArgs>(sender.CoreWebView2_DOMContentLoaded);
-            sender.CoreWebView2.ProcessFailed += new EventHandler<CoreWebView2ProcessFailedEventArgs>(sender.CoreWebView2_ProcessFailed);
+            sender._coreWebView2Controller.CoreWebView2.NavigationCompleted += new EventHandler<CoreWebView2NavigationCompletedEventArgs>(sender.CoreWebView2_NavigationCompleted);
+            sender._coreWebView2Controller.CoreWebView2.NavigationStarting += new EventHandler<CoreWebView2NavigationStartingEventArgs>(sender.CoreWebView2_NavigationStarting);
+            sender._coreWebView2Controller.CoreWebView2.SourceChanged += new EventHandler<CoreWebView2SourceChangedEventArgs>(sender.CoreWebView2_SourceChanged);
+            sender._coreWebView2Controller.CoreWebView2.WebMessageReceived += new EventHandler<CoreWebView2WebMessageReceivedEventArgs>(sender.CoreWebView2_WebMessageReceived);
+            sender._coreWebView2Controller.CoreWebView2.ContentLoading += new EventHandler<CoreWebView2ContentLoadingEventArgs>(sender.CoreWebView2_ContentLoading);
+            sender._coreWebView2Controller.CoreWebView2.DOMContentLoaded += new EventHandler<CoreWebView2DOMContentLoadedEventArgs>(sender.CoreWebView2_DOMContentLoaded);
+            sender._coreWebView2Controller.CoreWebView2.ProcessFailed += new EventHandler<CoreWebView2ProcessFailedEventArgs>(sender.CoreWebView2_ProcessFailed);
             if (sender.Focusable)
                 sender._coreWebView2Controller.MoveFocus(CoreWebView2MoveFocusReason.Programmatic);
 
@@ -401,11 +407,11 @@ public partial class WebView2 : WebView2BaseType, IHwndHost, ISupportInitialize,
 
             if (sender._source != null)
             {
-                sender.CoreWebView2.Navigate(sender._source.AbsoluteUri);
+                sender._coreWebView2Controller.CoreWebView2.Navigate(sender._source.AbsoluteUri);
             }
             else if (sender._htmlSource != null)
             {
-                sender.CoreWebView2.NavigateToString(sender._htmlSource);
+                sender._coreWebView2Controller.CoreWebView2.NavigateToString(sender._htmlSource);
             }
         }
         catch (Exception ex)
@@ -487,7 +493,7 @@ public partial class WebView2 : WebView2BaseType, IHwndHost, ISupportInitialize,
 #if !DISABLE_WEBVIEW2_CORE
                 try
                 {
-                    _coreWebView2Controller!.MoveFocus(_lastMoveFocusReason);
+                    _coreWebView2Controller.MoveFocus(_lastMoveFocusReason);
                 }
                 catch (InvalidOperationException ex)
                 {
@@ -741,7 +747,7 @@ public partial class WebView2 : WebView2BaseType, IHwndHost, ISupportInitialize,
 #if !DISABLE_WEBVIEW2_CORE
         if (CoreWebView2 != null)
         {
-            CoreWebView2!.Reload();
+            CoreWebView2.Reload();
         }
 #endif
     }
@@ -911,7 +917,9 @@ public partial class WebView2 : WebView2BaseType, IHwndHost, ISupportInitialize,
 
     void CoreWebView2_SourceChanged(object? sender, CoreWebView2SourceChangedEventArgs e)
     {
-        _source = new Uri(CoreWebView2!.Source);
+        var source = CoreWebView2?.Source;
+        if (_source == null || _source.AbsoluteUri != source)
+            _source = new Uri(source);
         var sourceChanged = SourceChanged;
         if (sourceChanged == null)
             return;
@@ -945,7 +953,8 @@ public partial class WebView2 : WebView2BaseType, IHwndHost, ISupportInitialize,
 #if !DISABLE_WEBVIEW2_CORE
     void CoreWebView2Controller_ZoomFactorChanged(object? sender, object e)
     {
-        _zoomFactor = _coreWebView2Controller!.ZoomFactor;
+        if (_coreWebView2Controller != null)
+            _zoomFactor = _coreWebView2Controller.ZoomFactor;
         var zoomFactorChanged = ZoomFactorChanged;
         if (zoomFactorChanged == null)
             return;
