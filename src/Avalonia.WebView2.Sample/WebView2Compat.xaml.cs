@@ -1,6 +1,6 @@
 namespace Avalonia.WebView2.Sample;
 
-public partial class WebView2Compat : UserControl
+public sealed partial class WebView2Compat : UserControl
 {
     public readonly AvaloniaWebView2 WebView2;
     public readonly TextBlock TextBlock;

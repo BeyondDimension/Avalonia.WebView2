@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>netstandard2.0;net461;netcoreapp3.0;net5.0;net5.0-windows;net6.0;net6.0-windows</TargetFrameworks>
+		<TargetFrameworks>netstandard2.0;net461;netcoreapp3.0;net7.0;net7.0-windows;net6.0;net6.0-windows</TargetFrameworks>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<RootNamespace>Avalonia.Controls</RootNamespace>
 		<PackageId>WebView2.Avalonia</PackageId>
@@ -10,13 +10,8 @@
 			This package is necessary for Avalonia applications. To learn more about package versions checkout https://aka.ms/wv2-packageversion. To learn best practices checkout: https://aka.ms/wv2-bestpractices.
 		</Description>
 		<PackageTags>Web WebView Native native package Edge avalonia avaloniaui dotnet framework core Webview2</PackageTags>
-		<Version>1.0.1264.42-preview.220713.10</Version>
+		<Version>1.0.1518.46-preview.230207.17</Version>
 		<GenerateAssemblyInfo>true</GenerateAssemblyInfo>
-	</PropertyGroup>
-
-	<PropertyGroup Condition=" '$(Configuration)'=='Release' ">
-		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -26,7 +21,7 @@
 	<ItemGroup>
 		<PackageReference Include="Avalonia" />
 		<PackageReference Include="WebView2.NativeAssets.Win32" />
-		<PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="all" />
 	</ItemGroup>
 
+	<Import Project="..\GeneratePackage.props" />
 </Project>

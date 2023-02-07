@@ -10,8 +10,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_Root", "_Root", "{61E7D838
 		src\.editorconfig = src\.editorconfig
 		.gitignore = .gitignore
 		src\Directory.Build.props = src\Directory.Build.props
-		src\Directory.Packages.props = src\Directory.Packages.props
+		ref\DirectoryPackages\Directory.Packages.props = ref\DirectoryPackages\Directory.Packages.props
+		src\GeneratePackage.props = src\GeneratePackage.props
 		README.md = README.md
+		src\WebView2.NativeAssets.Win32.nuspec = src\WebView2.NativeAssets.Win32.nuspec
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Avalonia.WebView2.Sample", "src\Avalonia.WebView2.Sample\Avalonia.WebView2.Sample.csproj", "{A08F349B-7924-440B-A3B6-A06A07BD3568}"

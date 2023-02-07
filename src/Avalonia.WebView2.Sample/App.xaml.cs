@@ -1,6 +1,6 @@
 namespace Avalonia.WebView2.Sample;
 
-public class App : Application
+public sealed class App : Application
 {
     public override void Initialize()
     {

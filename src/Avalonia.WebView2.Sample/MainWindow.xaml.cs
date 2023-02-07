@@ -1,6 +1,6 @@
 namespace Avalonia.WebView2.Sample;
 
-public partial class MainWindow : Window
+public sealed partial class MainWindow : Window
 {
     readonly Button Button;
     readonly WebView2Compat WebView2Compat;
@@ -25,7 +25,7 @@ public partial class MainWindow : Window
         UrlTextBox = this.FindControl<TextBox>("UrlTextBox");
         AboutTextBlock = this.FindControl<TextBlock>("AboutTextBlock");
 
-        AboutTextBlock.Text = $"OSArchitecture: {RuntimeInformation.OSArchitecture}{System.Environment.NewLine}ProcessArchitecture: {RuntimeInformation.ProcessArchitecture}{System.Environment.NewLine}Avalonia: {GetVersion(typeof(Window).Assembly)}{System.Environment.NewLine}Avalonia.WebView2: {GetVersion(typeof(AvaloniaWebView2).Assembly)}{System.Environment.NewLine}Microsoft.Web.WebView2.Core: {GetVersion(typeof(CoreWebView2).Assembly)}";
+        AboutTextBlock.Text = $"Runtime: {System.Environment.Version}{System.Environment.NewLine}OSArchitecture: {RuntimeInformation.OSArchitecture}{System.Environment.NewLine}ProcessArchitecture: {RuntimeInformation.ProcessArchitecture}{System.Environment.NewLine}Avalonia: {GetVersion(typeof(Window).Assembly)}{System.Environment.NewLine}Avalonia.WebView2: {GetVersion(typeof(AvaloniaWebView2).Assembly)}{System.Environment.NewLine}Microsoft.Web.WebView2.Core: {GetVersion(typeof(CoreWebView2).Assembly)}";
         Button.Click += Button_Click;
         if (AvaloniaWebView2.IsSupported)
         {

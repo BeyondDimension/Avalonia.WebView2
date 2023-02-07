@@ -6,25 +6,11 @@
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 		<ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
 		<ImplicitUsings>enable</ImplicitUsings>
-		<PackageLicenseExpression>MIT</PackageLicenseExpression>
-		<PackageProjectUrl>https://github.com/BeyondDimension/Avalonia.WebView2</PackageProjectUrl>
-		<PackageReleaseNotes>$(PackageProjectUrl)/releases</PackageReleaseNotes>
-		<RepositoryBranch>master</RepositoryBranch>
-		<RepositoryType>git</RepositoryType>
-		<RepositoryUrl>$(PackageProjectUrl).git</RepositoryUrl>
-		<PublishRepositoryUrl>true</PublishRepositoryUrl>
-		<CheckEolTargetFramework>false</CheckEolTargetFramework>
-		<EmbedUntrackedSources>true</EmbedUntrackedSources>
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)'=='Release'">
-		<AllowedReferenceRelatedFileExtensions>
-			<!-- Prevent default XML and PDB files copied to output in RELEASE. 
-           Only *.allowedextension files will be included, which doesn't exist in my case.
-       -->
-			.allowedextension
-		</AllowedReferenceRelatedFileExtensions>
-		<DebugType>none</DebugType>
-		<DebugSymbols>false</DebugSymbols>
+		<Version>1.23.10207.11751</Version>
+		<Copyright />
+		<Company />
+		<FileVersion>$(Version)</FileVersion>
+		<AssemblyVersion>$(Version)</AssemblyVersion>
 	</PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="StyleCop.Analyzers" PrivateAssets="All" />
