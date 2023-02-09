@@ -28,9 +28,6 @@ jobs:
         with:
           dotnet-version: 7.0.x
 
-      - name: Checkout code
-        uses: actions/checkout@v3
-
       - name: Verify dotnet info
         run: dotnet --info
 
@@ -45,22 +42,21 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        ProjectName: [ Avalonia.WebView2 ]
+        include:
+          - ProjectName: "Avalonia.WebView2"
+            PackageId: "WebView2.Avalonia"
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v2
-        with:
-          dotnet-version: 7.0.x
-
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
           submodules: recursive
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: 7.0.x
 
       - name: Verify dotnet info
         run: dotnet --info
@@ -76,10 +72,10 @@ jobs:
       - name: Push nuget packages
         shell: pwsh
         run: |
-          dotnet nuget push pkg\${{ matrix.ProjectName }}*.nupkg -s https://nuget.pkg.github.com/BeyondDimension -k ${{ secrets.RMBADMIN_TOKEN }} --skip-duplicate
-          dotnet nuget push pkg\${{ matrix.ProjectName }}*.snupkg -s https://nuget.pkg.github.com/BeyondDimension -k ${{ secrets.RMBADMIN_TOKEN }} --skip-duplicate
-          dotnet nuget push pkg\${{ matrix.ProjectName }}*.nupkg -s https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_API_KEY }} --skip-duplicate
-          dotnet nuget push pkg\${{ matrix.ProjectName }}*.snupkg -s https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_API_KEY }} --skip-duplicate
+          dotnet nuget push pkg\${{ matrix.PackageId }}*.nupkg -s https://nuget.pkg.github.com/BeyondDimension -k ${{ secrets.RMBADMIN_TOKEN }} --skip-duplicate
+          dotnet nuget push pkg\${{ matrix.PackageId }}*.snupkg -s https://nuget.pkg.github.com/BeyondDimension -k ${{ secrets.RMBADMIN_TOKEN }} --skip-duplicate
+          dotnet nuget push pkg\${{ matrix.PackageId }}*.nupkg -s https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_API_KEY }} --skip-duplicate
+          dotnet nuget push pkg\${{ matrix.PackageId }}*.snupkg -s https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_API_KEY }} --skip-duplicate
   release:
     name: Release
     needs: build
