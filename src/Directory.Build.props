@@ -3,12 +3,14 @@
 		<NoWarn>NU1507</NoWarn>
 		<LangVersion>latest</LangVersion>
 		<Nullable>enable</Nullable>
-		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+		<GenerateAssemblyInfo>true</GenerateAssemblyInfo>
 		<ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Version>1.23.10207.11751</Version>
-		<Copyright />
-		<Company />
+		<PackageIconUrl>https://avatars.githubusercontent.com/u/79355691?s=200&amp;v=4</PackageIconUrl>
+		<Company>长沙次元超越科技有限公司</Company>
+		<Copyright>©️ $(Company). All rights reserved.</Copyright>
+		<Authors>$(Company)</Authors>
 		<FileVersion>$(Version)</FileVersion>
 		<AssemblyVersion>$(Version)</AssemblyVersion>
 	</PropertyGroup>
