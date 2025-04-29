@@ -393,7 +393,7 @@ public partial class WebView2 : WebView2BaseType, IHwndHost, ISupportInitialize,
             }
             sender._coreWebView2Controller.ZoomFactor = sender._zoomFactor;
             sender._coreWebView2Controller.DefaultBackgroundColor = sender._defaultBackgroundColor;
-            //OnBoundsChanged(EventArgs.Empty);
+            OnBoundsChanged(EventArgs.Empty);
             sender._coreWebView2Controller.IsVisible = IsVisible;
             try
             {
