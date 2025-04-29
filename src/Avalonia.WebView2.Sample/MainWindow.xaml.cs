@@ -2,11 +2,6 @@ namespace Avalonia.WebView2.Sample;
 
 public sealed partial class MainWindow : Window
 {
-    readonly Button Button;
-    readonly WebView2Compat WebView2Compat;
-    readonly new Label Title;
-    readonly TextBox UrlTextBox;
-    readonly TextBlock AboutTextBlock;
 
     AvaloniaWebView2? WebView => WebView2Compat?.WebView2;
 
@@ -19,6 +14,7 @@ public sealed partial class MainWindow : Window
 #if DEBUG
         this.AttachDevTools();
 #endif
+
         Title = this.FindControl<Label>("Title");
         WebView2Compat = this.FindControl<WebView2Compat>("WebView2Compat");
         Button = this.FindControl<Button>("Button");

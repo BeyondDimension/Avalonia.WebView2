@@ -1,7 +1,14 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>netstandard2.0;net461;netcoreapp3.0;net7.0;net7.0-windows;net6.0;net6.0-windows</TargetFrameworks>
+		<TargetFrameworks>
+			netstandard2.0;
+			net461;
+			netcoreapp3.0;
+			net7.0;net7.0-windows;
+			net6.0;net6.0-windows;
+			net8.0;net8.0-windows;
+			net9.0;net9.0-windows</TargetFrameworks>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<RootNamespace>Avalonia.Controls</RootNamespace>
 		<PackageId>WebView2.Avalonia</PackageId>
@@ -11,6 +18,7 @@
 		</Description>
 		<PackageTags>Web WebView Native native package Edge avalonia avaloniaui dotnet framework core Webview2</PackageTags>
 		<Version>1.0.1518.46-preview.230207.17</Version>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -20,6 +28,16 @@
 	<ItemGroup>
 		<PackageReference Include="Avalonia" />
 		<PackageReference Include="WebView2.NativeAssets.Win32" />
+	</ItemGroup>
+
+
+
+	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'" >
+		<PackageReference Include="Microsoft.Windows.CsWin32">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<AdditionalFiles Condition="Exists('$(MSBuildProjectDirectory)\NativeMethods.txt')" Include="$(MSBuildProjectDirectory)\NativeMethods.txt" />
 	</ItemGroup>
 
 	<Import Project="..\GeneratePackage.props" />

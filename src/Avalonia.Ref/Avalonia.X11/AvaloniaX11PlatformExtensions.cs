@@ -7,7 +7,7 @@ namespace Avalonia
 {
     public static class AvaloniaX11PlatformExtensions
     {
-        public static T UseX11<T>(this T builder) where T : AppBuilderBase<T>, new()
+        public static AppBuilder UseX11(this AppBuilder builder)
         {
             throw new PlatformNotSupportedException();
         }

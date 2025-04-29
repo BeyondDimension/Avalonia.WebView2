@@ -40,17 +40,26 @@ public partial class WebView2 : WebView2BaseType, IHwndHost, ISupportInitialize,
         RefreshIsSupported();
     }
 
-    public WebView2()
+    public WebView2() : base()
     {
         if (IsInDesignMode)
         {
             return;
         }
 
-        this.GetPropertyChangedObservable(IsVisibleProperty).Subscribe(IsVisibleChanged);
-        this.GetPropertyChangedObservable(BoundsProperty).Subscribe(OnBoundsChanged);
+        _disposables.Add(this.GetPropertyChangedObservable(IsVisibleProperty).AddClassHandler<WebView2>((t, args) => { IsVisibleChanged(args); }));
+        _disposables.Add(this.GetPropertyChangedObservable(BoundsProperty).AddClassHandler<WebView2>((t, args) => { OnBoundsChanged(args); }));
 
         DefaultBackgroundColor = _defaultBackgroundColorDefaultValue;
+    }
+
+    public WebView2(string userDataFolder) : this()
+    {
+        DefaultCreationProperties = new()
+        {
+            Language = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName,
+            UserDataFolder = userDataFolder
+        };
     }
 
     protected Screen? Screen
@@ -60,7 +69,7 @@ public partial class WebView2 : WebView2BaseType, IHwndHost, ISupportInitialize,
             var window = Window;
             if (window != null)
             {
-                var screen = window.Screens.ScreenFromWindow(window.PlatformImpl);
+                var screen = window.Screens.ScreenFromWindow(window);
                 return screen;
             }
             return null;
@@ -71,7 +80,7 @@ public partial class WebView2 : WebView2BaseType, IHwndHost, ISupportInitialize,
     {
         if (screen != null)
         {
-            d *= screen.PixelDensity;
+            d *= screen.Scaling;
         }
         if (double.IsNaN(d) || d <= 0D) return 0;
         return Convert.ToInt32(Math.Ceiling(d));
@@ -152,6 +161,7 @@ public partial class WebView2 : WebView2BaseType, IHwndHost, ISupportInitialize,
     string? _htmlSource;
     bool _browserCrashed;
     readonly ImplicitInitGate _implicitInitGate = new();
+    List<IDisposable> _disposables = new();
 
     protected virtual void Dispose(bool disposing)
     {
@@ -160,6 +170,7 @@ public partial class WebView2 : WebView2BaseType, IHwndHost, ISupportInitialize,
             if (disposing)
             {
                 UnsubscribeHandlersAndCloseController();
+                _disposables.ForEach(d => d.Dispose());
             }
 
             disposedValue = true;
@@ -187,6 +198,7 @@ public partial class WebView2 : WebView2BaseType, IHwndHost, ISupportInitialize,
                 CoreWebView2.ContentLoading -= new EventHandler<CoreWebView2ContentLoadingEventArgs>(CoreWebView2_ContentLoading);
                 CoreWebView2.DOMContentLoaded -= new EventHandler<CoreWebView2DOMContentLoadedEventArgs>(CoreWebView2_DOMContentLoaded);
                 CoreWebView2.ProcessFailed -= new EventHandler<CoreWebView2ProcessFailedEventArgs>(CoreWebView2_ProcessFailed);
+                CoreWebView2.WebResourceRequested -= new EventHandler<CoreWebView2WebResourceRequestedEventArgs>(CoreWebView2_WebResourceRequested);
             }
             if (_coreWebView2Controller != null)
             {
@@ -381,7 +393,7 @@ public partial class WebView2 : WebView2BaseType, IHwndHost, ISupportInitialize,
             }
             sender._coreWebView2Controller.ZoomFactor = sender._zoomFactor;
             sender._coreWebView2Controller.DefaultBackgroundColor = sender._defaultBackgroundColor;
-            OnBoundsChanged(EventArgs.Empty);
+            //OnBoundsChanged(EventArgs.Empty);
             sender._coreWebView2Controller.IsVisible = IsVisible;
             try
             {
@@ -400,6 +412,8 @@ public partial class WebView2 : WebView2BaseType, IHwndHost, ISupportInitialize,
             sender._coreWebView2Controller.CoreWebView2.ContentLoading += new EventHandler<CoreWebView2ContentLoadingEventArgs>(sender.CoreWebView2_ContentLoading);
             sender._coreWebView2Controller.CoreWebView2.DOMContentLoaded += new EventHandler<CoreWebView2DOMContentLoadedEventArgs>(sender.CoreWebView2_DOMContentLoaded);
             sender._coreWebView2Controller.CoreWebView2.ProcessFailed += new EventHandler<CoreWebView2ProcessFailedEventArgs>(sender.CoreWebView2_ProcessFailed);
+            sender._coreWebView2Controller.CoreWebView2.WebResourceRequested += new EventHandler<CoreWebView2WebResourceRequestedEventArgs>(sender.CoreWebView2_WebResourceRequested);
+            sender._coreWebView2Controller.CoreWebView2.AddWebResourceRequestedFilter("*", CoreWebView2WebResourceContext.Document);
             if (sender.Focusable)
                 sender._coreWebView2Controller.MoveFocus(CoreWebView2MoveFocusReason.Programmatic);
 
@@ -856,6 +870,18 @@ public partial class WebView2 : WebView2BaseType, IHwndHost, ISupportInitialize,
     public event EventHandler<CoreWebView2NavigationCompletedEventArgs>? NavigationCompleted;
 
     /// <summary>
+    /// WebResourceRequested is raised when the WebView is performing a URL request to a matching URL and resource context filter that was added with <see cref="M:Microsoft.Web.WebView2.Core.CoreWebView2.AddWebResourceRequestedFilter(System.String,Microsoft.Web.WebView2.Core.CoreWebView2WebResourceContext,Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequestSourceKinds)" />.
+    /// </summary><remarks>
+    /// At least one filter must be added for the event to be raised.
+    /// The web resource requested may be blocked until the event handler returns if a deferral is not taken on the event args. If a deferral is taken, then the web resource requested is blocked until the deferral is completed.
+    ///
+    /// If this event is subscribed in the <see cref="E:Microsoft.Web.WebView2.Core.CoreWebView2.NewWindowRequested" /> handler it should be called after the new window is set. For more details see <see cref="P:Microsoft.Web.WebView2.Core.CoreWebView2NewWindowRequestedEventArgs.NewWindow" />.
+    ///
+    /// This event is by default raised for file, http, and https URI schemes. This is also raised for registered custom URI schemes. See <see cref="T:Microsoft.Web.WebView2.Core.CoreWebView2CustomSchemeRegistration" /> for more details.
+    /// </remarks><seealso cref="M:Microsoft.Web.WebView2.Core.CoreWebView2.AddWebResourceRequestedFilter(System.String,Microsoft.Web.WebView2.Core.CoreWebView2WebResourceContext,Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequestSourceKinds)" />
+    public event EventHandler<CoreWebView2WebResourceRequestedEventArgs>? WebResourceRequested;
+
+    /// <summary>
     /// WebMessageReceived dispatches after web content sends a message to the
     /// app host via <c>chrome.webview.postMessage</c>.
     /// This is equivalent to the <see cref="E:Microsoft.Web.WebView2.Core.CoreWebView2.WebMessageReceived" /> event.
@@ -905,6 +931,14 @@ public partial class WebView2 : WebView2BaseType, IHwndHost, ISupportInitialize,
         if (navigationCompleted == null)
             return;
         navigationCompleted(this, e);
+    }
+
+    void CoreWebView2_WebResourceRequested(object? sender, CoreWebView2WebResourceRequestedEventArgs e)
+    {
+        var webResourceRequested = WebResourceRequested;
+        if (webResourceRequested == null)
+            return;
+        webResourceRequested(this, e);
     }
 
     void CoreWebView2_WebMessageReceived(object? sender, CoreWebView2WebMessageReceivedEventArgs e)
@@ -984,7 +1018,9 @@ public partial class WebView2 : WebView2BaseType, IHwndHost, ISupportInitialize,
                 // Different windows cannot be reinitialized successfully
                 Window = window;
                 Window.Closed += Window_Closed;
-                _hwndTaskSource.TrySetResult(window.PlatformImpl.Handle.Handle);
+
+                var handle = window.TryGetPlatformHandle();
+                _hwndTaskSource.TrySetResult(handle.Handle);
                 _implicitInitGate.OnSynchronizationContextExists();
             }
         }

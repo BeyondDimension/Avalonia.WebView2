@@ -16,9 +16,9 @@ public partial class CoreWebView2CreationProperties : AvaloniaObject
 {
     static CoreWebView2CreationProperties()
     {
-        BrowserExecutableFolderProperty.Changed.Subscribe(EnvironmentPropertyChanged);
-        UserDataFolderProperty.Changed.Subscribe(EnvironmentPropertyChanged);
-        LanguageProperty.Changed.Subscribe(EnvironmentPropertyChanged);
+        BrowserExecutableFolderProperty.Changed.AddClassHandler<CoreWebView2CreationProperties, string>((t, args) => { EnvironmentPropertyChanged(args); });
+        UserDataFolderProperty.Changed.AddClassHandler<CoreWebView2CreationProperties, string>((t, args) => { EnvironmentPropertyChanged(args); });
+        LanguageProperty.Changed.AddClassHandler<CoreWebView2CreationProperties, string>((t, args) => { EnvironmentPropertyChanged(args); });
     }
 
     /// <summary>

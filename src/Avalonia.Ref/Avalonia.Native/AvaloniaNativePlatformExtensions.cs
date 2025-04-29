@@ -7,7 +7,7 @@ namespace Avalonia
 {
     public static class AvaloniaNativePlatformExtensions
     {
-        public static T UseAvaloniaNative<T>(this T builder) where T : AppBuilderBase<T>, new()
+        public static AppBuilder UseAvaloniaNative(this AppBuilder builder)
         {
             throw new PlatformNotSupportedException();
         }

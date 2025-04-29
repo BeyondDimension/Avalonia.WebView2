@@ -94,7 +94,11 @@ sealed class GlobalHooks
         if (window == null)
             return;
 
-        IntPtr hwnd = window.PlatformImpl.Handle.Handle;
+        var handle = window.TryGetPlatformHandle();
+        if (handle == null)
+            return;
+
+        IntPtr hwnd = handle.Handle;
 
         if (_HookedWindows.ContainsKey(hwnd))
             return;
