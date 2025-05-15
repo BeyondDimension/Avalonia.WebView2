@@ -30,9 +30,7 @@
 		<PackageReference Include="WebView2.NativeAssets.Win32" />
 	</ItemGroup>
 
-
-
-	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'" >
+	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
 		<PackageReference Include="Microsoft.Windows.CsWin32">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

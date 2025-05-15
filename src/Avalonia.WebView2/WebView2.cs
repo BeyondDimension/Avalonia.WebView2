@@ -1,4 +1,5 @@
 using WebView2BaseType = Avalonia.Controls.Shapes.Rectangle;
+using Avalonia.Threading;
 
 namespace Avalonia.Controls;
 
@@ -48,18 +49,30 @@ public partial class WebView2 : WebView2BaseType, IHwndHost, ISupportInitialize,
         }
 
         _disposables.Add(this.GetPropertyChangedObservable(IsVisibleProperty).AddClassHandler<WebView2>((t, args) => { IsVisibleChanged(args); }));
-        _disposables.Add(this.GetPropertyChangedObservable(BoundsProperty).AddClassHandler<WebView2>((t, args) => { OnBoundsChanged(args); }));
+        //_disposables.Add(this.GetPropertyChangedObservable(BoundsProperty).AddClassHandler<WebView2>((t, args) => { OnBoundsChanged(args); }));
 
         DefaultBackgroundColor = _defaultBackgroundColorDefaultValue;
-    }
 
-    public WebView2(string userDataFolder) : this()
-    {
-        DefaultCreationProperties = new()
+        _creationProperties = new()
         {
             Language = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName,
-            UserDataFolder = userDataFolder
         };
+    }
+
+    protected override void OnSizeChanged(SizeChangedEventArgs e)
+    {
+        base.OnSizeChanged(e);
+
+        var size = e.NewSize - e.PreviousSize;
+
+        DispatcherPriority dispatcherPriority = size.Width > 0 || size.Height > 0 ? DispatcherPriority.Render : DispatcherPriority.ContextIdle;
+        Dispatcher.UIThread.Post(async () =>
+        {
+            //if (dispatcherPriority == DispatcherPriority.ContextIdle)
+            //    await Task.Delay(500);
+
+            OnBoundsChanged(EventArgs.Empty);
+        }, DispatcherPriority.Render);
     }
 
     protected Screen? Screen
@@ -142,10 +155,10 @@ public partial class WebView2 : WebView2BaseType, IHwndHost, ISupportInitialize,
     /// </summary>
     protected static bool IsInDesignMode => Design.IsDesignMode;
 
-    public static CoreWebView2CreationProperties? DefaultCreationProperties { get; set; }
+    //public static CoreWebView2CreationProperties? DefaultCreationProperties { get; set; }
 
     bool disposedValue;
-    CoreWebView2CreationProperties? _creationProperties = DefaultCreationProperties;
+    CoreWebView2CreationProperties _creationProperties;
     internal Task? _initTask;
 #if !DISABLE_WEBVIEW2_CORE
     bool _isExplicitEnvironment;
@@ -160,6 +173,7 @@ public partial class WebView2 : WebView2BaseType, IHwndHost, ISupportInitialize,
     Uri? _source;
     string? _htmlSource;
     bool _browserCrashed;
+    string _userDataFolder;
     readonly ImplicitInitGate _implicitInitGate = new();
     List<IDisposable> _disposables = new();
 
@@ -418,6 +432,7 @@ public partial class WebView2 : WebView2BaseType, IHwndHost, ISupportInitialize,
                 sender._coreWebView2Controller.MoveFocus(CoreWebView2MoveFocusReason.Programmatic);
 
             sender.CoreWebView2InitializationCompleted?.Invoke(sender, new CoreWebView2InitializationCompletedEventArgs());
+            await InitJavaScriptOnDocumentCreatedAsync();
 
             if (sender._source != null)
             {
@@ -576,6 +591,24 @@ public partial class WebView2 : WebView2BaseType, IHwndHost, ISupportInitialize,
             if (_coreWebView2Controller == null)
                 return;
             _coreWebView2Controller.AllowExternalDrop = value;
+        }
+    }
+#else
+    { get; set; }
+#endif
+
+    /// <summary>Enable/disable external drop.</summary>
+    public string UserDataFolder
+#if !DISABLE_WEBVIEW2_CORE
+    {
+        get => _creationProperties != null ? _creationProperties.UserDataFolder : _userDataFolder;
+        set
+        {
+            _userDataFolder = value;
+
+            if (_creationProperties == null)
+                return;
+            _creationProperties.UserDataFolder = value;
         }
     }
 #else
@@ -1070,7 +1103,7 @@ public partial class WebView2 : WebView2BaseType, IHwndHost, ISupportInitialize,
 #if DEBUG
     public void Test()
     {
-
+        GoBack();
     }
 #endif
 }

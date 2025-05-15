@@ -2,7 +2,6 @@ namespace Avalonia.WebView2.Sample;
 
 public sealed partial class MainWindow : Window
 {
-
     AvaloniaWebView2? WebView => WebView2Compat?.WebView2;
 
     public CoreWebView2Environment? Environment { get; }
@@ -26,7 +25,7 @@ public sealed partial class MainWindow : Window
         if (AvaloniaWebView2.IsSupported)
         {
             UrlTextBox.KeyDown += UrlTextBox_KeyDown;
-            Environment = AvaloniaWebView2.DefaultCreationProperties!.CreateEnvironmentAsync().GetAwaiter().GetResult();
+            Environment = WebView.CreationProperties!.CreateEnvironmentAsync().GetAwaiter().GetResult();
             Environment.ProcessInfosChanged += Environment_ProcessInfosChanged;
             SetTitle(Environment.BrowserVersionString);
         }

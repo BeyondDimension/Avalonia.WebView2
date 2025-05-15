@@ -2,7 +2,6 @@ namespace Avalonia.WebView2.Sample;
 
 public sealed partial class WebView2Compat : UserControl
 {
-
     public WebView2Compat()
     {
         InitializeComponent();
@@ -16,6 +15,11 @@ public sealed partial class WebView2Compat : UserControl
         else
         {
             WebView2.DOMContentLoaded += WebView2_DOMContentLoaded;
+            WebView2.DocumentCreatedLoader = new Controls.WebView2.WebView2OnDocumentCreatedLoader
+            {
+                LocalStorage = (options) => { },
+                SessionStorage = (options) => { },
+            };
         }
     }
 
