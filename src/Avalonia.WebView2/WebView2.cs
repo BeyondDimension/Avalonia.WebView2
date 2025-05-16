@@ -174,6 +174,7 @@ public partial class WebView2 : WebView2BaseType, IHwndHost, ISupportInitialize,
     string? _htmlSource;
     bool _browserCrashed;
     string _userDataFolder;
+    bool _enabledDevTools;
     readonly ImplicitInitGate _implicitInitGate = new();
     List<IDisposable> _disposables = new();
 
@@ -213,6 +214,8 @@ public partial class WebView2 : WebView2BaseType, IHwndHost, ISupportInitialize,
                 CoreWebView2.DOMContentLoaded -= new EventHandler<CoreWebView2DOMContentLoadedEventArgs>(CoreWebView2_DOMContentLoaded);
                 CoreWebView2.ProcessFailed -= new EventHandler<CoreWebView2ProcessFailedEventArgs>(CoreWebView2_ProcessFailed);
                 CoreWebView2.WebResourceRequested -= new EventHandler<CoreWebView2WebResourceRequestedEventArgs>(CoreWebView2_WebResourceRequested);
+                CoreWebView2.DocumentTitleChanged -= new EventHandler<object>(CoreWebView2_DocumentTitleChanged);
+                CoreWebView2.NewWindowRequested -= new EventHandler<CoreWebView2NewWindowRequestedEventArgs>(CoreWebView2_NewWindowRequested);
             }
             if (_coreWebView2Controller != null)
             {
@@ -427,11 +430,15 @@ public partial class WebView2 : WebView2BaseType, IHwndHost, ISupportInitialize,
             sender._coreWebView2Controller.CoreWebView2.DOMContentLoaded += new EventHandler<CoreWebView2DOMContentLoadedEventArgs>(sender.CoreWebView2_DOMContentLoaded);
             sender._coreWebView2Controller.CoreWebView2.ProcessFailed += new EventHandler<CoreWebView2ProcessFailedEventArgs>(sender.CoreWebView2_ProcessFailed);
             sender._coreWebView2Controller.CoreWebView2.WebResourceRequested += new EventHandler<CoreWebView2WebResourceRequestedEventArgs>(sender.CoreWebView2_WebResourceRequested);
+            sender._coreWebView2Controller.CoreWebView2.DocumentTitleChanged += new EventHandler<object>(sender.CoreWebView2_DocumentTitleChanged);
+            sender._coreWebView2Controller.CoreWebView2.NewWindowRequested += new EventHandler<CoreWebView2NewWindowRequestedEventArgs>(sender.CoreWebView2_NewWindowRequested);
             sender._coreWebView2Controller.CoreWebView2.AddWebResourceRequestedFilter("*", CoreWebView2WebResourceContext.Document);
             if (sender.Focusable)
                 sender._coreWebView2Controller.MoveFocus(CoreWebView2MoveFocusReason.Programmatic);
 
+            sender._coreWebView2Controller.CoreWebView2.Settings.AreDevToolsEnabled = sender.CreationProperties?.EnabledDevTools ?? false;
             sender.CoreWebView2InitializationCompleted?.Invoke(sender, new CoreWebView2InitializationCompletedEventArgs());
+
             await InitJavaScriptOnDocumentCreatedAsync();
 
             if (sender._source != null)
@@ -609,6 +616,24 @@ public partial class WebView2 : WebView2BaseType, IHwndHost, ISupportInitialize,
             if (_creationProperties == null)
                 return;
             _creationProperties.UserDataFolder = value;
+        }
+    }
+#else
+    { get; set; }
+#endif
+
+    /// <summary>Enable/disable external drop.</summary>
+    public bool EnabledDevTools
+#if !DISABLE_WEBVIEW2_CORE
+    {
+        get => _creationProperties != null ? _creationProperties.EnabledDevTools : _enabledDevTools;
+        set
+        {
+            _enabledDevTools = value;
+
+            if (_creationProperties == null)
+                return;
+            _creationProperties.EnabledDevTools = value;
         }
     }
 #else
@@ -940,6 +965,10 @@ public partial class WebView2 : WebView2BaseType, IHwndHost, ISupportInitialize,
     public event EventHandler<CoreWebView2ContentLoadingEventArgs>? ContentLoading;
 
     public event EventHandler<CoreWebView2DOMContentLoadedEventArgs>? DOMContentLoaded;
+
+    public event EventHandler<object>? DocumentTitleChanged;
+
+    public event EventHandler<CoreWebView2NewWindowRequestedEventArgs>? NewWindowRequested;
 #endif
 
     /// <summary>
@@ -1007,6 +1036,56 @@ public partial class WebView2 : WebView2BaseType, IHwndHost, ISupportInitialize,
         if (contentLoading == null)
             return;
         contentLoading(this, e);
+    }
+
+    void CoreWebView2_DocumentTitleChanged(object? sender, object e)
+    {
+        var cocumentTitleChanged = DocumentTitleChanged;
+        if (cocumentTitleChanged == null)
+            return;
+        cocumentTitleChanged(this, e);
+    }
+
+    void CoreWebView2_NewWindowRequested(object? sender, CoreWebView2NewWindowRequestedEventArgs args)
+    {
+        var newWindowRequested = NewWindowRequested;
+        if (newWindowRequested == null)
+        {
+            if (sender is CoreWebView2 parent)
+            {
+                args.Handled = true;
+                WebView2 coreWebView2;
+                var window = new Window()
+                {
+                    Width = Bounds.Width,
+                    Height = Bounds.Height,
+                    Content = coreWebView2 = new WebView2()
+                    {
+                        Source = new Uri(args.Uri),
+                        EnabledDevTools = parent.Settings.AreDevToolsEnabled,
+                        Fill = Fill,
+                        UserDataFolder = parent.Environment.UserDataFolder,
+                    },
+                };
+                coreWebView2.DOMContentLoaded += (s, e) =>
+                {
+                    if (s is CoreWebView2 sender)
+                    {
+                        args.NewWindow = sender;
+                    }
+                };
+                coreWebView2.DocumentTitleChanged += async (s, e) =>
+                {
+                    window.Title = coreWebView2.CoreWebView2!.DocumentTitle;
+                    window.Icon = new WindowIcon(await coreWebView2.CoreWebView2!.GetFaviconAsync(CoreWebView2FaviconImageFormat.Png));
+                };
+
+                window.Show();
+            }
+
+            return;
+        }
+        newWindowRequested(this, args);
     }
 
     void CoreWebView2_ProcessFailed(object? sender, CoreWebView2ProcessFailedEventArgs e)
@@ -1103,7 +1182,12 @@ public partial class WebView2 : WebView2BaseType, IHwndHost, ISupportInitialize,
 #if DEBUG
     public void Test()
     {
-        GoBack();
+#if !DISABLE_WEBVIEW2_CORE
+        if (_coreWebView2Controller != null)
+        {
+            _coreWebView2Controller.CoreWebView2.OpenDevToolsWindow();
+        }
+#endif
     }
 #endif
 }

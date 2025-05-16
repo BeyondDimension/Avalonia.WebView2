@@ -46,6 +46,11 @@ public partial class CoreWebView2CreationProperties : AvaloniaObject
     /// </summary>
     public static readonly StyledProperty<bool?> IsInPrivateModeEnabledProperty = AvaloniaProperty.Register<CoreWebView2CreationProperties, bool?>(nameof(IsInPrivateModeEnabled));
 
+    /// <summary>
+    /// The AvaloniaProperty which backs the <see cref="EnabledDevTools" /> property.
+    /// </summary>
+    public static readonly StyledProperty<bool> EnabledDevToolsProperty = AvaloniaProperty.Register<CoreWebView2CreationProperties, bool>(nameof(EnabledDevTools));
+
 #if !DISABLE_WEBVIEW2_CORE
     Task<CoreWebView2Environment>? _task;
 #endif
@@ -75,6 +80,12 @@ public partial class CoreWebView2CreationProperties : AvaloniaObject
     {
         get => GetValue(LanguageProperty);
         set => SetValue(LanguageProperty, value);
+    }
+
+    public bool EnabledDevTools
+    {
+        get => GetValue(EnabledDevToolsProperty);
+        set => SetValue(EnabledDevToolsProperty, value);
     }
 
     /// <summary>
