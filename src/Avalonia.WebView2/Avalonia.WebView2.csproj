@@ -19,7 +19,16 @@
 		<PackageTags>Web WebView Native native package Edge avalonia avaloniaui dotnet framework core Webview2</PackageTags>
 		<Version>1.0.1518.46-preview.230207.17</Version>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<Platforms>AnyCPU;x64;x86</Platforms>
 	</PropertyGroup>
+	<PropertyGroup Condition="'$(Platform)'=='x86'">
+		<DefineConstants>$(DefineConstants);X86</DefineConstants>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Platform)'=='x64'">
+		<DefineConstants>$(DefineConstants);X64</DefineConstants>
+	</PropertyGroup>
+
 
 	<ItemGroup>
 		<AvaloniaXaml Include="**\*.xaml" />

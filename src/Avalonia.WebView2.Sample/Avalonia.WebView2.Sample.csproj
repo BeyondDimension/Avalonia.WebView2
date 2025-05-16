@@ -5,6 +5,7 @@
 		<TargetFramework>net9.0-windows</TargetFramework>
 		<ApplicationManifest>Properties\app.manifest</ApplicationManifest>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<Platforms>AnyCPU;x64;x86</Platforms>
 	</PropertyGroup>
 
 

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Text;
+using System.Web;
 
 namespace Avalonia.Controls;
 
@@ -10,6 +11,9 @@ partial class WebView2
 
     WebView2OnDocumentCreatedLoader? _documentCreatedLoader;
 
+    /// <summary>
+    /// WebView2 DocumentCreated Loader
+    /// </summary>
     public WebView2OnDocumentCreatedLoader? DocumentCreatedLoader { get => _documentCreatedLoader; set { _documentCreatedLoader = value; } }
 
     /// <summary>
@@ -84,10 +88,19 @@ partial class WebView2
         return false;
     }
 
+    /// <summary>
+    /// WebView2 DocumentCreated Loader，for example SessionStorage 和 LocalStorage。
+    /// </summary>
     public class WebView2OnDocumentCreatedLoader
     {
+        /// <summary>
+        /// SessionStorage Load OnDocumentCreated.
+        /// </summary>
         public Action<NameValueCollection>? SessionStorage { get; set; }
 
+        /// <summary>
+        /// LocalStorage Load OnDocumentCreated.
+        /// </summary>
         public Action<NameValueCollection>? LocalStorage { get; set; }
     }
 }

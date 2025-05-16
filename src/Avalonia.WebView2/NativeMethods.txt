@@ -4,6 +4,6 @@ CreateWindowExW
 DestroyWindow
 ShowWindow
 GetWindowThreadProcessId
-SetWindowLong32
-SetWindowLongPtr64
+SetWindowLong
+SetWindowLongPtr
 CallWindowProc
