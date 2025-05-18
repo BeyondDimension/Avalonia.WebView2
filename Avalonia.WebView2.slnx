@@ -1,7 +1,4 @@
 <Solution>
-  <Configurations>
-    <Platform Name="Any CPU" />
-  </Configurations>
   <Folder Name="/Avalonia.Ref/">
     <Project Path="src/Avalonia.Ref/Avalonia.Desktop/Avalonia.Desktop.csproj">
     </Project>
@@ -18,6 +15,7 @@
     <File Path="src/Directory.Build.props" />
     <File Path="src/Directory.Packages.props" />
     <File Path="src/GeneratePackage.props" />
+    <File Path="src/Version.props" />
     <File Path="src/WebView2.NativeAssets.Win32/WebView2.NativeAssets.Win32.nuspec" />
   </Folder>
   <Project Path="src/Avalonia.WebView2.Sample/Avalonia.WebView2.Sample.csproj">

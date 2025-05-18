@@ -24,6 +24,8 @@ partial class WebView2
             {
                 return coreWebView2.CanGoForward;
             }
+#elif ANDROID
+#elif IOS
 #else
             // CEF_TODO: 待实现 CanGoForward
 #endif
@@ -46,6 +48,8 @@ partial class WebView2
     {
 #if !DISABLE_WEBVIEW2_CORE && WINDOWS || NETFRAMEWORK
         CoreWebView2?.GoForward();
+#elif ANDROID
+#elif IOS
 #else
         // CEF_TODO: 待实现 GoForward
 #endif

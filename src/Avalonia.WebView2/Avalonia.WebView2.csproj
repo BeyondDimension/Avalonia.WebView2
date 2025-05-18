@@ -19,6 +19,7 @@
 		<When Condition="$([System.OperatingSystem]::IsWindows())">
 			<PropertyGroup>
 				<TargetFrameworks>net462;netstandard2.0;net6.0;net6.0-windows;net7.0;net7.0-windows;net8.0;net8.0-windows;net9.0;net9.0-windows</TargetFrameworks>
+				<TargetFrameworks Condition="!Exists('C:\BD.Common8.ExcludeMobile.msbuild.prop')">$(TargetFrameworks);net9.0-android;net9.0-ios;net9.0-macos</TargetFrameworks>
 			</PropertyGroup>
 		</When>
 		<Otherwise>
@@ -44,7 +45,7 @@
 	<ItemGroup Condition="$(TargetFramework.StartsWith('net4')) OR $(TargetFramework.StartsWith('netstandard1')) OR $(TargetFramework.StartsWith('netstandard2.0'))">
 		<Reference Condition="$(TargetFramework.StartsWith('net4'))" Include="System.Web" />
 		<PackageReference Include="IndexRange" />
-		<PackageReference Include="System.Collections.Immutable" />
+		<!--<PackageReference Include="System.Collections.Immutable" />-->
 	</ItemGroup>
 
 	<!-- 不兼容 .NET 9.x 时 -->
@@ -62,6 +63,17 @@
 					<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 				</PackageReference>
 				<AdditionalFiles Condition="Exists('$(MSBuildProjectDirectory)\NativeMethods.txt')" Include="$(MSBuildProjectDirectory)\NativeMethods.txt" />
+			</ItemGroup>
+		</When>
+		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
+			<ItemGroup>
+				<PackageReference Include="Avalonia.Android" />
+				<PackageReference Include="Xamarin.AndroidX.WebKit" />
+			</ItemGroup>
+		</When>
+		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios' OR $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">
+			<ItemGroup>
+				<PackageReference Include="Avalonia.iOS" />
 			</ItemGroup>
 		</When>
 		<Otherwise>

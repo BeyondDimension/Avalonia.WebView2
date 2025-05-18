@@ -1,4 +1,5 @@
 <Project>
+	<Import Project="$(MSBuildThisFileDirectory)Version.props" />
 
 	<!-- 👇 全局 Property 配置 -->
 	<PropertyGroup>

@@ -72,4 +72,9 @@
 		<PackageVersion Include="WebViewControl-Avalonia" Version="3.120.9">
 		</PackageVersion>
 	</ItemGroup>
+	<!-- 👇 Android -->
+	<ItemGroup>
+		<PackageVersion Include="Xamarin.AndroidX.WebKit" Version="1.13.0.1">
+		</PackageVersion>
+	</ItemGroup>
 </Project>

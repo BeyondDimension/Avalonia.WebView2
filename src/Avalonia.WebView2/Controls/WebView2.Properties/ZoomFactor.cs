@@ -17,6 +17,8 @@ partial class WebView2
             {
                 return _coreWebView2Controller.ZoomFactor;
             }
+#elif ANDROID
+#elif IOS
 #else
             // CEF_TODO: 待实现 ZoomFactor
 #endif
@@ -31,6 +33,8 @@ partial class WebView2
             _zoomFactor = value;
 #if !DISABLE_WEBVIEW2_CORE && WINDOWS || NETFRAMEWORK
             _coreWebView2Controller?.ZoomFactor = value;
+#elif ANDROID
+#elif IOS
 #else
             // CEF_TODO: 待实现 ZoomFactor
 #endif

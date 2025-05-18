@@ -54,6 +54,8 @@ partial class WebView2
                         CoreWebView2.Navigate(value.AbsoluteUri);
                     }
                 }
+#elif ANDROID
+#elif IOS
 #else
                 // CEF_TODO: 待实现 Navigate
 #endif

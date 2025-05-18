@@ -24,6 +24,8 @@ partial class WebView2
             {
                 return coreWebView2.CanGoBack;
             }
+#elif ANDROID
+#elif IOS
 #else
             // CEF_TODO: 待实现 CanGoBack
 #endif
@@ -45,6 +47,8 @@ partial class WebView2
     {
 #if !DISABLE_WEBVIEW2_CORE && WINDOWS || NETFRAMEWORK
         CoreWebView2?.GoBack();
+#elif ANDROID
+#elif IOS
 #else
         // CEF_TODO: 待实现 GoBack
 #endif

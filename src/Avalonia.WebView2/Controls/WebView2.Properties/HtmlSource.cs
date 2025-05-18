@@ -38,6 +38,8 @@ partial class WebView2
                     SetAndRaise(HtmlSourceProperty, ref _htmlSource, value);
 #if !DISABLE_WEBVIEW2_CORE && WINDOWS || NETFRAMEWORK
                     CoreWebView2?.NavigateToString(value);
+#elif ANDROID
+#elif IOS
 #else
                     // CEF_TODO: 待实现 NavigateToString
 #endif

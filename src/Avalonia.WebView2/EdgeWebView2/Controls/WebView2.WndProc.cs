@@ -12,10 +12,10 @@ partial class WebView2 : global::Avalonia.Controls.Platforms.Windows.Interop.IHw
         return result;
     }
 
-    /// <summary>
-    /// 是否启用在 WndProc 中处理 WM_SETFOCUS 消息
-    /// </summary>
-    protected virtual bool EnabledOnWndProcSetFocus => false;
+    ///// <summary>
+    ///// 是否启用在 WndProc 中处理 WM_SETFOCUS 消息
+    ///// </summary>
+    //protected virtual bool EnabledOnWndProcSetFocus => false;
 
     /// <summary>
     /// This is overridden from <see cref="NativeControlHost" /> and is called to provide us with Win32 messages that are sent to our hwnd.
@@ -35,14 +35,14 @@ partial class WebView2 : global::Avalonia.Controls.Platforms.Windows.Interop.IHw
 
         switch (msg)
         {
-            case (uint)NativeMethods.WM.SETFOCUS:
-                {
-                    if (EnabledOnWndProcSetFocus)
-                    {
-                        _coreWebView2Controller?.MoveFocus(CoreWebView2MoveFocusReason.Programmatic);
-                    }
-                }
-                break;
+            //case (uint)NativeMethods.WM.SETFOCUS:
+            //    {
+            //        if (EnabledOnWndProcSetFocus)
+            //        {
+            //            _coreWebView2Controller?.MoveFocus(CoreWebView2MoveFocusReason.Programmatic);
+            //        }
+            //    }
+            //    break;
             case (uint)NativeMethods.WM.PAINT:
                 {
 #if NO_CSWIN32

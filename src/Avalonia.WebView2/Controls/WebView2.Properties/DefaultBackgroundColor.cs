@@ -24,6 +24,8 @@ partial class WebView2
         {
             _coreWebView2Controller.DefaultBackgroundColor = value;
         }
+#elif ANDROID
+#elif IOS
 #else
         // CEF_TODO: 待实现 DefaultBackgroundColor
 #endif
@@ -47,6 +49,8 @@ partial class WebView2
             {
                 return _coreWebView2Controller.DefaultBackgroundColor;
             }
+#elif ANDROID
+#elif IOS
 #else
             // CEF_TODO: 待实现 DefaultBackgroundColor
 #endif
