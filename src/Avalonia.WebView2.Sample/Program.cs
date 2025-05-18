@@ -1,3 +1,6 @@
+using Microsoft.Win32;
+using System.Windows;
+
 namespace Avalonia.WebView2.Sample;
 
 static class Program

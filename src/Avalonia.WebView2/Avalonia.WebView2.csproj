@@ -1,45 +1,45 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>
-			netstandard2.0;
-			net461;
-			netcoreapp3.0;
-			net7.0;net7.0-windows;
-			net6.0;net6.0-windows;
-			net8.0;net8.0-windows;
-			net9.0;net9.0-windows</TargetFrameworks>
+		<IsPackable Condition="'$(Configuration)'=='Release'">true</IsPackable>
+		<TargetFrameworks>net462;netstandard2.0;net6.0;net6.0-windows;net7.0;net7.0-windows;net8.0;net8.0-windows;net9.0;net9.0-windows</TargetFrameworks>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-		<RootNamespace>Avalonia.Controls</RootNamespace>
+		<RootNamespace>Avalonia</RootNamespace>
 		<PackageId>WebView2.Avalonia</PackageId>
 		<Description>
 			The WebView2 control enables you to embed web technologies (HTML, CSS, and JavaScript) in your native applications powered by Microsoft Edge (Chromium).
 			This package is necessary for Avalonia applications. To learn more about package versions checkout https://aka.ms/wv2-packageversion. To learn best practices checkout: https://aka.ms/wv2-bestpractices.
 		</Description>
 		<PackageTags>Web WebView Native native package Edge avalonia avaloniaui dotnet framework core Webview2</PackageTags>
-		<Version>1.0.1518.46-preview.230207.17</Version>
+		<Version>1.0.3240.44-preview.250518.1</Version>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-		<Platforms>AnyCPU;x64;x86</Platforms>
 	</PropertyGroup>
-	<PropertyGroup Condition="'$(Platform)'=='x86'">
-		<DefineConstants>$(DefineConstants);X86</DefineConstants>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(Platform)'=='x64'">
-		<DefineConstants>$(DefineConstants);X64</DefineConstants>
-	</PropertyGroup>
-
 
 	<ItemGroup>
 		<AvaloniaXaml Include="**\*.xaml" />
 	</ItemGroup>
 
+	<!-- 👇 引用 NuGet 包 -->
 	<ItemGroup>
 		<PackageReference Include="Avalonia" />
 		<PackageReference Include="WebView2.NativeAssets.Win32" />
+		<PackageReference Include="Utf8StringInterpolation" />
+		<PackageReference Include="Microsoft.IO.RecyclableMemoryStream" />
 	</ItemGroup>
 
-	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
+	<!-- .NET Framework 4.x -->
+	<ItemGroup Condition="$(TargetFramework.StartsWith('net4')) OR $(TargetFramework.StartsWith('netstandard1')) OR $(TargetFramework.StartsWith('netstandard2.0'))">
+		<Reference Condition="$(TargetFramework.StartsWith('net4'))" Include="System.Web" />
+		<PackageReference Include="IndexRange" />
+		<PackageReference Include="System.Collections.Immutable" />
+	</ItemGroup>
+
+	<!-- 不兼容 .NET 9.x 时 -->
+	<ItemGroup Condition="!$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net9.0'))">
+		<PackageReference Include="System.Text.Json" />
+	</ItemGroup>
+
+	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows' OR $(TargetFramework.StartsWith('net4'))">
 		<PackageReference Include="Microsoft.Windows.CsWin32">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

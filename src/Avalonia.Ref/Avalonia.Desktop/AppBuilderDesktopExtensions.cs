@@ -9,7 +9,7 @@ namespace Avalonia
     {
         public static AppBuilder UsePlatformDetect(this AppBuilder builder)
         {
-#if WINDOWS
+#if WINDOWS || NETFRAMEWORK
             builder.UseWin32();
 #else
 

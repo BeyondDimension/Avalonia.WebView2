@@ -1,3 +1,68 @@
+<!-- 👇 NuGet 错误 NU1011 PackageVersion 项不能包含浮动版本。 -->
 <Project>
-	<Import Project="..\ref\DirectoryPackages\Directory.Packages.props" />
+	<!-- 👇 当前项目的【引用的包版本号】配置 -->
+	<PropertyGroup>
+		<!-- 👇 Avalonia -->
+		<Version_Avalonia>11.3.0</Version_Avalonia>
+		<!-- 👇 Avalonia Third Party -->
+		<Version_Avalonia_FluentUI>2.4.0-preview1</Version_Avalonia_FluentUI>
+	</PropertyGroup>
+	<!-- 👇 SourceLink -->
+	<ItemGroup>
+		<PackageVersion Include="Microsoft.SourceLink.GitHub" Version="8.0.0">
+		</PackageVersion>
+	</ItemGroup>
+	<!-- 👇 Avalonia UI -->
+	<ItemGroup>
+		<PackageVersion Include="Avalonia" Version="$(Version_Avalonia)">
+		</PackageVersion>
+		<PackageVersion Include="Avalonia.Android" Version="$(Version_Avalonia)">
+		</PackageVersion>
+		<PackageVersion Include="Avalonia.Desktop" Version="$(Version_Avalonia)">
+		</PackageVersion>
+		<PackageVersion Include="Avalonia.Diagnostics" Version="$(Version_Avalonia)">
+		</PackageVersion>
+		<PackageVersion Include="Avalonia.iOS" Version="$(Version_Avalonia)">
+		</PackageVersion>
+		<PackageVersion Include="Avalonia.Native" Version="$(Version_Avalonia)">
+		</PackageVersion>
+		<PackageVersion Include="Avalonia.Skia" Version="$(Version_Avalonia)">
+		</PackageVersion>
+		<PackageVersion Include="Avalonia.Win32" Version="$(Version_Avalonia)">
+		</PackageVersion>
+		<PackageVersion Include="Avalonia.X11" Version="$(Version_Avalonia)">
+		</PackageVersion>
+		<PackageVersion Include="FluentAvaloniaUI" Version="$(Version_Avalonia_FluentUI)">
+		</PackageVersion>
+	</ItemGroup>
+	<!-- 👇 WebView2 -->
+	<ItemGroup>
+		<PackageVersion Include="WebView2.NativeAssets.Win32" Version="1.0.3240.44-d250518">
+		</PackageVersion>
+	</ItemGroup>
+	<!-- 👇 .NET Compat -->
+	<ItemGroup>
+		<PackageVersion Include="IndexRange" Version="1.0.3">
+		</PackageVersion>
+	</ItemGroup>
+	<!-- 👇 Windows Only -->
+	<ItemGroup>
+		<PackageVersion Include="Microsoft.Windows.CsWin32" Version="0.3.162">
+		</PackageVersion>
+	</ItemGroup>
+	<!-- 👇 UTF-8 -->
+	<ItemGroup>
+		<PackageVersion Include="Utf8StringInterpolation" Version="1.3.2" />
+	</ItemGroup>
+	<!-- 👇 MemoryStream -->
+	<ItemGroup>
+		<PackageVersion Include="Microsoft.IO.RecyclableMemoryStream" Version="3.0.1" />
+	</ItemGroup>
+	<!-- 👇 .NET BCL -->
+	<ItemGroup>
+		<PackageVersion Include="System.Text.Json" Version="9.0.4">
+		</PackageVersion>
+		<PackageVersion Include="System.Collections.Immutable" Version="9.0.5">
+		</PackageVersion>
+	</ItemGroup>
 </Project>

@@ -1,0 +1,27 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+  </Configurations>
+  <Folder Name="/Avalonia.Ref/">
+    <Project Path="src/Avalonia.Ref/Avalonia.Desktop/Avalonia.Desktop.csproj">
+    </Project>
+    <Project Path="src/Avalonia.Ref/Avalonia.Native/Avalonia.Native.csproj">
+    </Project>
+    <Project Path="src/Avalonia.Ref/Avalonia.X11/Avalonia.X11.csproj">
+    </Project>
+  </Folder>
+  <Folder Name="/_Root/">
+    <File Path=".github/workflows/CI.yml" />
+    <File Path=".gitignore" />
+    <File Path="README.md" />
+    <File Path="src/.editorconfig" />
+    <File Path="src/Directory.Build.props" />
+    <File Path="src/Directory.Packages.props" />
+    <File Path="src/GeneratePackage.props" />
+    <File Path="src/WebView2.NativeAssets.Win32/WebView2.NativeAssets.Win32.nuspec" />
+  </Folder>
+  <Project Path="src/Avalonia.WebView2.Sample/Avalonia.WebView2.Sample.csproj">
+  </Project>
+  <Project Path="src/Avalonia.WebView2/Avalonia.WebView2.csproj">
+  </Project>
+</Solution>

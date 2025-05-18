@@ -1,3 +1,6 @@
+using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Markup.Xaml;
+
 namespace Avalonia.WebView2.Sample;
 
 public sealed class App : Application
@@ -20,7 +23,7 @@ public sealed class App : Application
 
     static void InitWebView2()
     {
-        if (AvaloniaWebView2.IsSupported)
+        if (global::Avalonia.Controls.WebView2.IsSupported)
         {
             //AvaloniaWebView2.DefaultCreationProperties = new()
             //{

@@ -5,7 +5,6 @@
 		<TargetFramework>net9.0-windows</TargetFramework>
 		<ApplicationManifest>Properties\app.manifest</ApplicationManifest>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-		<Platforms>AnyCPU;x64;x86</Platforms>
 	</PropertyGroup>
 
 
@@ -25,15 +24,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Compile Include="..\Avalonia.WebView2\Properties\AssemblyInfo.OS.cs">
-			<Link>Properties\AssemblyInfo.OS.cs</Link>
-		</Compile>
-		<Compile Include="..\Avalonia.WebView2\Properties\ImplicitUsings.cs">
-			<Link>Properties\ImplicitUsings.cs</Link>
-		</Compile>
-	</ItemGroup>
-
-	<ItemGroup>
 		<PackageReference Include="Avalonia" />
 		<PackageReference Include="Avalonia.Desktop" />
 		<PackageReference Include="FluentAvaloniaUI" />
@@ -47,14 +37,4 @@
 		<ProjectReference Include="..\Avalonia.Ref\Avalonia.X11\Avalonia.X11.csproj" />
 		<ProjectReference Include="..\Avalonia.WebView2\Avalonia.WebView2.csproj" />
 	</ItemGroup>
-
-	<!--<ItemGroup>
-		<Reference Include="Microsoft.Web.WebView2.Core">
-			<HintPath>..\..\ref\Microsoft.Web.WebView2\lib\netcoreapp3.0\Microsoft.Web.WebView2.Core.dll</HintPath>
-		</Reference>
-	</ItemGroup>-->
-
-	<!--<ItemGroup>
-		<None Include="..\..\ref\Microsoft.Web.WebView2\runtimes\win-x64\native\WebView2Loader.dll" CopyToOutputDirectory="PreserveNewest" />
-	</ItemGroup>-->
 </Project>

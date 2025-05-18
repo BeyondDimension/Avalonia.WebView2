@@ -1,0 +1,1 @@
+C:\nuget.exe pack WebView2.NativeAssets.Win32.nuspec -OutputDirectory ..\..\pkg

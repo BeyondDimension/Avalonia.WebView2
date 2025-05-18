@@ -1,20 +1,46 @@
 <Project>
+
+	<!-- 👇 全局 Property 配置 -->
 	<PropertyGroup>
-		<NoWarn>NU1507</NoWarn>
-		<LangVersion>latest</LangVersion>
+		<Deterministic>true</Deterministic>
+		<LangVersion>preview</LangVersion>
 		<Nullable>enable</Nullable>
-		<GenerateAssemblyInfo>true</GenerateAssemblyInfo>
 		<ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
-		<ImplicitUsings>enable</ImplicitUsings>
-		<Version>1.23.10207.11751</Version>
-		<PackageIconUrl>https://avatars.githubusercontent.com/u/79355691?s=200&amp;v=4</PackageIconUrl>
-		<Company>长沙次元超越科技有限公司</Company>
+		<UseArtifactsOutput>true</UseArtifactsOutput>
+		<SuppressTfmSupportBuildWarnings>true</SuppressTfmSupportBuildWarnings>
+		<NoWarn>$(NoWarn);NU1504;NU1507;MSB4011;NU5048;NU5104;RS1041</NoWarn>
+		<GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<NeutralLanguage>zh-Hans</NeutralLanguage>
+		<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+	</PropertyGroup>
+
+	<!-- 👇 TFM != .NET Framework 3.5 -->
+	<PropertyGroup Condition="!$(TargetFramework.StartsWith('net35'))">
+		<ImplicitUsings>true</ImplicitUsings>
+	</PropertyGroup>
+
+	<!-- 👇 NuGet 包信息 -->
+	<PropertyGroup>
+		<PackageIconUrl>https://avatars.githubusercontent.com/u/79355691</PackageIconUrl>
+		<RepositoryType>git</RepositoryType>
 		<Copyright>©️ $(Company). All rights reserved.</Copyright>
 		<Authors>$(Company)</Authors>
 		<FileVersion>$(Version)</FileVersion>
 		<AssemblyVersion>$(Version)</AssemblyVersion>
 	</PropertyGroup>
+
+	<!-- 👇 静态本机编译 & 剪裁 | AOT & Trimmable -->
+	<PropertyGroup Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net7.0'))">
+		<IsTrimmable>true</IsTrimmable>
+		<EnableTrimAnalyzer>true</EnableTrimAnalyzer>
+		<EnableSingleFileAnalyzer>true</EnableSingleFileAnalyzer>
+		<EnableAotAnalyzer>true</EnableAotAnalyzer>
+		<IsAotCompatible>true</IsAotCompatible>
+	</PropertyGroup>
+
+	<!-- 👇 CompilerVisibleProperty 配置源生成器中 MSBuild Property 可见性 -->
 	<ItemGroup>
-		<PackageReference Include="StyleCop.Analyzers" PrivateAssets="All" />
+		<CompilerVisibleProperty Include="Deterministic" />
 	</ItemGroup>
 </Project>

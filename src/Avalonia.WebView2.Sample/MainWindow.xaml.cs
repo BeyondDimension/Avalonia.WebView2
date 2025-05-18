@@ -1,10 +1,20 @@
+using Avalonia.Controls;
+using Avalonia.Input;
+using Avalonia.Interactivity;
+using Avalonia.Markup.Xaml;
+using Microsoft.Web.WebView2.Core;
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
+using System.Runtime.InteropServices;
+
 namespace Avalonia.WebView2.Sample;
 
 public sealed partial class MainWindow : Window
 {
-    AvaloniaWebView2? WebView => WebView2Compat?.WebView2;
+    global::Avalonia.Controls.WebView2? WebView => WebView2Compat?.WebView2;
 
-    public CoreWebView2Environment? Environment { get; }
+    //public CoreWebView2Environment? Environment { get; }
 
     public MainWindow()
     {
@@ -20,14 +30,15 @@ public sealed partial class MainWindow : Window
         UrlTextBox = this.FindControl<TextBox>("UrlTextBox");
         AboutTextBlock = this.FindControl<TextBlock>("AboutTextBlock");
 
-        AboutTextBlock.Text = $"Runtime: {System.Environment.Version}{System.Environment.NewLine}OSArchitecture: {RuntimeInformation.OSArchitecture}{System.Environment.NewLine}ProcessArchitecture: {RuntimeInformation.ProcessArchitecture}{System.Environment.NewLine}Avalonia: {GetVersion(typeof(Window).Assembly)}{System.Environment.NewLine}Avalonia.WebView2: {GetVersion(typeof(AvaloniaWebView2).Assembly)}{System.Environment.NewLine}Microsoft.Web.WebView2.Core: {GetVersion(typeof(CoreWebView2).Assembly)}";
+        AboutTextBlock.Text = $"Runtime: {System.Environment.Version}{System.Environment.NewLine}OSArchitecture: {RuntimeInformation.OSArchitecture}{System.Environment.NewLine}ProcessArchitecture: {RuntimeInformation.ProcessArchitecture}{System.Environment.NewLine}Avalonia: {GetVersion(typeof(Window).Assembly)}{System.Environment.NewLine}Avalonia.WebView2: {GetVersion(typeof(global::Avalonia.Controls.WebView2).Assembly)}{System.Environment.NewLine}Microsoft.Web.WebView2.Core: {GetVersion(typeof(CoreWebView2).Assembly)}";
         Button.Click += Button_Click;
-        if (AvaloniaWebView2.IsSupported)
+        UrlTextBox.KeyDown += UrlTextBox_KeyDown;
+        if (global::Avalonia.Controls.WebView2.IsSupported)
         {
-            UrlTextBox.KeyDown += UrlTextBox_KeyDown;
-            Environment = WebView.CreationProperties!.CreateEnvironmentAsync().GetAwaiter().GetResult();
-            Environment.ProcessInfosChanged += Environment_ProcessInfosChanged;
-            SetTitle(Environment.BrowserVersionString);
+            //Environment = WebView.CreationProperties!.CreateEnvironmentAsync().GetAwaiter().GetResult();
+            //Environment.ProcessInfosChanged += Environment_ProcessInfosChanged;
+            //SetTitle(Environment.BrowserVersionString);
+            SetTitle(global::Avalonia.Controls.WebView2.VersionString);
         }
         else
         {
@@ -58,11 +69,14 @@ public sealed partial class MainWindow : Window
 
     void UrlTextBox_KeyDown(object? sender, KeyEventArgs e)
     {
-        if (e.Key == Key.Enter)
+        if (global::Avalonia.Controls.WebView2.IsSupported)
         {
-            var url = UrlTextBox.Text;
-            if (!IsHttpUrl(url)) url = $"{Prefix_HTTPS}{url}";
-            WebView?.CoreWebView2?.Navigate(url);
+            if (e.Key == Key.Enter)
+            {
+                var url = UrlTextBox.Text;
+                if (!IsHttpUrl(url)) url = $"{Prefix_HTTPS}{url}";
+                WebView?.CoreWebView2?.Navigate(url);
+            }
         }
     }
 
@@ -84,37 +98,37 @@ public sealed partial class MainWindow : Window
         AvaloniaXamlLoader.Load(this);
     }
 
-    void Environment_ProcessInfosChanged(object? sender, object e)
-    {
-        var processInfos = Environment!.GetProcessInfos();
-        foreach (var processInfo in processInfos)
-        {
-            try
-            {
-                var process = Process.GetProcessById(processInfo.ProcessId);
-                if (IsWow64Process(process.Handle, out var wow64Process))
-                {
-                    Environment.ProcessInfosChanged -= Environment_ProcessInfosChanged;
-                    SetTitle(Environment.BrowserVersionString, RuntimeInformation.ProcessArchitecture switch
-                    {
-                        Architecture.X86 or Architecture.X64 => wow64Process ? Architecture.X64 : Architecture.X86,
-                        Architecture.Arm or Architecture.Arm64 => wow64Process ? Architecture.Arm64 : Architecture.Arm,
-                        _ => Unknown,
-                    });
-                }
-                return;
-            }
-            catch
-            {
+    //void Environment_ProcessInfosChanged(object? sender, object e)
+    //{
+    //    var processInfos = Environment!.GetProcessInfos();
+    //    foreach (var processInfo in processInfos)
+    //    {
+    //        try
+    //        {
+    //            var process = Process.GetProcessById(processInfo.ProcessId);
+    //            if (IsWow64Process(process.Handle, out var wow64Process))
+    //            {
+    //                Environment.ProcessInfosChanged -= Environment_ProcessInfosChanged;
+    //                SetTitle(Environment.BrowserVersionString, RuntimeInformation.ProcessArchitecture switch
+    //                {
+    //                    Architecture.X86 or Architecture.X64 => wow64Process ? Architecture.X64 : Architecture.X86,
+    //                    Architecture.Arm or Architecture.Arm64 => wow64Process ? Architecture.Arm64 : Architecture.Arm,
+    //                    _ => Unknown,
+    //                });
+    //            }
+    //            return;
+    //        }
+    //        catch
+    //        {
 
-            }
-        }
-    }
+    //        }
+    //    }
+    //}
 
     void Button_Click(object? sender, RoutedEventArgs e)
     {
 #if DEBUG
-        WebView?.Test();
+        WebView?.CoreWebView2?.OpenDevToolsWindow();
 #endif
     }
 

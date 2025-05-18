@@ -16,6 +16,11 @@ charset = utf-8
 # Tab indentation (no size specified)
 [Makefile]
 indent_style = tab
+dotnet_style_qualification_for_field = false:silent
+dotnet_style_qualification_for_property = false:suggestion
+dotnet_style_qualification_for_method = false:suggestion
+dotnet_style_qualification_for_event = false:suggestion
+end_of_line = crlf
 
 [*.{js,json}]
 indent_style = space
@@ -93,19 +98,19 @@ dotnet_remove_unnecessary_suppression_exclusions = none
 #### c# 编码约定 ####
 
 # var 首选项
-csharp_style_var_elsewhere = true
-csharp_style_var_for_built_in_types = true
-csharp_style_var_when_type_is_apparent = true
+csharp_style_var_elsewhere = true:silent
+csharp_style_var_for_built_in_types = true:silent
+csharp_style_var_when_type_is_apparent = true:silent
 
 # Expression-bodied 成员
-csharp_style_expression_bodied_accessors = true
-csharp_style_expression_bodied_constructors = false
-csharp_style_expression_bodied_indexers = true
-csharp_style_expression_bodied_lambdas = true
-csharp_style_expression_bodied_local_functions = false
-csharp_style_expression_bodied_methods = false
-csharp_style_expression_bodied_operators = false
-csharp_style_expression_bodied_properties = true
+csharp_style_expression_bodied_accessors = true:silent
+csharp_style_expression_bodied_constructors = false:silent
+csharp_style_expression_bodied_indexers = true:silent
+csharp_style_expression_bodied_lambdas = true:silent
+csharp_style_expression_bodied_local_functions = false:silent
+csharp_style_expression_bodied_methods = false:silent
+csharp_style_expression_bodied_operators = false:silent
+csharp_style_expression_bodied_properties = true:silent
 
 # 模式匹配首选项
 csharp_style_pattern_matching_over_as_with_null_check = true
@@ -115,15 +120,16 @@ csharp_style_prefer_pattern_matching = true
 csharp_style_prefer_switch_expression = true
 
 # Null 检查首选项
-csharp_style_conditional_delegate_call = true
+csharp_style_conditional_delegate_call = true:suggestion
 
 # 修饰符首选项
 csharp_prefer_static_local_function = true
 csharp_preferred_modifier_order = public,private,protected,internal,static,extern,new,virtual,abstract,sealed,override,readonly,unsafe,volatile,async
 
 # 代码块首选项
-csharp_prefer_braces = false
-csharp_prefer_simple_using_statement = true
+csharp_style_namespace_declarations= file_scoped:suggestion
+csharp_prefer_braces = false:silent
+csharp_prefer_simple_using_statement = true:suggestion
 
 # 表达式级首选项
 csharp_prefer_simple_default_expression = true
@@ -138,7 +144,7 @@ csharp_style_unused_value_assignment_preference = discard_variable
 csharp_style_unused_value_expression_statement_preference = discard_variable
 
 # "using" 指令首选项
-csharp_using_directive_placement = outside_namespace
+csharp_using_directive_placement = outside_namespace:silent
 
 #### C# 格式规则 ####
 
@@ -235,14 +241,17 @@ dotnet_diagnostic.IDE0010.severity = none
 # IDE0011: 添加大括号
 dotnet_diagnostic.IDE0011.severity = none
 
+# IDE0028: 使用集合初始值设定项
+dotnet_diagnostic.IDE0028.severity = none
+
 # IDE0040: 添加可访问性修饰符
 dotnet_diagnostic.IDE0040.severity = none
 
 # IDE0130: 命名空间与文件夹结构不匹配
-dotnet_style_namespace_match_folder = false
+dotnet_style_namespace_match_folder = none
 
-# IDE0130: 命名空间与文件夹结构不匹配
-dotnet_diagnostic.IDE0130.severity = none
+# IDE0079: 请删除不必要的忽略
+dotnet_diagnostic.IDE0079.severity = none
 
 # IDE0055: 修正格式
 dotnet_diagnostic.IDE0055.severity = error
@@ -250,14 +259,20 @@ dotnet_diagnostic.IDE0055.severity = error
 # IDE1006: 命名样式
 dotnet_diagnostic.IDE1006.severity = error
 
+# SA1400: The access modifier for a C# element has not been explicitly defined
+dotnet_diagnostic.SA1400.severity = none
+
 # SA1600: Elements should be documented
-dotnet_diagnostic.SA1600.severity = none
+dotnet_diagnostic.SA1600.severity = silent
 
 # SA1629: Documentation text should end with a period
 dotnet_diagnostic.SA1629.severity = silent
 
 # SA1101: Prefix local calls with this
 dotnet_diagnostic.SA1101.severity = silent
+
+# SA1134: Attributes should not share line
+dotnet_diagnostic.SA1134.severity = silent
 
 # SA1623: Property summary documentation should match accessors
 dotnet_diagnostic.SA1623.severity = none
@@ -275,7 +290,7 @@ dotnet_analyzer_diagnostic.category-StyleCop.CSharp.LayoutRules.severity = error
 dotnet_diagnostic.SA1400.severity = silent
 
 # SA1633: File should have header
-dotnet_diagnostic.SA1633.severity = silent
+dotnet_diagnostic.SA1633.severity = none
 
 # SA1128: Put constructor initializers on their own line
 dotnet_diagnostic.SA1128.severity = silent
@@ -285,6 +300,9 @@ dotnet_diagnostic.SA1413.severity = suggestion
 
 # SA1005: Single line comments should begin with single space
 dotnet_diagnostic.SA1005.severity = none
+
+# SA1010: Opening square brackets should be spaced correctly
+dotnet_diagnostic.SA1010.severity = none
 
 # SA1515: Single-line comment should be preceded by blank line
 dotnet_diagnostic.SA1515.severity = silent
@@ -326,10 +344,10 @@ dotnet_diagnostic.SA1502.severity = silent
 dotnet_diagnostic.SA1201.severity = silent
 
 # SA1505: Opening braces should not be followed by blank line
-dotnet_diagnostic.SA1505.severity = silent
+dotnet_diagnostic.SA1505.severity = error
 
 # SA1508: Closing braces should not be preceded by blank line
-dotnet_diagnostic.SA1508.severity = silent
+dotnet_diagnostic.SA1508.severity = error
 
 # SA1614: Element parameter documentation should have text
 dotnet_diagnostic.SA1614.severity = silent
@@ -339,6 +357,9 @@ dotnet_diagnostic.SA1116.severity = silent
 
 # SA1601: Partial elements should be documented
 dotnet_diagnostic.SA1601.severity = silent
+
+# SA1606: Element documentation should have summary text
+dotnet_diagnostic.SA1606.severity = error
 
 # SA1009: Closing parenthesis should be spaced correctly
 dotnet_diagnostic.SA1009.severity = silent
@@ -361,8 +382,11 @@ dotnet_diagnostic.SA1649.severity = silent
 # SA1210: Using directives should be ordered alphabetically by namespace
 dotnet_diagnostic.SA1210.severity = silent
 
+# SA1217: Using static directives should be ordered alphabetically
+dotnet_diagnostic.SA1217.severity = error
+
 # SA1028: Code should not contain trailing whitespace
-dotnet_diagnostic.SA1028.severity = silent
+dotnet_diagnostic.SA1028.severity = error
 
 # SA1204: Static elements should appear before instance elements
 dotnet_diagnostic.SA1204.severity = silent
@@ -372,6 +396,9 @@ dotnet_diagnostic.SA1203.severity = silent
 
 # SA1123: Do not place regions within elements
 dotnet_diagnostic.SA1123.severity = silent
+
+# SA1611: Element parameters should be documented
+dotnet_diagnostic.SA1611.severity = error
 
 # SA1615: Element return value should be documented
 dotnet_diagnostic.SA1615.severity = silent
@@ -436,6 +463,9 @@ dotnet_diagnostic.SA1518.severity = silent
 # SA1118: Parameter should not span multiple lines
 dotnet_diagnostic.SA1118.severity = silent
 
+# SA1200: A C# using directive is placed outside of a namespace element
+dotnet_diagnostic.SA1200.severity = none
+
 # SA1214: Readonly fields should appear before non-readonly fields
 dotnet_diagnostic.SA1214.severity = silent
 
@@ -462,3 +492,55 @@ dotnet_diagnostic.SA1316.severity = silent
 
 # SA1405: Debug.Assert should provide message text
 dotnet_diagnostic.SA1405.severity = silent
+
+# CS1572: XML 注释中有 param 标记，但是没有该名称的参数
+dotnet_diagnostic.CS1572.severity = none
+s
+# CS1573: 参数在 XML 注释中没有匹配的 param 标记(但其他参数有)
+dotnet_diagnostic.CS1573.severity = error
+
+# CS1591: 已指定 DocumentationFile 编译器选项，但一个或多个构造没有注释
+dotnet_diagnostic.CS1591.severity = suggestion
+
+# SA1112: Closing parenthesis should be on line of opening parenthesis
+dotnet_diagnostic.SA1112.severity = silent
+
+# SA1111: Closing parenthesis should be on line of last parameter
+dotnet_diagnostic.SA1111.severity = silent
+
+# CS8618: 在退出构造函数时，不可为 null 的字段必须包含非 null 值。请考虑声明为可以为 null。
+dotnet_diagnostic.CS8618.severity = error
+
+# CS8604: 引用类型参数可能为 null。
+dotnet_diagnostic.CS8604.severity = error
+
+# CA1829: 在可用时使用 Length/Count 属性而不是 Count()
+dotnet_diagnostic.CA1829.severity = error
+
+# CA1846: 首选 “AsSpan” 而不是 “Substring”
+dotnet_diagnostic.CA1846.severity = error
+
+# CA1860：避免使用 “Enumerable.Any()” 扩展方法，直接使用 Length/Count 判断不等于 0 性能更好
+dotnet_diagnostic.CA1860.severity = error
+
+# IDE0057: 使用范围运算符
+dotnet_diagnostic.IDE0057.severity = error
+csharp_style_prefer_method_group_conversion = true:silent
+
+# IDE0005: Using 指令是不需要的。
+dotnet_diagnostic.IDE0005.severity = none
+
+# CA1707: 标识符不应包含下划线
+dotnet_diagnostic.CA1707.severity = silent
+
+# CA1069: 不应复制枚举值
+dotnet_diagnostic.CA1069.severity = silent
+
+# CA1822: 将成员标记为 static
+dotnet_diagnostic.CA1822.severity = none
+
+# SA1002: Semicolons should be spaced correctly
+dotnet_diagnostic.SA1002.severity = error
+
+# CA1834: 若适用，请考虑使用 "StringBuilder.Append(char)"
+dotnet_diagnostic.CA1834.severity = error
