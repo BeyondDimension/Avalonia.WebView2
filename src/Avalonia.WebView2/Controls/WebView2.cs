@@ -5,7 +5,7 @@ namespace Avalonia.Controls;
 /// <summary>
 /// Microsoft Edge WebView2 控件允许您在本地应用程序中嵌入网络技术（HTML、CSS 和 JavaScript）。WebView2 控件使用 Microsoft Edge 作为渲染引擎，在本地应用程序中显示网页内容。使用 WebView2，您可以在本地应用程序的不同部分嵌入网页代码，或者在一个 WebView2 实例中构建所有本地应用程序。
 /// </summary>
-public partial class WebView2 : global::Avalonia.Controls.Shapes.Rectangle
+public partial class WebView2
 {
     static WebView2()
     {
@@ -83,3 +83,9 @@ public partial class WebView2 : global::Avalonia.Controls.Shapes.Rectangle
     /// </summary>
     protected static bool IsInDesignMode => Design.IsDesignMode;
 }
+
+#if !(WINDOWS || NETFRAMEWORK) && !NET8_0_OR_GREATER
+partial class WebView2 : global::Avalonia.Controls.Shapes.Rectangle
+{
+}
+#endif

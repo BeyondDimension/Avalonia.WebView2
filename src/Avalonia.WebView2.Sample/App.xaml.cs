@@ -23,6 +23,7 @@ public sealed class App : Application
 
     static void InitWebView2()
     {
+#if WINDOWS
         if (global::Avalonia.Controls.WebView2.IsSupported)
         {
             //AvaloniaWebView2.DefaultCreationProperties = new()
@@ -38,5 +39,7 @@ public sealed class App : Application
             //    return path;
             //}
         }
+#elif !(WINDOWS || NETFRAMEWORK) && NET8_0_OR_GREATER
+#endif
     }
 }

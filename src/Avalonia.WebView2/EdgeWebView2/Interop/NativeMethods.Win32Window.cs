@@ -1,7 +1,7 @@
 // MIT License Copyright(c) 2020 CefNet
 // https://github.com/CefNet/CefNet/blob/103.0.22181.155/CefNet.Avalonia/WinApi/NativeMethods.cs
 
-#if WINDOWS || NETFRAMEWORK
+#if !DISABLE_WEBVIEW2_CORE && (WINDOWS || NETFRAMEWORK)
 namespace MS.Win32;
 
 partial class NativeMethods

@@ -1,8 +1,10 @@
+#if WINDOWS
+using Microsoft.Web.WebView2.Core;
+#endif
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
-using Microsoft.Web.WebView2.Core;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
@@ -30,9 +32,19 @@ public sealed partial class MainWindow : Window
         UrlTextBox = this.FindControl<TextBox>("UrlTextBox");
         AboutTextBlock = this.FindControl<TextBlock>("AboutTextBlock");
 
-        AboutTextBlock.Text = $"Runtime: {System.Environment.Version}{System.Environment.NewLine}OSArchitecture: {RuntimeInformation.OSArchitecture}{System.Environment.NewLine}ProcessArchitecture: {RuntimeInformation.ProcessArchitecture}{System.Environment.NewLine}Avalonia: {GetVersion(typeof(Window).Assembly)}{System.Environment.NewLine}Avalonia.WebView2: {GetVersion(typeof(global::Avalonia.Controls.WebView2).Assembly)}{System.Environment.NewLine}Microsoft.Web.WebView2.Core: {GetVersion(typeof(CoreWebView2).Assembly)}";
+        var webView2AssemblyVersion =
+#if WINDOWS
+            $"Microsoft.Web.WebView2.Core: {GetVersion(typeof(CoreWebView2).Assembly)}";
+#elif !(WINDOWS || NETFRAMEWORK) && NET8_0_OR_GREATER
+            $"Microsoft.Web.WebView2.Core: {GetVersion(typeof(global::Xilium.CefGlue.Avalonia.AvaloniaCefBrowser).Assembly)}";
+#else
+            $"Xilium.CefGlue.Avalonia: {GetVersion(typeof(CoreWebView2).Assembly)}";
+#endif
+
+        AboutTextBlock.Text = $"Runtime: {System.Environment.Version}{System.Environment.NewLine}OSArchitecture: {RuntimeInformation.OSArchitecture}{System.Environment.NewLine}ProcessArchitecture: {RuntimeInformation.ProcessArchitecture}{System.Environment.NewLine}Avalonia: {GetVersion(typeof(Window).Assembly)}{System.Environment.NewLine}Avalonia.WebView2: {GetVersion(typeof(global::Avalonia.Controls.WebView2).Assembly)}{System.Environment.NewLine}{webView2AssemblyVersion}";
         Button.Click += Button_Click;
         UrlTextBox.KeyDown += UrlTextBox_KeyDown;
+#if WINDOWS
         if (global::Avalonia.Controls.WebView2.IsSupported)
         {
             //Environment = WebView.CreationProperties!.CreateEnvironmentAsync().GetAwaiter().GetResult();
@@ -41,6 +53,7 @@ public sealed partial class MainWindow : Window
             SetTitle(global::Avalonia.Controls.WebView2.VersionString);
         }
         else
+#endif
         {
             SetTitle(null);
         }
@@ -69,6 +82,7 @@ public sealed partial class MainWindow : Window
 
     void UrlTextBox_KeyDown(object? sender, KeyEventArgs e)
     {
+#if WINDOWS
         if (global::Avalonia.Controls.WebView2.IsSupported)
         {
             if (e.Key == Key.Enter)
@@ -78,6 +92,8 @@ public sealed partial class MainWindow : Window
                 WebView?.CoreWebView2?.Navigate(url);
             }
         }
+#elif !(WINDOWS || NETFRAMEWORK) && NET8_0_OR_GREATER
+#endif
     }
 
     const string Prefix_HTTPS = "https://";
@@ -127,12 +143,13 @@ public sealed partial class MainWindow : Window
 
     void Button_Click(object? sender, RoutedEventArgs e)
     {
-#if DEBUG
+#if WINDOWS
         WebView?.CoreWebView2?.OpenDevToolsWindow();
+#elif !(WINDOWS || NETFRAMEWORK) && NET8_0_OR_GREATER
 #endif
     }
 
-    [DllImport("kernel32.dll", SetLastError = true, CallingConvention = CallingConvention.Winapi)]
-    [return: MarshalAs(UnmanagedType.Bool)]
-    static extern bool IsWow64Process([In] IntPtr processHandle, [Out, MarshalAs(UnmanagedType.Bool)] out bool wow64Process);
+    //[DllImport("kernel32.dll", SetLastError = true, CallingConvention = CallingConvention.Winapi)]
+    //[return: MarshalAs(UnmanagedType.Bool)]
+    //static extern bool IsWow64Process([In] IntPtr processHandle, [Out, MarshalAs(UnmanagedType.Bool)] out bool wow64Process);
 }

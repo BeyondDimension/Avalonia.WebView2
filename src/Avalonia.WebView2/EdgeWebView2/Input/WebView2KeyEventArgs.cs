@@ -1,4 +1,4 @@
-#if WINDOWS || NETFRAMEWORK
+#if !DISABLE_WEBVIEW2_CORE && (WINDOWS || NETFRAMEWORK)
 namespace Avalonia.Input;
 
 partial class WebView2KeyEventArgs

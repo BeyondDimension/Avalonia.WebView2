@@ -1,4 +1,4 @@
-#if WINDOWS || NETFRAMEWORK
+#if !DISABLE_WEBVIEW2_CORE && (WINDOWS || NETFRAMEWORK)
 using Avalonia.Controls.Platforms.Windows.Interop;
 using Avalonia.Platform;
 using Avalonia.Threading;

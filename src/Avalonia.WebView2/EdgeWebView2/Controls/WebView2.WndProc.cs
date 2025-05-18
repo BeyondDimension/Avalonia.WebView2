@@ -1,4 +1,4 @@
-#if WINDOWS || NETFRAMEWORK
+#if !DISABLE_WEBVIEW2_CORE && (WINDOWS || NETFRAMEWORK)
 using Microsoft.Web.WebView2.Core;
 using MS.Win32;
 

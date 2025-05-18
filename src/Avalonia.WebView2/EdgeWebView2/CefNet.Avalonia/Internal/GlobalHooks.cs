@@ -1,6 +1,6 @@
 // MIT License Copyright(c) 2020 CefNet
 // https://github.com/CefNet/CefNet/blob/103.0.22181.155/CefNet.Avalonia/Internal/GlobalHooks.cs
-#if WINDOWS || NETFRAMEWORK
+#if !DISABLE_WEBVIEW2_CORE && (WINDOWS || NETFRAMEWORK)
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Controls.Platforms.Windows.Interop;

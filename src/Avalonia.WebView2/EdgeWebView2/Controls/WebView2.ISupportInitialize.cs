@@ -1,4 +1,4 @@
-#if WINDOWS || NETFRAMEWORK
+#if !DISABLE_WEBVIEW2_CORE && (WINDOWS || NETFRAMEWORK)
 using System.ComponentModel;
 
 namespace Avalonia.Controls;

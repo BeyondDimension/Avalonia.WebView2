@@ -29,7 +29,7 @@ partial class WebView2
 #endif
         var avaColor =
             global::Avalonia.Media.Color.FromArgb(value.A, value.R, value.G, value.B);
-        if (this is Shape shape)
+        if ((object?)this is Shape shape)
         {
             shape.Fill = new ImmutableSolidColorBrush(avaColor);
         }

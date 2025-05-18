@@ -2,10 +2,23 @@
 
 	<PropertyGroup>
 		<OutputType>WinExe</OutputType>
-		<TargetFramework>net9.0-windows</TargetFramework>
 		<ApplicationManifest>Properties\app.manifest</ApplicationManifest>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	</PropertyGroup>
+
+	<Choose>
+		<!-- 👇 在 Windows 上开发 -->
+		<When Condition="$([System.OperatingSystem]::IsWindows())">
+			<PropertyGroup>
+				<TargetFrameworks>net9.0-windows;net9.0</TargetFrameworks>
+			</PropertyGroup>
+		</When>
+		<Otherwise>
+			<PropertyGroup>
+				<TargetFrameworks>net9.0</TargetFrameworks>
+			</PropertyGroup>
+		</Otherwise>
+	</Choose>
 
 
 	<PropertyGroup Condition="'$(Configuration)'=='Release'">
@@ -31,10 +44,13 @@
 		<PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" />
 	</ItemGroup>
 
-	<ItemGroup>
+	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
 		<ProjectReference Include="..\Avalonia.Ref\Avalonia.Desktop\Avalonia.Desktop.csproj" />
 		<ProjectReference Include="..\Avalonia.Ref\Avalonia.Native\Avalonia.Native.csproj" />
 		<ProjectReference Include="..\Avalonia.Ref\Avalonia.X11\Avalonia.X11.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<ProjectReference Include="..\Avalonia.WebView2\Avalonia.WebView2.csproj" />
 	</ItemGroup>
 </Project>

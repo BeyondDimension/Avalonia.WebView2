@@ -15,9 +15,6 @@
             VerticalAlignment="Center"
             FontSize="24"
             Text="Loading…" />
-        <wv2:WebView2
-            x:Name="WebView2"
-            Fill="Transparent"
-            Source="https://bing.com" />
+        <wv2:WebView2 x:Name="WebView2" Source="https://bing.com" />
     </Grid>
 </UserControl>

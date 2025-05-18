@@ -1,8 +1,11 @@
+#if WINDOWS
+using Microsoft.Web.WebView2.Core;
+#endif
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Avalonia.Platform.Storage;
-using Microsoft.Web.WebView2.Core;
 using System.Net;
+using Avalonia.Media;
 
 namespace Avalonia.WebView2.Sample;
 
@@ -13,7 +16,10 @@ public sealed partial class WebView2Compat : UserControl, IWebView2StorageServic
         InitializeComponent();
         WebView2 = this.FindControl<global::Avalonia.Controls.WebView2>("WebView2")!;
         WebView2.IsVisible = false;
-        TextBlock = this.FindControl<TextBlock>("TextBlock");
+        TextBlock = this.FindControl<TextBlock>("TextBlock")!;
+#if WINDOWS
+        // 设置背景色透明
+        WebView2.Fill = new SolidColorBrush(Colors.Transparent);
         if (!global::Avalonia.Controls.WebView2.IsSupported)
         {
             TextBlock.Text = "Couldn't find a compatible Webview2 Runtime installation to host WebViews.";
@@ -28,12 +34,15 @@ public sealed partial class WebView2Compat : UserControl, IWebView2StorageServic
             //};
         }
         WebView2.StorageService = this;
+#endif
     }
 
+#if WINDOWS
     void WebView2_DOMContentLoaded(object? sender, CoreWebView2DOMContentLoadedEventArgs e)
     {
         WebView2.IsVisible = true;
     }
+#endif
 
     private void InitializeComponent()
     {

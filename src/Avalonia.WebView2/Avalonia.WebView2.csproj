@@ -1,8 +1,7 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<IsPackable Condition="'$(Configuration)'=='Release'">true</IsPackable>
-		<TargetFrameworks>net462;netstandard2.0;net6.0;net6.0-windows;net7.0;net7.0-windows;net8.0;net8.0-windows;net9.0;net9.0-windows</TargetFrameworks>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<RootNamespace>Avalonia</RootNamespace>
 		<PackageId>WebView2.Avalonia</PackageId>
@@ -11,9 +10,24 @@
 			This package is necessary for Avalonia applications. To learn more about package versions checkout https://aka.ms/wv2-packageversion. To learn best practices checkout: https://aka.ms/wv2-bestpractices.
 		</Description>
 		<PackageTags>Web WebView Native native package Edge avalonia avaloniaui dotnet framework core Webview2</PackageTags>
-		<Version>1.0.3240.44-preview.250518.1</Version>
+		<Version>1.0.3240.44-preview.250518.2</Version>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	</PropertyGroup>
+
+	<Choose>
+		<!-- 👇 在 Windows 上开发 -->
+		<When Condition="$([System.OperatingSystem]::IsWindows())">
+			<PropertyGroup>
+				<TargetFrameworks>net462;netstandard2.0;net6.0;net6.0-windows;net7.0;net7.0-windows;net8.0;net8.0-windows;net9.0;net9.0-windows</TargetFrameworks>
+			</PropertyGroup>
+		</When>
+		<Otherwise>
+			<PropertyGroup>
+				<TargetFrameworks>net9.0</TargetFrameworks>
+			</PropertyGroup>
+		</Otherwise>
+	</Choose>
+
 
 	<ItemGroup>
 		<AvaloniaXaml Include="**\*.xaml" />
@@ -22,7 +36,6 @@
 	<!-- 👇 引用 NuGet 包 -->
 	<ItemGroup>
 		<PackageReference Include="Avalonia" />
-		<PackageReference Include="WebView2.NativeAssets.Win32" />
 		<PackageReference Include="Utf8StringInterpolation" />
 		<PackageReference Include="Microsoft.IO.RecyclableMemoryStream" />
 	</ItemGroup>
@@ -39,13 +52,25 @@
 		<PackageReference Include="System.Text.Json" />
 	</ItemGroup>
 
-	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows' OR $(TargetFramework.StartsWith('net4'))">
-		<PackageReference Include="Microsoft.Windows.CsWin32">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
-		<AdditionalFiles Condition="Exists('$(MSBuildProjectDirectory)\NativeMethods.txt')" Include="$(MSBuildProjectDirectory)\NativeMethods.txt" />
-	</ItemGroup>
+	<Choose>
+		<!-- .NET Framework OR netx.y-windows -->
+		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows' OR $(TargetFramework.StartsWith('net4'))">
+			<ItemGroup>
+				<PackageReference Include="WebView2.NativeAssets.Win32" />
+				<PackageReference Include="Microsoft.Windows.CsWin32">
+					<PrivateAssets>all</PrivateAssets>
+					<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+				</PackageReference>
+				<AdditionalFiles Condition="Exists('$(MSBuildProjectDirectory)\NativeMethods.txt')" Include="$(MSBuildProjectDirectory)\NativeMethods.txt" />
+			</ItemGroup>
+		</When>
+		<Otherwise>
+			<ItemGroup Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0'))">
+				<PackageReference Include="CefGlue.Avalonia" />
+				<!--<PackageReference Include="WebViewControl-Avalonia" />-->
+			</ItemGroup>
+		</Otherwise>
+	</Choose>
 
 	<Import Project="..\GeneratePackage.props" />
 </Project>

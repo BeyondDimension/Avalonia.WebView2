@@ -1,3 +1,4 @@
+#if !DISABLE_WEBVIEW2_CORE && (WINDOWS || NETFRAMEWORK)
 namespace Avalonia.Controls.Platforms.Windows.Interop;
 
 /// <summary>
@@ -16,3 +17,4 @@ partial interface IHwndHost
     /// <returns>The window handle of the child window.</returns>
     nint WndProc(nint hwnd, uint msg, nint wParam, nint lParam, ref bool handled);
 }
+#endif

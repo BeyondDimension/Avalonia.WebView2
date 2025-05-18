@@ -1,4 +1,4 @@
-#if WINDOWS || NETFRAMEWORK
+#if !DISABLE_WEBVIEW2_CORE && (WINDOWS || NETFRAMEWORK)
 using Microsoft.Web.WebView2.Core;
 using System.Collections.Concurrent;
 
@@ -6,7 +6,18 @@ namespace Avalonia.Controls;
 
 partial class WebView2
 {
+    // https://learn.microsoft.com/zh-cn/microsoft-edge/webview2/concepts/navigation-events
+
     readonly ConcurrentDictionary<ulong, string> dictNavigationStarting = new();
+
+    public string? GetRequestUri(ulong navigationId)
+    {
+        if (dictNavigationStarting.TryGetValue(navigationId, out var value))
+        {
+            return value;
+        }
+        return null;
+    }
 
     void CoreWebView2_NavigationStarting(object? sender, CoreWebView2NavigationStartingEventArgs e)
     {

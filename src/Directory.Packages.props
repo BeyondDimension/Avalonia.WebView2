@@ -65,4 +65,11 @@
 		<PackageVersion Include="System.Collections.Immutable" Version="9.0.5">
 		</PackageVersion>
 	</ItemGroup>
+	<!-- 👇 CefGlue -->
+	<ItemGroup>
+		<PackageVersion Include="CefGlue.Avalonia" Version="120.6099.211">
+		</PackageVersion>
+		<PackageVersion Include="WebViewControl-Avalonia" Version="3.120.9">
+		</PackageVersion>
+	</ItemGroup>
 </Project>
