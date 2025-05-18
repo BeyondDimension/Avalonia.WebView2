@@ -3,6 +3,11 @@
 
 namespace CefNet.Internal;
 
+#if WINDOWS
+using Windows.Win32;
+using Windows.Win32.Foundation;
+using Windows.Win32.UI.WindowsAndMessaging;
+
 sealed class GlobalHooks
 {
     static bool IsInitialized;
@@ -47,13 +52,13 @@ sealed class GlobalHooks
         source.WndProcCallback = WndProc;
     }
 
-    IntPtr WndProc(IntPtr hwnd, int message, IntPtr wParam, IntPtr lParam, ref bool handled)
+    LRESULT WndProc(HWND hwnd, uint message, WPARAM wParam, LPARAM lParam, ref bool handled)
     {
         foreach ((WebView2 webView, Window _) in GetViews(hwnd))
         {
             ((IHwndHost)webView).WndProc(hwnd, message, wParam, lParam, ref handled);
         }
-        return IntPtr.Zero;
+        return new(IntPtr.Zero);
     }
 
     internal IEnumerable<(WebView2 webView, Window window)> GetViews(IntPtr hwnd)
@@ -94,7 +99,11 @@ sealed class GlobalHooks
         if (window == null)
             return;
 
-        IntPtr hwnd = window.PlatformImpl.Handle.Handle;
+        var handle = window.TryGetPlatformHandle();
+        if (handle == null)
+            return;
+
+        HWND hwnd = new HWND(handle.Handle);
 
         if (_HookedWindows.ContainsKey(hwnd))
             return;
@@ -107,3 +116,4 @@ sealed class GlobalHooks
     }
 
 }
+#endif

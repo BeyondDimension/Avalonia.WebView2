@@ -3,6 +3,7 @@
 
 namespace MS.Win32;
 
+#if WINDOWS
 static partial class NativeMethods
 {
     [DllImport("user32.dll", SetLastError = true)]
@@ -25,3 +26,4 @@ static partial class NativeMethods
     [DllImport("user32.dll", CharSet = CharSet.Auto)]
     public static extern IntPtr CallWindowProc(IntPtr lpPrevWndFunc, IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam);
 }
+#endif

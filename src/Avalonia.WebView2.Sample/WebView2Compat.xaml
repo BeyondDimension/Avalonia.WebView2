@@ -17,7 +17,9 @@
             Text="Loading…" />
         <wv2:WebView2
             x:Name="WebView2"
-            Fill="Violet"
-            Source="https://www.bing.com" />
+            EnabledDevTools="False"
+            Fill="Transparent"
+            Source="https://bing.com"
+            UserDataFolder="" />
     </Grid>
 </UserControl>

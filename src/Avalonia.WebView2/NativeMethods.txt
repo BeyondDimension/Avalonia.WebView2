@@ -1,0 +1,9 @@
+BeginPaint
+EndPaint
+CreateWindowExW
+DestroyWindow
+ShowWindow
+GetWindowThreadProcessId
+SetWindowLong
+SetWindowLongPtr
+CallWindowProc

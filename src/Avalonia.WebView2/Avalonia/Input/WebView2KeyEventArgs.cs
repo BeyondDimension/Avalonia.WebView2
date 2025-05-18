@@ -11,7 +11,6 @@ public class WebView2KeyEventArgs : KeyEventArgs
 
     public WebView2KeyEventArgs(Key key)
     {
-        Device = KeyboardDevice.Instance;
         Key = key;
     }
 

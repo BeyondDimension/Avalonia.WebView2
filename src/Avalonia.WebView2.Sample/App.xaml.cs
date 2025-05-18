@@ -22,18 +22,18 @@ public sealed class App : Application
     {
         if (AvaloniaWebView2.IsSupported)
         {
-            AvaloniaWebView2.DefaultCreationProperties = new()
-            {
-                Language = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName,
-                UserDataFolder = GetUserDataFolder(),
-            };
+            //AvaloniaWebView2.DefaultCreationProperties = new()
+            //{
+            //    Language = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName,
+            //    UserDataFolder = GetUserDataFolder(),
+            //};
 
-            static string GetUserDataFolder()
-            {
-                var path = Path.Combine(AppContext.BaseDirectory, "AppData", "WebView2", "UserData");
-                if (!Directory.Exists(path)) Directory.CreateDirectory(path);
-                return path;
-            }
+            //static string GetUserDataFolder()
+            //{
+            //    var path = Path.Combine(AppContext.BaseDirectory, "AppData", "WebView2", "UserData");
+            //    if (!Directory.Exists(path)) Directory.CreateDirectory(path);
+            //    return path;
+            //}
         }
     }
 }

@@ -3,35 +3,47 @@
 
 namespace CefNet.Internal;
 
-internal delegate IntPtr WindowsWindowProcDelegate(IntPtr hwnd, int message, IntPtr wParam, IntPtr lParam, ref bool handled);
+#if WINDOWS
+using Windows.Win32;
+using Windows.Win32.Foundation;
+using Windows.Win32.UI.WindowsAndMessaging;
+
+internal delegate LRESULT WindowsWindowProcDelegate(HWND hwnd, uint message, WPARAM wParam, LPARAM lParam, ref bool handled);
 
 internal sealed class WindowsHwndSource : CriticalFinalizerObject, IDisposable
 {
-    delegate IntPtr WindowProc(IntPtr hwnd, int message, IntPtr wParam, IntPtr lParam);
+    delegate LRESULT WindowProc(HWND hwnd, uint message, WPARAM wParam, LPARAM lParam);
 
     bool _disposed;
-    IntPtr hWndProcHook;
+    WNDPROC hWndProcHook;
     readonly WindowProc fnWndProcHook;
 
-    public static WindowsHwndSource FromHwnd(IntPtr hwnd)
+    internal unsafe static uint GetWindowThreadProcessId(HWND hwnd, out uint lpdwProcessId)
     {
-        const int GWLP_WNDPROC = -4;
+        fixed (uint* alpdwProcessId = &lpdwProcessId)
+            return PInvoke.GetWindowThreadProcessId(hwnd, alpdwProcessId);
+    }
 
-        uint tid = NativeMethods.GetWindowThreadProcessId(hwnd, IntPtr.Zero);
+    public unsafe static WindowsHwndSource FromHwnd(HWND hwnd)
+    {
+        uint tid = GetWindowThreadProcessId(hwnd, out _);
         if (tid == 0)
             throw new Win32Exception(Marshal.GetLastWin32Error());
 
         var source = new WindowsHwndSource(hwnd);
-        source.hWndProcHook = NativeMethods.SetWindowLong(hwnd, GWLP_WNDPROC, Marshal.GetFunctionPointerForDelegate(source.fnWndProcHook));
-        if (source.hWndProcHook == IntPtr.Zero)
+
+        IntPtr dwNewLong = Marshal.GetFunctionPointerForDelegate(source.fnWndProcHook);
+        source.hWndProcHook = SetWindowLong(hwnd, dwNewLong);
+
+        if (source.hWndProcHook.IsNull)
             throw new Win32Exception(Marshal.GetLastWin32Error());
 
         return source;
     }
 
-    WindowsHwndSource(IntPtr hwnd)
+    WindowsHwndSource(HWND hwnd)
     {
-        hWndProcHook = IntPtr.Zero;
+        hWndProcHook = null;
         Handle = hwnd;
         fnWndProcHook = new WindowProc(WndProcHook);
     }
@@ -46,10 +58,9 @@ internal sealed class WindowsHwndSource : CriticalFinalizerObject, IDisposable
         if (_disposed)
             return;
 
-        if (hWndProcHook != IntPtr.Zero)
+        if (!hWndProcHook.IsNull)
         {
-            const int GWLP_WNDPROC = -4;
-            NativeMethods.SetWindowLong(Handle, GWLP_WNDPROC, hWndProcHook);
+            SetWindowLong(Handle, Marshal.GetFunctionPointerForDelegate(hWndProcHook));
         }
         _disposed = true;
     }
@@ -60,11 +71,11 @@ internal sealed class WindowsHwndSource : CriticalFinalizerObject, IDisposable
         GC.SuppressFinalize(this);
     }
 
-    public IntPtr Handle { get; }
+    public HWND Handle { get; }
 
     public WindowsWindowProcDelegate? WndProcCallback { get; set; }
 
-    IntPtr WndProcHook(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam)
+    unsafe LRESULT WndProcHook(HWND hwnd, uint msg, WPARAM wParam, LPARAM lParam)
     {
         IntPtr retval = IntPtr.Zero;
         var wndproc = WndProcCallback;
@@ -73,8 +84,26 @@ internal sealed class WindowsHwndSource : CriticalFinalizerObject, IDisposable
             bool handled = false;
             retval = wndproc(hwnd, msg, wParam, lParam, ref handled);
             if (handled)
-                return retval;
+                return new(retval);
         }
-        return NativeMethods.CallWindowProc(hWndProcHook, hwnd, msg, wParam, lParam);
+
+        var result = PInvoke.CallWindowProcNotW(hWndProcHook.Value, hwnd, msg, wParam, lParam);
+        return new LRESULT(result);
+    }
+
+    IntPtr oldhWndProcHook;
+
+    static unsafe WNDPROC SetWindowLong(HWND hWnd, IntPtr dwNewLong)
+    {
+        IntPtr oldProcPtr = IntPtr.Zero;
+#if X86
+        oldProcPtr = new IntPtr(PInvoke.SetWindowLong(hWnd, WINDOW_LONG_PTR_INDEX.GWLP_WNDPROC, dwNewLong.ToInt32()));
+#endif
+
+#if X64
+        oldProcPtr = PInvoke.SetWindowLongPtr(hWnd, WINDOW_LONG_PTR_INDEX.GWLP_WNDPROC, dwNewLong);
+#endif
+        return new((delegate* unmanaged<HWND, uint, WPARAM, LPARAM, LRESULT>)oldProcPtr);
     }
 }
+#endif

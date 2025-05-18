@@ -43,4 +43,14 @@ partial class WebView2
     /// The <see cref="AvaloniaProperty" /> which backs the <see cref="AllowExternalDropProperty" /> property.
     /// </summary>
     public static readonly DirectProperty<WebView2, bool> AllowExternalDropProperty = AvaloniaProperty.RegisterDirect<WebView2, bool>(nameof(AllowExternalDrop), x => x._allowExternalDrop, (x, y) => x.AllowExternalDrop = y);
+
+    /// <summary>
+    /// The <see cref="AvaloniaProperty" />  which backs the <see cref="UserDataFolder" /> property.
+    /// </summary>
+    public static readonly StyledProperty<string> UserDataFolderProperty = AvaloniaProperty.Register<WebView2, string>(nameof(UserDataFolder));
+
+    /// <summary>
+    /// The <see cref="AvaloniaProperty" /> which backs the <see cref="DisableDevToolsProperty" /> property.
+    /// </summary>
+    public static readonly DirectProperty<WebView2, bool> DisableDevToolsProperty = AvaloniaProperty.RegisterDirect<WebView2, bool>(nameof(CanGoBack), x => x.CanGoBack);
 }

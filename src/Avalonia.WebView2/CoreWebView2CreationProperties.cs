@@ -16,9 +16,9 @@ public partial class CoreWebView2CreationProperties : AvaloniaObject
 {
     static CoreWebView2CreationProperties()
     {
-        BrowserExecutableFolderProperty.Changed.Subscribe(EnvironmentPropertyChanged);
-        UserDataFolderProperty.Changed.Subscribe(EnvironmentPropertyChanged);
-        LanguageProperty.Changed.Subscribe(EnvironmentPropertyChanged);
+        BrowserExecutableFolderProperty.Changed.AddClassHandler<CoreWebView2CreationProperties, string>((t, args) => { EnvironmentPropertyChanged(args); });
+        UserDataFolderProperty.Changed.AddClassHandler<CoreWebView2CreationProperties, string>((t, args) => { EnvironmentPropertyChanged(args); });
+        LanguageProperty.Changed.AddClassHandler<CoreWebView2CreationProperties, string>((t, args) => { EnvironmentPropertyChanged(args); });
     }
 
     /// <summary>
@@ -45,6 +45,11 @@ public partial class CoreWebView2CreationProperties : AvaloniaObject
     /// The AvaloniaProperty which backs the <see cref="IsInPrivateModeEnabled" /> property.
     /// </summary>
     public static readonly StyledProperty<bool?> IsInPrivateModeEnabledProperty = AvaloniaProperty.Register<CoreWebView2CreationProperties, bool?>(nameof(IsInPrivateModeEnabled));
+
+    /// <summary>
+    /// The AvaloniaProperty which backs the <see cref="EnabledDevTools" /> property.
+    /// </summary>
+    public static readonly StyledProperty<bool> EnabledDevToolsProperty = AvaloniaProperty.Register<CoreWebView2CreationProperties, bool>(nameof(EnabledDevTools));
 
 #if !DISABLE_WEBVIEW2_CORE
     Task<CoreWebView2Environment>? _task;
@@ -75,6 +80,12 @@ public partial class CoreWebView2CreationProperties : AvaloniaObject
     {
         get => GetValue(LanguageProperty);
         set => SetValue(LanguageProperty, value);
+    }
+
+    public bool EnabledDevTools
+    {
+        get => GetValue(EnabledDevToolsProperty);
+        set => SetValue(EnabledDevToolsProperty, value);
     }
 
     /// <summary>
