@@ -89,7 +89,7 @@ public partial class WebView2
     protected static bool IsInDesignMode => Design.IsDesignMode;
 }
 
-#if !(WINDOWS || NETFRAMEWORK) && !NET8_0_OR_GREATER
+#if !(WINDOWS || NETFRAMEWORK) && !NET8_0_OR_GREATER && !(ANDROID || IOS || MACCATALYST || MACOS)
 partial class WebView2 : global::Avalonia.Controls.Shapes.Rectangle
 {
 }

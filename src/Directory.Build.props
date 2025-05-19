@@ -13,6 +13,7 @@
 		<GenerateAssemblyInfo>true</GenerateAssemblyInfo>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<NeutralLanguage>zh-Hans</NeutralLanguage>
+		<!-- 👇 源生成器生成的 C# 临时源码文件在生成结束后是否不删除文件，用于生成错误代码时查文件内容纠正生成器，启用时会导致 VS 的 Android 热重载在生成时出错 -->
 		<!--<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>-->
 		<!-- 👇 使用编译绑定替代反射绑定实现 -->
 		<AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>

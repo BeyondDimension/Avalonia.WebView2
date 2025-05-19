@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects Condition="'$(MSBuildVersion)' == '' Or '$(MSBuildVersion)' &lt; '16.0'">$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>06b33b9e-9100-4e1e-a1c3-45b811940863</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>Microsoft.Maui.WebView</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Core\Core\IElement.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core\Core\IView.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core\Graphics\Color.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core\Graphics\Colors.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core\Graphics\IShadow.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core\Graphics\IShape.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core\Graphics\Paint.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core\IMauiContext.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core\Core\ITransform.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core\Core\IWebView.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core\Handlers\IElementHandler.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core\Primitives\FlowDirection.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core\Primitives\LayoutAlignment.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core\Primitives\SemanticHeadingLevel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core\Primitives\Semantics.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)README.md" />
+  </ItemGroup>
+</Project>

@@ -11,7 +11,6 @@
 		</Description>
 		<PackageTags>Web WebView Native native package Edge avalonia avaloniaui dotnet framework core Webview2</PackageTags>
 		<Version>1.0.3240.44-preview.250518.2</Version>
-		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	</PropertyGroup>
 
 	<Choose>
@@ -19,14 +18,19 @@
 		<When Condition="$([System.OperatingSystem]::IsWindows())">
 			<PropertyGroup>
 				<TargetFrameworks>net462;netstandard2.0;net6.0;net6.0-windows;net7.0;net7.0-windows;net8.0;net8.0-windows;net9.0;net9.0-windows</TargetFrameworks>
-				<TargetFrameworks Condition="!Exists('C:\BD.Common8.ExcludeMobile.msbuild.prop')">$(TargetFrameworks);net9.0-android;net9.0-ios;net9.0-macos</TargetFrameworks>
+				<!-- 👇 当文件不存在时，添加需要工作负载的 TFM -->
+				<!--<TargetFrameworks Condition="!Exists('C:\BD.Common8.ExcludeMobile.msbuild.prop')">$(TargetFrameworks);net9.0-android;net9.0-ios;net9.0-macos</TargetFrameworks>-->
+				<TargetFrameworks Condition="!Exists('C:\BD.Common8.ExcludeMobile.msbuild.prop')">$(TargetFrameworks);net9.0-macos</TargetFrameworks>
 			</PropertyGroup>
 		</When>
+		<!-- 👇 在 macOS 上开发 -->
 		<When Condition="$([System.OperatingSystem]::IsMacOS())">
 			<PropertyGroup>
-				<TargetFrameworks>net9.0;net9.0-ios</TargetFrameworks>
+				<!--<TargetFrameworks>net9.0-ios;net9.0-macos</TargetFrameworks>-->
+				<TargetFrameworks>net9.0-macos</TargetFrameworks>
 			</PropertyGroup>
 		</When>
+		<!-- 👇 在 Linux 上开发 -->
 		<Otherwise>
 			<PropertyGroup>
 				<TargetFrameworks>net9.0</TargetFrameworks>
@@ -76,13 +80,15 @@
 				<PackageReference Include="Xamarin.AndroidX.WebKit" />
 			</ItemGroup>
 		</When>
-		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios' OR $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">
+		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
+			<!-- Avalonia.iOS 包似乎不兼容 -maccatalyst TFM -->
+			<!--<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios' OR $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">-->
 			<ItemGroup>
 				<PackageReference Include="Avalonia.iOS" />
 			</ItemGroup>
 		</When>
 		<Otherwise>
-			<ItemGroup Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0'))">
+			<ItemGroup Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0')) AND ($([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == '' OR $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'macos')">
 				<PackageReference Include="CefGlue.Avalonia" />
 				<!--<PackageReference Include="WebViewControl-Avalonia" />-->
 			</ItemGroup>
@@ -90,4 +96,5 @@
 	</Choose>
 
 	<Import Project="..\GeneratePackage.props" />
+	<!--<Import Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios' OR $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'" Project="..\Microsoft.Maui.WebView\Microsoft.Maui.WebView.projitems" Label="Shared" />-->
 </Project>

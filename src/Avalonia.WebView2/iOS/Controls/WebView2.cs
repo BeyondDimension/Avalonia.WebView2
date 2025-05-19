@@ -41,7 +41,13 @@ partial class WebView2 : global::Avalonia.Controls.NativeControlHost
         // handler's platform view is created, so erring on the side of wanting this
         // capability by default.
         var config = new WKWebViewConfiguration();
+#if IOS
+        if (OperatingSystem.IsIOSVersionAtLeast(10))
+#elif MACCATALYST
+        if (OperatingSystem.IsMacCatalystVersionAtLeast(10))
+#else
         if (OperatingSystem.IsMacCatalystVersionAtLeast(10) || OperatingSystem.IsIOSVersionAtLeast(10))
+#endif
         {
             config.AllowsPictureInPictureMediaPlayback = true;
             config.AllowsInlineMediaPlayback = true;
