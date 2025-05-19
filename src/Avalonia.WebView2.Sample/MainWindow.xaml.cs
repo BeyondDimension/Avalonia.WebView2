@@ -145,7 +145,12 @@ public sealed partial class MainWindow : Window
     {
 #if WINDOWS
         WebView?.CoreWebView2?.OpenDevToolsWindow();
-#elif !(WINDOWS || NETFRAMEWORK) && NET8_0_OR_GREATER
+#elif !(WINDOWS || NETFRAMEWORK) && NET8_0_OR_GREATER && !ANDROID && !IOS
+        WebView?.ShowDeveloperTools();
+#elif IOS || MACCATALYST
+
+#elif ANDROID
+
 #endif
     }
 
