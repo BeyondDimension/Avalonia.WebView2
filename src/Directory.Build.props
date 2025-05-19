@@ -13,7 +13,9 @@
 		<GenerateAssemblyInfo>true</GenerateAssemblyInfo>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<NeutralLanguage>zh-Hans</NeutralLanguage>
-		<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+		<!--<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>-->
+		<!-- 👇 使用编译绑定替代反射绑定实现 -->
+		<AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
 	</PropertyGroup>
 
 	<!-- 👇 TFM != .NET Framework 3.5 -->

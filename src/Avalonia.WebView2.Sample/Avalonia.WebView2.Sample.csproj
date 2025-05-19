@@ -1,8 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<OutputType>WinExe</OutputType>
-		<ApplicationManifest>Properties\app.manifest</ApplicationManifest>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	</PropertyGroup>
 
@@ -16,6 +14,26 @@
 		<Otherwise>
 			<PropertyGroup>
 				<TargetFrameworks>net9.0</TargetFrameworks>
+			</PropertyGroup>
+		</Otherwise>
+	</Choose>
+
+	<Choose>
+		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
+			<PropertyGroup>
+				<OutputType>WinExe</OutputType>
+				<ApplicationManifest>Properties\app.manifest</ApplicationManifest>
+				<TargetFrameworks>net9.0-windows;net9.0</TargetFrameworks>
+			</PropertyGroup>
+			<ItemGroup>
+				<ProjectReference Include="..\Avalonia.Ref\Avalonia.Desktop\Avalonia.Desktop.csproj" />
+				<ProjectReference Include="..\Avalonia.Ref\Avalonia.Native\Avalonia.Native.csproj" />
+				<ProjectReference Include="..\Avalonia.Ref\Avalonia.X11\Avalonia.X11.csproj" />
+			</ItemGroup>
+		</When>
+		<Otherwise>
+			<PropertyGroup>
+				<OutputType>Exe</OutputType>
 			</PropertyGroup>
 		</Otherwise>
 	</Choose>
@@ -42,12 +60,6 @@
 		<PackageReference Include="FluentAvaloniaUI" />
 		<!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
 		<PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" />
-	</ItemGroup>
-
-	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
-		<ProjectReference Include="..\Avalonia.Ref\Avalonia.Desktop\Avalonia.Desktop.csproj" />
-		<ProjectReference Include="..\Avalonia.Ref\Avalonia.Native\Avalonia.Native.csproj" />
-		<ProjectReference Include="..\Avalonia.Ref\Avalonia.X11\Avalonia.X11.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -39,7 +39,17 @@ partial class WebView2
 #if !DISABLE_WEBVIEW2_CORE && WINDOWS || NETFRAMEWORK
                     CoreWebView2?.NavigateToString(value);
 #elif ANDROID
+                    var aWebView = AWebView;
+                    if (aWebView != null)
+                    {
+                        aWebView.LoadData(value, "text/html", "UTF-8");
+                    }
 #elif IOS
+                    var wkWebView = WKWebView;
+                    if (wkWebView != null)
+                    {
+                        wkWebView.LoadHtmlString(value, (NSUrl?)null!);
+                    }
 #else
                     // CEF_TODO: 待实现 NavigateToString
 #endif

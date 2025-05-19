@@ -32,6 +32,12 @@
 		</PackageVersion>
 		<PackageVersion Include="Avalonia.X11" Version="$(Version_Avalonia)">
 		</PackageVersion>
+		<PackageVersion Include="Avalonia.Themes.Fluent" Version="$(Version_Avalonia)">
+		</PackageVersion>
+		<PackageVersion Include="Avalonia.Fonts.Inter" Version="$(Version_Avalonia)">
+		</PackageVersion>
+		<PackageVersion Include="Avalonia.ReactiveUI" Version="$(Version_Avalonia)">
+		</PackageVersion>
 		<PackageVersion Include="FluentAvaloniaUI" Version="$(Version_Avalonia_FluentUI)">
 		</PackageVersion>
 	</ItemGroup>
@@ -74,6 +80,8 @@
 	</ItemGroup>
 	<!-- 👇 Android -->
 	<ItemGroup>
+		<PackageVersion Include="Xamarin.AndroidX.Core.SplashScreen" Version="1.0.1.15">
+		</PackageVersion>
 		<PackageVersion Include="Xamarin.AndroidX.WebKit" Version="1.13.0.1">
 		</PackageVersion>
 	</ItemGroup>

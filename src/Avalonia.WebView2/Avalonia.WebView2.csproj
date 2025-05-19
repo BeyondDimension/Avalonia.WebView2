@@ -22,6 +22,11 @@
 				<TargetFrameworks Condition="!Exists('C:\BD.Common8.ExcludeMobile.msbuild.prop')">$(TargetFrameworks);net9.0-android;net9.0-ios;net9.0-macos</TargetFrameworks>
 			</PropertyGroup>
 		</When>
+		<When Condition="$([System.OperatingSystem]::IsMacOS())">
+			<PropertyGroup>
+				<TargetFrameworks>net9.0;net9.0-ios</TargetFrameworks>
+			</PropertyGroup>
+		</When>
 		<Otherwise>
 			<PropertyGroup>
 				<TargetFrameworks>net9.0</TargetFrameworks>

@@ -5,6 +5,7 @@ using Android.Webkit;
 using Avalonia.Android;
 using Avalonia.Controls.Platform;
 using Avalonia.Platform;
+using System.Diagnostics.CodeAnalysis;
 using AUri = Android.Net.Uri;
 using AWebView = Android.Webkit.WebView;
 
@@ -47,17 +48,32 @@ partial class WebView2 : global::Avalonia.Controls.NativeControlHost
         return platformView;
     }
 
+    AndroidWebViewControlHandle? platformHandle;
+
+    public AWebView? AWebView
+    {
+        get
+        {
+            var result = platformHandle?.WebView;
+            if (result.IsAlive())
+            {
+                return result;
+            }
+            return null;
+        }
+    }
+
     /// <inheritdoc/>
     protected override IPlatformHandle CreateNativeControlCore(IPlatformHandle parent)
     {
         var parentContext = GetContext(parent);
         var view = CreatePlatformView(parentContext);
-        var result = new AndroidWebViewControlHandle(view);
-        return result;
+        platformHandle = new AndroidWebViewControlHandle(view);
+        return platformHandle;
     }
 }
 
-file sealed class AndroidWebViewControlHandle : PlatformHandle, INativeControlHostDestroyableControlHandle
+sealed class AndroidWebViewControlHandle : PlatformHandle, INativeControlHostDestroyableControlHandle
 {
     bool disposedValue;
     AWebView? webView;
@@ -91,6 +107,35 @@ file sealed class AndroidWebViewControlHandle : PlatformHandle, INativeControlHo
     {
         // 不要更改此代码。请将清理代码放入“Dispose(bool disposing)”方法中
         Dispose(disposing: true);
+    }
+}
+
+static class JavaObjectExtensions
+{
+    public static bool IsDisposed(this global::Java.Lang.Object obj)
+    {
+        return obj.Handle == IntPtr.Zero;
+    }
+
+    public static bool IsDisposed(this global::Android.Runtime.IJavaObject obj)
+    {
+        return obj.Handle == IntPtr.Zero;
+    }
+
+    public static bool IsAlive([NotNullWhen(true)] this global::Java.Lang.Object? obj)
+    {
+        if (obj == null)
+            return false;
+
+        return !obj.IsDisposed();
+    }
+
+    public static bool IsAlive([NotNullWhen(true)] this global::Android.Runtime.IJavaObject? obj)
+    {
+        if (obj == null)
+            return false;
+
+        return !obj.IsDisposed();
     }
 }
 #endif

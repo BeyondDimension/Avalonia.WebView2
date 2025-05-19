@@ -67,16 +67,20 @@ partial class WebView2 : global::Avalonia.Controls.NativeControlHost
         return webView;
     }
 
+    WKWebViewControlHandle? platformHandle;
+
+    public WKWebView? WKWebView => platformHandle?.WebView;
+
     /// <inheritdoc/>
     protected override IPlatformHandle CreateNativeControlCore(IPlatformHandle parent)
     {
         var webView = CreatePlatformView();
-        var result = new WKWebViewControlHandle(webView);
-        return result;
+        platformHandle = new WKWebViewControlHandle(webView);
+        return platformHandle;
     }
 }
 
-file sealed class WKWebViewControlHandle : PlatformHandle, INativeControlHostDestroyableControlHandle
+sealed class WKWebViewControlHandle : PlatformHandle, INativeControlHostDestroyableControlHandle
 {
     bool disposedValue;
     WKWebView? webView;

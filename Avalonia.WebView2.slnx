@@ -1,11 +1,8 @@
 <Solution>
   <Folder Name="/Avalonia.Ref/">
-    <Project Path="src/Avalonia.Ref/Avalonia.Desktop/Avalonia.Desktop.csproj">
-    </Project>
-    <Project Path="src/Avalonia.Ref/Avalonia.Native/Avalonia.Native.csproj">
-    </Project>
-    <Project Path="src/Avalonia.Ref/Avalonia.X11/Avalonia.X11.csproj">
-    </Project>
+    <Project Path="src/Avalonia.Ref/Avalonia.Desktop/Avalonia.Desktop.csproj" />
+    <Project Path="src/Avalonia.Ref/Avalonia.Native/Avalonia.Native.csproj" />
+    <Project Path="src/Avalonia.Ref/Avalonia.X11/Avalonia.X11.csproj" />
   </Folder>
   <Folder Name="/_Root/">
     <File Path=".github/workflows/CI.yml" />
@@ -18,8 +15,13 @@
     <File Path="src/Version.props" />
     <File Path="src/WebView2.NativeAssets.Win32/WebView2.NativeAssets.Win32.nuspec" />
   </Folder>
-  <Project Path="src/Avalonia.WebView2.Sample/Avalonia.WebView2.Sample.csproj">
+  <Project Path="src/Avalonia.WebView2.Sample.Mobile.Android/Avalonia.WebView2.Sample.Mobile.Android.csproj" Id="45116d16-398e-44b9-98c3-a3209895d854">
+    <Deploy />
   </Project>
-  <Project Path="src/Avalonia.WebView2/Avalonia.WebView2.csproj">
+  <Project Path="src/Avalonia.WebView2.Sample.Mobile.iOS/Avalonia.WebView2.Sample.Mobile.iOS.csproj" Id="b3219812-d74f-4a6a-9834-29913a191cc7">
+    <Deploy />
   </Project>
+  <Project Path="src/Avalonia.WebView2.Sample.Mobile/Avalonia.WebView2.Sample.Mobile.csproj" Id="f0af89b3-208b-43ba-b56d-8fc270a1b252" />
+  <Project Path="src/Avalonia.WebView2.Sample/Avalonia.WebView2.Sample.csproj" />
+  <Project Path="src/Avalonia.WebView2/Avalonia.WebView2.csproj" />
 </Solution>

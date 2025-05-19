@@ -16,6 +16,18 @@ partial class WebView2
 #if !DISABLE_WEBVIEW2_CORE && (WINDOWS || NETFRAMEWORK)
         VerifyBrowserNotCrashedGuard();
         CoreWebView2?.NavigateToString(htmlContent);
+#elif ANDROID
+        var aWebView = AWebView;
+        if (aWebView != null)
+        {
+            aWebView.LoadData(htmlContent, "text/html", "UTF-8");
+        }
+#elif IOS
+        var wkWebView = WKWebView;
+        if (wkWebView != null)
+        {
+            wkWebView.LoadHtmlString(htmlContent, (NSUrl?)null!);
+        }
 #else
         // CEF_TODO: 待实现 NavigateToString
 #endif
@@ -26,6 +38,20 @@ partial class WebView2
 #if !DISABLE_WEBVIEW2_CORE && (WINDOWS || NETFRAMEWORK)
         VerifyBrowserNotCrashedGuard();
         CoreWebView2?.Navigate(uri);
+#elif ANDROID
+        var aWebView = AWebView;
+        if (aWebView != null)
+        {
+            aWebView.LoadUrl(uri);
+        }
+#elif IOS
+        var wkWebView = WKWebView;
+        if (wkWebView != null)
+        {
+            NSUrl nsUrl = new(uri);
+            NSUrlRequest nsUrlRequest = new(nsUrl);
+            wkWebView.LoadRequest(nsUrlRequest);
+        }
 #else
         // CEF_TODO: 待实现 Navigate
 #endif

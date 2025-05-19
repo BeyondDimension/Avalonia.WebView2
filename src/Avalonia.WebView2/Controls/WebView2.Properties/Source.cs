@@ -55,7 +55,19 @@ partial class WebView2
                     }
                 }
 #elif ANDROID
+                var aWebView = AWebView;
+                if (aWebView != null)
+                {
+                    aWebView.LoadUrl(value.AbsoluteUri);
+                }
 #elif IOS
+                var wkWebView = WKWebView;
+                if (wkWebView != null)
+                {
+                    NSUrl nsUrl = new(value.AbsoluteUri);
+                    NSUrlRequest nsUrlRequest = new(nsUrl);
+                    wkWebView.LoadRequest(nsUrlRequest);
+                }
 #else
                 // CEF_TODO: 待实现 Navigate
 #endif
