@@ -33,6 +33,11 @@ partial class WebView2 : IDisposable
 #if !DISABLE_WEBVIEW2_CORE && (WINDOWS || NETFRAMEWORK)
                 UnsubscribeHandlersAndCloseController();
 #endif
+
+
+#if !(WINDOWS || NETFRAMEWORK) && NET8_0_OR_GREATER && !ANDROID && !IOS
+                CefGuleDispose();
+#endif
                 _disposables.ForEach(d => d.Dispose());
             }
 

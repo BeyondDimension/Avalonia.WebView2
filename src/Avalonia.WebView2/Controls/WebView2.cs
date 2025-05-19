@@ -25,6 +25,11 @@ public partial class WebView2
         // 添加控件显示隐藏切时通知 CoreWebView2Controller
         _disposables.Add(this.GetPropertyChangedObservable(IsVisibleProperty).AddClassHandler<WebView2>((t, args) => { IsVisibleChanged(args); }));
         SetDefaultBackgroundColor(_defaultBackgroundColorDefaultValue);
+
+
+#if !(WINDOWS || NETFRAMEWORK) && NET8_0_OR_GREATER && !ANDROID && !IOS
+        CefGuleInitialize();
+#endif
     }
 
     /// <inheritdoc />
