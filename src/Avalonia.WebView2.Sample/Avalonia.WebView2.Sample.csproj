@@ -11,6 +11,13 @@
 				<TargetFrameworks>net9.0-windows;net9.0</TargetFrameworks>
 			</PropertyGroup>
 		</When>
+		<!-- 👇 在 macOS 上开发 -->
+		<When Condition="$([System.OperatingSystem]::IsMacOS())">
+			<PropertyGroup>
+				<TargetFrameworks>net9.0-macos</TargetFrameworks>
+			</PropertyGroup>
+		</When>
+		<!-- 👇 在 Linux 上开发 -->
 		<Otherwise>
 			<PropertyGroup>
 				<TargetFrameworks>net9.0</TargetFrameworks>
@@ -29,6 +36,12 @@
 				<ProjectReference Include="..\Avalonia.Ref\Avalonia.Desktop\Avalonia.Desktop.csproj" />
 				<ProjectReference Include="..\Avalonia.Ref\Avalonia.Native\Avalonia.Native.csproj" />
 				<ProjectReference Include="..\Avalonia.Ref\Avalonia.X11\Avalonia.X11.csproj" />
+			</ItemGroup>
+		</When>
+		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'macos'">
+			<ItemGroup>
+				<PackageReference Include="Avalonia.Desktop" />
+				<PackageReference Include="Avalonia.Native" />
 			</ItemGroup>
 		</When>
 		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == ''">
