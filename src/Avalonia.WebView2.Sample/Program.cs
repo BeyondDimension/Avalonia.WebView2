@@ -1,6 +1,12 @@
 using Microsoft.Win32;
 using System.Windows;
 
+#if !(WINDOWS || NETFRAMEWORK) && NET8_0_OR_GREATER && !ANDROID && !IOS
+using Xilium.CefGlue;
+using Xilium.CefGlue.Common;
+#endif
+
+
 namespace Avalonia.WebView2.Sample;
 
 static class Program
@@ -52,7 +58,22 @@ static class Program
     {
         var b = AppBuilder.Configure<App>()
              .UsePlatformDetect()
-             .LogToTrace();
+             .LogToTrace()
+#if !(WINDOWS || NETFRAMEWORK) && NET8_0_OR_GREATER && !ANDROID && !IOS
+             .With(new X11PlatformOptions())
+             .AfterSetup(_ => CefRuntimeLoader.Initialize(new CefSettings()
+             {
+                 RootCachePath = GetCachePath(),
+                 WindowlessRenderingEnabled = false,
+                 LogSeverity = CefLogSeverity.Verbose,
+             }))
+#endif
+             ;
         return b;
     }
+
+#if !(WINDOWS || NETFRAMEWORK) && NET8_0_OR_GREATER && !ANDROID && !IOS
+    static string GetCachePath() => Path.Combine(Path.GetTempPath(), "CefGlue_" + Guid.NewGuid().ToString().Replace("-", null));
+#endif
+
 }
