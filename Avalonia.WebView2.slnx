@@ -24,5 +24,6 @@
   <Project Path="src/Avalonia.WebView2.Sample.Mobile/Avalonia.WebView2.Sample.Mobile.csproj" Id="f0af89b3-208b-43ba-b56d-8fc270a1b252" />
   <Project Path="src/Avalonia.WebView2.Sample/Avalonia.WebView2.Sample.csproj" />
   <Project Path="src/Avalonia.WebView2/Avalonia.WebView2.csproj" />
+  <Project Path="src/CefGlue.Avalonia/CefGlue.Avalonia.csproj" Id="43fa8bc3-d79e-41e2-87c6-73912c52cf30" />
   <Project Path="src/Microsoft.Maui.WebView/Microsoft.Maui.WebView.shproj" Id="06b33b9e-9100-4e1e-a1c3-45b811940863" />
 </Solution>

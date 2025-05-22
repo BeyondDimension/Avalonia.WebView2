@@ -87,17 +87,18 @@
 				<PackageReference Include="Avalonia.iOS" />
 			</ItemGroup>
 		</When>
-		<When Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0')) AND ($([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == '' OR $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'macos')">
-			<ItemGroup Condition="$(Platform) == 'ARM64'">
-				<PackageReference Include="CefGlue.Avalonia.ARM64" />
-			</ItemGroup>
-			<ItemGroup Condition="$(Platform) != 'ARM64'">
-				<PackageReference Include="CefGlue.Avalonia" />
-			</ItemGroup>
-		</When>
-
 	</Choose>
 
+	<ItemGroup Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0')) AND ($([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == '' OR $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'macos')">
+		<!--<PackageReference Include="CefGlue.Avalonia" />-->
+		<!--<PackageReference Include="WebViewControl-Avalonia" />-->
+		<!--<ProjectReference Include="..\CefGlue.Avalonia\CefGlue.Avalonia.csproj" />-->
+		<PackageReference Include="Avalonia.ReactiveUI" />
+	</ItemGroup>
+
 	<Import Project="..\GeneratePackage.props" />
+
 	<!--<Import Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios' OR $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'" Project="..\Microsoft.Maui.WebView\Microsoft.Maui.WebView.projitems" Label="Shared" />-->
+
+	<Import Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0')) AND ($([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == '' OR $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'macos')" Project="$(MSBuildThisFileDirectory)..\..\ref\CefGlue.Avalonia.props"/>
 </Project>

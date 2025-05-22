@@ -1,0 +1,40 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	</PropertyGroup>
+
+	<Choose>
+		<!-- 👇 在 Windows 上开发 -->
+		<When Condition="$([System.OperatingSystem]::IsWindows())">
+			<PropertyGroup>
+				<TargetFrameworks>net8.0;net8.0-windows;net9.0;net9.0-windows</TargetFrameworks>
+				<!-- 👇 当文件不存在时，添加需要工作负载的 TFM -->
+				<!--<TargetFrameworks Condition="!Exists('C:\BD.Common8.ExcludeMobile.msbuild.prop')">$(TargetFrameworks);net9.0-android;net9.0-ios;net9.0-macos</TargetFrameworks>-->
+				<TargetFrameworks Condition="!Exists('C:\BD.Common8.ExcludeMobile.msbuild.prop')">$(TargetFrameworks);net9.0-macos</TargetFrameworks>
+			</PropertyGroup>
+		</When>
+		<!-- 👇 在 macOS 上开发 -->
+		<When Condition="$([System.OperatingSystem]::IsMacOS())">
+			<PropertyGroup>
+				<!--<TargetFrameworks>net9.0-ios;net9.0-macos</TargetFrameworks>-->
+				<TargetFrameworks>net9.0-macos</TargetFrameworks>
+			</PropertyGroup>
+		</When>
+		<!-- 👇 在 Linux 上开发 -->
+		<Otherwise>
+			<PropertyGroup>
+				<TargetFrameworks>net9.0</TargetFrameworks>
+			</PropertyGroup>
+		</Otherwise>
+	</Choose>
+
+	<!-- 👇 引用 NuGet 包 -->
+	<ItemGroup>
+		<PackageReference Include="Avalonia" />
+		<PackageReference Include="Avalonia.ReactiveUI" />
+	</ItemGroup>
+
+	<Import Project="$(MSBuildThisFileDirectory)..\..\ref\CefGlue.Avalonia.props"/>
+
+</Project>

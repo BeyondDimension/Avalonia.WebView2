@@ -1,0 +1,30 @@
+<Project>
+	<!-- 👇 源码引用 -->
+	<ItemGroup>
+		<Compile Include="$(MSBuildThisFileDirectory)CefGlue\CefGlue.Common.Shared\**\*.cs">
+			<LinkBase>CefGlue.Common.Shared</LinkBase>
+			<Exclude>bin\**;obj\**</Exclude>
+		</Compile>
+		<Compile Remove="$(MSBuildThisFileDirectory)CefGlue\CefGlue.Common.Shared\bin\**" />
+		<Compile Remove="$(MSBuildThisFileDirectory)CefGlue\CefGlue.Common.Shared\obj\**" />
+		<Compile Include="$(MSBuildThisFileDirectory)CefGlue\CefGlue.Common\**\*.cs">
+			<LinkBase>CefGlue.Common</LinkBase>
+			<Exclude>bin\**;obj\**</Exclude>
+		</Compile>
+		<Compile Remove="$(MSBuildThisFileDirectory)CefGlue\CefGlue.Common\bin\**" />
+		<Compile Remove="$(MSBuildThisFileDirectory)CefGlue\CefGlue.Common\obj\**" />
+		<Compile Include="$(MSBuildThisFileDirectory)CefGlue\CefGlue.Avalonia\**\*.cs">
+			<LinkBase>CefGlue.Avalonia</LinkBase>
+			<Exclude>bin\**;obj\**</Exclude>
+		</Compile>
+		<Compile Remove="$(MSBuildThisFileDirectory)CefGlue\CefGlue.Avalonia\bin\**" />
+		<Compile Remove="$(MSBuildThisFileDirectory)CefGlue\CefGlue.Avalonia\obj\**" />
+		<Compile Include="$(MSBuildThisFileDirectory)CefGlue\CefGlue\**\*.cs">
+			<LinkBase>CefGlue</LinkBase>
+			<Exclude>bin\**;obj\**</Exclude>
+		</Compile>
+		<Compile Remove="$(MSBuildThisFileDirectory)CefGlue\CefGlue\bin\**" />
+		<Compile Remove="$(MSBuildThisFileDirectory)CefGlue\CefGlue\obj\**" />
+		<Compile Remove="$(MSBuildThisFileDirectory)CefGlue\CefGlue\Interop\Base\cef_string_t.disabled.cs" />
+	</ItemGroup>
+</Project>
