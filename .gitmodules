@@ -1,3 +1,6 @@
 [submodule "ref/DirectoryPackages"]
 	path = ref/DirectoryPackages
 	url = https://github.com/BeyondDimension/DirectoryPackages.git
+[submodule "ref/CefGlue"]
+	path = ref/CefGlue
+	url = https://github.com/BeyondDimension/CefGlue
