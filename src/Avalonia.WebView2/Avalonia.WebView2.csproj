@@ -38,6 +38,11 @@
 		</Otherwise>
 	</Choose>
 
+	<!-- 👇 将无-后缀的 TFM 视作 Linux 平台，设置 DefineConstants -->
+	<PropertyGroup>
+		<DefineConstants Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == ''">LINUX;$(DefineConstants)</DefineConstants>
+	</PropertyGroup>
+
 
 	<ItemGroup>
 		<AvaloniaXaml Include="**\*.xaml" />
