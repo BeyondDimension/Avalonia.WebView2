@@ -87,12 +87,15 @@
 				<PackageReference Include="Avalonia.iOS" />
 			</ItemGroup>
 		</When>
-		<Otherwise>
-			<ItemGroup Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0')) AND ($([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == '' OR $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'macos')">
-				<PackageReference Include="CefGlue.Avalonia" />
-				<!--<PackageReference Include="WebViewControl-Avalonia" />-->
+		<When Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0')) AND ($([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == '' OR $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'macos')">
+			<ItemGroup Condition="$(Platform) == 'ARM64'">
+				<PackageReference Include="CefGlue.Avalonia.ARM64" />
 			</ItemGroup>
-		</Otherwise>
+			<ItemGroup Condition="$(Platform) != 'ARM64'">
+				<PackageReference Include="CefGlue.Avalonia" />
+			</ItemGroup>
+		</When>
+
 	</Choose>
 
 	<Import Project="..\GeneratePackage.props" />
