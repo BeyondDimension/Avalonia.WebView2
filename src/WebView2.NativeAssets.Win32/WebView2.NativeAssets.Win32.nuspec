@@ -3,7 +3,7 @@
 	<metadata minClientVersion="2.12">
 		<id>WebView2.NativeAssets.Win32</id>
 		<title>WebView2.NativeAssets.Win32</title>
-		<version>1.0.3240.44-d250518</version>
+		<version>1.0.3240.44-d250526.1</version>
 		<authors>https://github.com/AigioL</authors>
 		 <copyright>© Microsoft Corporation. All rights reserved.</copyright>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -19,11 +19,7 @@ This package is necessary for Console and Avalonia applications. To learn more a
 		<file src="..\..\ref\Microsoft.Web.WebView2\lib\net462\Microsoft.Web.WebView2.Core.dll" target="lib\net462\Microsoft.Web.WebView2.Core.dll" />
 		<file src="..\..\ref\Microsoft.Web.WebView2\lib\net462\Microsoft.Web.WebView2.Core.xml" target="lib\net462\Microsoft.Web.WebView2.Core.xml" />
 		<file src="..\..\ref\Microsoft.Web.WebView2\lib\netcoreapp3.0\Microsoft.Web.WebView2.Core.dll" target="lib\netcoreapp3.0\Microsoft.Web.WebView2.Core.dll" />
-		<file src="..\..\ref\Microsoft.Web.WebView2\lib\netcoreapp3.0\Microsoft.Web.WebView2.Core.dll" target="lib\netstandard2.0\Microsoft.Web.WebView2.Core.dll" />
-		<file src="..\..\ref\Microsoft.Web.WebView2\lib\net6.0-windows10.0.17763.0\Microsoft.Web.WebView2.Core.Projection.dll" target="lib\net6.0-windows10.0.17763.0\Microsoft.Web.WebView2.Core.Projection.dll" />
-		<file src="..\..\ref\Microsoft.Web.WebView2\lib\net6.0-windows10.0.17763.0\Microsoft.Web.WebView2.Core.Projection.xml" target="lib\net6.0-windows10.0.17763.0\Microsoft.Web.WebView2.Core.Projection.xml" />
-		<file src="..\..\ref\Microsoft.Web.WebView2\lib\net8.0-windows10.0.17763.0\Microsoft.Web.WebView2.Core.Projection.dll" target="lib\net8.0-windows10.0.17763.0\Microsoft.Web.WebView2.Core.Projection.dll" />
-		<file src="..\..\ref\Microsoft.Web.WebView2\lib\net8.0-windows10.0.17763.0\Microsoft.Web.WebView2.Core.Projection.xml" target="lib\net8.0-windows10.0.17763.0\Microsoft.Web.WebView2.Core.Projection.xml" />
+		<file src="..\..\ref\Microsoft.Web.WebView2\lib\netcoreapp3.0\Microsoft.Web.WebView2.Core.xml" target="lib\netcoreapp3.0\Microsoft.Web.WebView2.Core.xml" />
 		<file src="..\..\ref\Microsoft.Web.WebView2\runtimes\win-arm64\native\WebView2Loader.dll" target="runtimes\win-arm64\native\WebView2Loader.dll" />
 		<file src="..\..\ref\Microsoft.Web.WebView2\runtimes\win-x64\native\WebView2Loader.dll" target="runtimes\win-x64\native\WebView2Loader.dll" />
 		<file src="..\..\ref\Microsoft.Web.WebView2\runtimes\win-x86\native\WebView2Loader.dll" target="runtimes\win-x86\native\WebView2Loader.dll" />

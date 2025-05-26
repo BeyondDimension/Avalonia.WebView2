@@ -43,7 +43,7 @@
 	</ItemGroup>
 	<!-- 👇 WebView2 -->
 	<ItemGroup>
-		<PackageVersion Include="WebView2.NativeAssets.Win32" Version="1.0.3240.44-d250518">
+		<PackageVersion Include="WebView2.NativeAssets.Win32" Version="1.0.3240.44-d250526.1">
 		</PackageVersion>
 	</ItemGroup>
 	<!-- 👇 .NET Compat -->
