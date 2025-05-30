@@ -1,3 +1,4 @@
+#if !DISABLE_WEBVIEW2_CORE && WINDOWS || NETFRAMEWORK
 using System.ComponentModel;
 
 namespace Avalonia.Controls;
@@ -46,3 +47,4 @@ partial class WebView2
 #endif
         (x, y) => x.CreationProperties = y);
 }
+#endif

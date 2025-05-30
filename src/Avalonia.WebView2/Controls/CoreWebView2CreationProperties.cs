@@ -1,4 +1,5 @@
 #if !DISABLE_WEBVIEW2_CORE && (WINDOWS || NETFRAMEWORK)
+#if !DISABLE_WEBVIEW2_CORE && (WINDOWS || NETFRAMEWORK)
 using Microsoft.Web.WebView2.Core;
 #endif
 
@@ -169,3 +170,4 @@ public partial class CoreWebView2CreationProperties : AvaloniaObject
     }
 #endif
 }
+#endif

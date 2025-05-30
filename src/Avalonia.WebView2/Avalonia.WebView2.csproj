@@ -105,5 +105,5 @@
 
 	<!--<Import Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios' OR $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'" Project="..\Microsoft.Maui.WebView\Microsoft.Maui.WebView.projitems" Label="Shared" />-->
 
-	<Import Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0')) AND ($([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == '' OR $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'macos')" Project="$(MSBuildThisFileDirectory)..\..\ref\CefGlue.Avalonia.props"/>
+	<Import Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0')) AND ($([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == '')" Project="$(MSBuildThisFileDirectory)..\..\ref\CefGlue.Avalonia.props" />
 </Project>

@@ -35,7 +35,7 @@ partial class WebView2 : IDisposable
 #endif
 
 
-#if !(WINDOWS || NETFRAMEWORK) && NET8_0_OR_GREATER && !ANDROID && !IOS
+#if !(WINDOWS || NETFRAMEWORK) && NET8_0_OR_GREATER && !ANDROID && !IOS && !MACOS && !MACCATALYST
                 CefGuleDispose();
 #endif
                 _disposables.ForEach(d => d.Dispose());

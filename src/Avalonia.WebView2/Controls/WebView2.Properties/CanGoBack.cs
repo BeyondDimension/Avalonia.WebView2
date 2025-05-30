@@ -26,6 +26,7 @@ partial class WebView2
             }
 #elif ANDROID
 #elif IOS
+#elif MACOS
 #else
             // CEF_TODO: 待实现 CanGoBack
 #endif

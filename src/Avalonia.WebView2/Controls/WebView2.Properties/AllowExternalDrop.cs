@@ -33,6 +33,7 @@ partial class WebView2
             _coreWebView2Controller?.AllowExternalDrop = value;
 #elif ANDROID
 #elif IOS
+#elif MACOS
 #else
             // CEF_TODO: 待实现 AllowExternalDrop
 #endif

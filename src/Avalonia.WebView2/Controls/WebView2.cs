@@ -27,7 +27,7 @@ public partial class WebView2
         SetDefaultBackgroundColor(_defaultBackgroundColorDefaultValue);
 
 
-#if !(WINDOWS || NETFRAMEWORK) && NET8_0_OR_GREATER && !ANDROID && !IOS
+#if !(WINDOWS || NETFRAMEWORK) && NET8_0_OR_GREATER && !ANDROID && !IOS && !MACOS && !MACCATALYST
         CefGuleInitialize();
 #endif
     }

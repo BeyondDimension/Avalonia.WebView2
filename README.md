@@ -3,7 +3,7 @@ Build .NET Avalonia Microsoft Edge WebView2 HTML5 Desktop Hybrid Apps
 
 ## Supported OS versions
 - [x] Windows (Edge WebView2)
-- [x] macOS (CefGlue)
+- [x] macOS (WebKit.WebView)
 - [x] Linux (CefGlue)
 - [ ] ~~Android (Xamarin.AndroidX.WebKit)~~
 - [ ] ~~iOS (WebKit.WKWebView)~~
