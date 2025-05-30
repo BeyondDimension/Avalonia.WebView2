@@ -78,7 +78,7 @@ public interface IWebView : IView
     /// Raised when a WebView process ends unexpectedly.
     /// </summary>
 #if NETSTANDARD2_0
-		void ProcessTerminated(WebProcessTerminatedEventArgs args);
+    void ProcessTerminated(WebProcessTerminatedEventArgs args);
 #else
     void ProcessTerminated(WebProcessTerminatedEventArgs args) { }
 #endif

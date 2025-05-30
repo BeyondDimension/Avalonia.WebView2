@@ -1,6 +1,8 @@
-#if IOS || MACCATALYST
-using Avalonia.Controls.Platform;
+#if IOS
 using Avalonia.iOS;
+#endif
+#if IOS || MACCATALYST || (MACOS && !USE_DEPRECATED_WEBVIEW)
+using Avalonia.Controls.Platform;
 using Avalonia.Platform;
 using System.Diagnostics.CodeAnalysis;
 using WebKit;
@@ -41,6 +43,7 @@ partial class WebView2 : global::Avalonia.Controls.NativeControlHost
         // handler's platform view is created, so erring on the side of wanting this
         // capability by default.
         var config = new WKWebViewConfiguration();
+#if !MACOS
 #if IOS
         if (OperatingSystem.IsIOSVersionAtLeast(10))
 #elif MACCATALYST
@@ -48,9 +51,12 @@ partial class WebView2 : global::Avalonia.Controls.NativeControlHost
 #else
         if (OperatingSystem.IsMacCatalystVersionAtLeast(10) || OperatingSystem.IsIOSVersionAtLeast(10))
 #endif
+#endif
         {
+#if !MACOS
             config.AllowsPictureInPictureMediaPlayback = true;
             config.AllowsInlineMediaPlayback = true;
+#endif
             config.MediaTypesRequiringUserActionForPlayback = WKAudiovisualMediaTypes.None;
         }
         if (SharedPool == null)
@@ -66,8 +72,10 @@ partial class WebView2 : global::Avalonia.Controls.NativeControlHost
     {
         var webView = new WKWebView(CGRect.Empty, CreateConfiguration())
         {
+#if !MACOS
             BackgroundColor = UIColor.Clear,
             AutosizesSubviews = true,
+#endif
         };
         //webView.NavigationDelegate = new WebView2NavigationDelegate(handler);
         return webView;

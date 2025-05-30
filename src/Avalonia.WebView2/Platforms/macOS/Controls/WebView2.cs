@@ -1,4 +1,4 @@
-#if MACOS
+#if MACOS && USE_DEPRECATED_WEBVIEW
 using Avalonia.Controls.Platform;
 using Avalonia.Platform;
 using System.Diagnostics.CodeAnalysis;

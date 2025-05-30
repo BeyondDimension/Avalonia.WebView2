@@ -3,24 +3,25 @@ using Microsoft.Web.WebView2.Core;
 #endif
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
-using Avalonia.Platform.Storage;
 using System.Net;
 using Avalonia.Media;
+using IStorageService = Avalonia.Controls.WebView2.IStorageService;
+using static Avalonia.Controls.WebView2;
 
 namespace Avalonia.WebView2.Sample;
 
-public sealed partial class WebView2Compat : UserControl, IWebView2StorageService
+public sealed partial class WebView2Compat : UserControl, IStorageService
 {
     public WebView2Compat()
     {
         InitializeComponent();
-        WebView2 = this.FindControl<global::Avalonia.Controls.WebView2>("WebView2")!;
+        WebView2 = this.FindControl<Controls.WebView2>("WebView2")!;
         WebView2.IsVisible = false;
         TextBlock = this.FindControl<TextBlock>("TextBlock")!;
 #if WINDOWS
         // 设置背景色透明
         WebView2.Fill = new SolidColorBrush(Colors.Transparent);
-        if (!global::Avalonia.Controls.WebView2.IsSupported)
+        if (!IsSupported)
         {
             TextBlock.Text = "Couldn't find a compatible Webview2 Runtime installation to host WebViews.";
         }
@@ -51,17 +52,17 @@ public sealed partial class WebView2Compat : UserControl, IWebView2StorageServic
 
     readonly DomainPattern bingComDomainPattern = new("*bing.com");
 
-    IEnumerable<KeyValuePair<(WebView2StorageItemType type, string key), WebView2StorageItemValue>>? IWebView2StorageService.GetStorages(string requestUri)
+    IEnumerable<KeyValuePair<(StorageItemType type, string key), StorageItemValue>>? IStorageService.GetStorages(string requestUri)
     {
         // 测试 localStorage 注入
         var now = DateTime.Now;
 
-        var dict = new Dictionary<(WebView2StorageItemType type, string key), WebView2StorageItemValue>()
+        var dict = new Dictionary<(StorageItemType type, string key), StorageItemValue>()
         {
-            { (WebView2StorageItemType.LocalStorage, "global_test"), 2 },
-            { (WebView2StorageItemType.SessionStorage, "global_test_s"), 7.5 },
-            { (WebView2StorageItemType.LocalStorage, "global_test_now"), now },
-            { (WebView2StorageItemType.AllStorage, "global_test_now_str"), now.ToString("yyyy-MM-dd HH:mm:ss.fffffff") },
+            { (StorageItemType.LocalStorage, "global_test"), 2 },
+            { (StorageItemType.SessionStorage, "global_test_s"), 7.5 },
+            { (StorageItemType.LocalStorage, "global_test_now"), now },
+            { (StorageItemType.AllStorage, "global_test_now_str"), now.ToString("yyyy-MM-dd HH:mm:ss.fffffff") },
         };
 
         foreach (var it in dict)
@@ -71,12 +72,12 @@ public sealed partial class WebView2Compat : UserControl, IWebView2StorageServic
 
         if (bingComDomainPattern.IsMatchOnlyDomain(requestUri))
         {
-            var dict2 = new Dictionary<(WebView2StorageItemType type, string key), WebView2StorageItemValue>()
+            var dict2 = new Dictionary<(StorageItemType type, string key), StorageItemValue>()
             {
-                { (WebView2StorageItemType.LocalStorage, "bing.com"), 4.5f },
-                { (WebView2StorageItemType.LocalStorage, "bing"), "key4" },
-                { (WebView2StorageItemType.LocalStorage, "bing3"), now },
-                { (WebView2StorageItemType.LocalStorage, "bing4"), now.ToString("yyyy-MM-dd HH:mm:ss.fffffff") },
+                { (StorageItemType.LocalStorage, "bing.com"), 4.5f },
+                { (StorageItemType.LocalStorage, "bing"), "key4" },
+                { (StorageItemType.LocalStorage, "bing3"), now },
+                { (StorageItemType.LocalStorage, "bing4"), now.ToString("yyyy-MM-dd HH:mm:ss.fffffff") },
             };
 
             foreach (var it in dict2)

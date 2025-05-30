@@ -3,10 +3,10 @@ Build .NET Avalonia Microsoft Edge WebView2 HTML5 Desktop Hybrid Apps
 
 ## Supported OS versions
 - [x] Windows (Edge WebView2)
-- [x] macOS (WebKit.WebView)
-- [x] Linux (CefGlue)
+- [x] macOS (~~WebKit.WebView~~ | WebKit.WKWebView)
+- [ ] ~~Linux (CefGlue)~~
 - [ ] ~~Android (Xamarin.AndroidX.WebKit)~~
-- [ ] ~~iOS (WebKit.WKWebView)~~
+- [ ] iOS (WebKit.WKWebView)
 
 ## [简介](https://docs.microsoft.com/zh-cn/microsoft-edge/webview2)
 Microsoft Edge WebView2 控件允许在本机应用中嵌入 web 技术(HTML、CSS 以及 JavaScript)。 WebView2 控件使用 [Microsoft Edge](https://www.microsoftedgeinsider.com) 作为绘制引擎，以在本机应用中显示 web 内容。

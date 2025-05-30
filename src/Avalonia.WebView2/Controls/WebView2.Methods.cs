@@ -1,4 +1,5 @@
 using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace Avalonia.Controls;
 
@@ -103,6 +104,28 @@ partial class WebView2
     }
 
     /// <summary>
+    /// Evaluates the script that is specified by script.
+    /// </summary>
+    /// <param name="script">A script to evaluate.</param>
+    public async void Eval(string script)
+    {
+        // 兼容 .NET MAUI IWebView API
+        await ExecuteScriptAsync(script);
+    }
+
+    /// <summary>
+    /// On platforms that support JavaScript evaluation, evaluates script.
+    /// </summary>
+    /// <param name="script">The script to evaluate.</param>
+    /// <returns>A task that contains the result of the evaluation as a string.</returns>
+    public Task<string?> EvaluateJavaScriptAsync(string script)
+    {
+        // 兼容 .NET MAUI IWebView API
+        var result = ExecuteScriptAsync(script);
+        return result;
+    }
+
+    /// <summary>
     /// Executes the provided script in the top level document of the <see cref="WebView2" />.
     /// This is equivalent to CoreWebView2.ExecuteScriptAsync.
     /// </summary>
@@ -121,4 +144,30 @@ partial class WebView2
 #endif
         return Task.FromResult((string?)null);
     }
+
+    ///// <summary>
+    ///// For internal use by the .NET MAUI platform.
+    ///// Raised after web navigation begins.
+    ///// </summary>
+    //public bool Navigating(WebNavigationEvent evnt, string url)
+    //{
+    //    // 兼容 .NET MAUI IWebView API
+    //    throw new NotImplementedException();
+    //}
+
+    ///// <summary>
+    ///// For internal use by the .NET MAUI platform.
+    ///// Raised after web navigation completes.
+    ///// </summary>
+    //public void Navigated(WebNavigationEvent evnt, string url, WebNavigationResult result)
+    //{
+    //    // 兼容 .NET MAUI IWebView API
+    //    throw new NotImplementedException();
+    //}
+
+    //public void ProcessTerminated(WebProcessTerminatedEventArgs args)
+    //{
+    //    // 兼容 .NET MAUI IWebView API
+    //    throw new NotImplementedException();
+    //}
 }
