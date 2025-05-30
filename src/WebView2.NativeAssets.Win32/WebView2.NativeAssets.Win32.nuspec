@@ -5,13 +5,15 @@
 		<title>WebView2.NativeAssets.Win32</title>
 		<version>1.0.3240.44-d250526.1</version>
 		<authors>https://github.com/AigioL</authors>
-		 <copyright>© Microsoft Corporation. All rights reserved.</copyright>
+		<copyright>© Microsoft Corporation. All rights reserved.</copyright>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
 		<license type="file">LICENSE.txt</license>
 		<repository type="git" url="https://github.com/BeyondDimension/Avalonia.WebView2" />
-    	<tags>Microsoft Web WebView Native native package Edge Avalonia dotnet framework core Webview2</tags>
-		<description>The WebView2 control enables you to embed web technologies (HTML, CSS, and JavaScript) in your native applications powered by Microsoft Edge (Chromium).
-This package is necessary for Console and Avalonia applications. To learn more about package versions checkout https://aka.ms/wv2-packageversion. To learn best practices checkout: https://aka.ms/wv2-bestpractices.</description>
+		<tags>Microsoft Web WebView Native native package Edge Avalonia dotnet framework core Webview2</tags>
+		<description>
+			The WebView2 control enables you to embed web technologies (HTML, CSS, and JavaScript) in your native applications powered by Microsoft Edge (Chromium).
+			This package is necessary for Console and Avalonia applications. To learn more about package versions checkout https://aka.ms/wv2-packageversion. To learn best practices checkout: https://aka.ms/wv2-bestpractices.
+		</description>
 	</metadata>
 	<files>
 		<file src="..\..\ref\Microsoft.Web.WebView2\LICENSE.txt" target="LICENSE.txt" />

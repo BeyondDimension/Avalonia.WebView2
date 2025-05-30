@@ -1,8 +1,9 @@
-#if !(WINDOWS || NETFRAMEWORK) && NET8_0_OR_GREATER && !ANDROID && !IOS && !MACOS
+#if !(WINDOWS || NETFRAMEWORK) && NET8_0_OR_GREATER && !ANDROID && !IOS && !MACOS && !MACCATALYST && !DISABLE_CEFGLUE
 
 using Xilium.CefGlue.Common.Events;
 
 namespace Avalonia.Controls;
+
 partial class WebView2
 {
     /// <summary>
