@@ -61,12 +61,12 @@ static class Program
              .LogToTrace()
 #if !(WINDOWS || NETFRAMEWORK) && NET8_0_OR_GREATER && !ANDROID && !IOS
              .With(new X11PlatformOptions())
-             .AfterSetup(_ => CefRuntimeLoader.Initialize(new CefSettings()
-             {
-                 RootCachePath = GetCachePath(),
-                 WindowlessRenderingEnabled = false,
-                 LogSeverity = CefLogSeverity.Verbose,
-             }))
+             //.AfterSetup(_ => CefRuntimeLoader.Initialize(new CefSettings()
+             //{
+             //    RootCachePath = GetCachePath(),
+             //    WindowlessRenderingEnabled = false,
+             //    LogSeverity = CefLogSeverity.Verbose,
+             //}))
 #endif
              ;
         return b;
