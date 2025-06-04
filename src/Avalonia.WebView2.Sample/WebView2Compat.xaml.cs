@@ -16,9 +16,9 @@ public sealed partial class WebView2Compat : UserControl, IStorageService
     {
         InitializeComponent();
         WebView2 = this.FindControl<Controls.WebView2>("WebView2")!;
-        WebView2.IsVisible = false;
         TextBlock = this.FindControl<TextBlock>("TextBlock")!;
 #if WINDOWS
+        WebView2.IsVisible = false;
         // 设置背景色透明
         WebView2.Fill = new SolidColorBrush(Colors.Transparent);
         if (!IsSupported)

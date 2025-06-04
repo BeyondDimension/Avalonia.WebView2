@@ -92,7 +92,15 @@ public sealed partial class MainWindow : Window
                 WebView?.CoreWebView2?.Navigate(url);
             }
         }
-#elif !(WINDOWS || NETFRAMEWORK) && NET8_0_OR_GREATER
+#elif LINUX
+
+#elif IOS || MACCATALYST || MACOS
+        if (e.Key == Key.Enter && WebView is not null)
+        {
+            var url = UrlTextBox.Text;
+            if (!IsHttpUrl(url)) url = $"{Prefix_HTTPS}{url}";
+            WebView?.Navigate(url);
+        }
 #endif
     }
 
@@ -145,9 +153,9 @@ public sealed partial class MainWindow : Window
     {
 #if WINDOWS
         WebView?.CoreWebView2?.OpenDevToolsWindow();
-#elif !(WINDOWS || NETFRAMEWORK) && NET8_0_OR_GREATER && !ANDROID && !IOS
+#elif LINUX
         WebView?.ShowDeveloperTools();
-#elif IOS || MACCATALYST
+#elif IOS || MACCATALYST || MACOS
 
 #elif ANDROID
 

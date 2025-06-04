@@ -60,7 +60,7 @@ partial class WebView2
                 {
                     aWebView.LoadUrl(value.AbsoluteUri);
                 }
-#elif IOS
+#elif IOS || MACOS || MACCATALYST
                 var wkWebView = WKWebView;
                 if (wkWebView != null)
                 {

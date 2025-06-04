@@ -2,8 +2,6 @@ using Microsoft.Win32;
 using System.Windows;
 
 #if !(WINDOWS || NETFRAMEWORK) && NET8_0_OR_GREATER && !ANDROID && !IOS
-using Xilium.CefGlue;
-using Xilium.CefGlue.Common;
 #endif
 
 

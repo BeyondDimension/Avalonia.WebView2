@@ -12,7 +12,7 @@ using Avalonia.Metadata;
 
 namespace Avalonia.Controls;
 
-internal class WKWebViewHandler : global::Avalonia.Controls.NativeControlHost
+partial class WebView2 : global::Avalonia.Controls.NativeControlHost
 {
     // https://github.com/dotnet/maui/blob/9.0.70/src/Controls/src/Core/HybridWebView/HybridWebView.cs
     // https://github.com/dotnet/maui/blob/9.0.70/src/Controls/src/Core/WebView/WebView.cs
@@ -81,6 +81,11 @@ internal class WKWebViewHandler : global::Avalonia.Controls.NativeControlHost
 #endif
         };
         //webView.NavigationDelegate = new WebView2NavigationDelegate(handler);
+
+        if (_source is not null)
+        {
+            Navigate(_source.OriginalString);
+        }
         return webView;
     }
 
@@ -96,41 +101,6 @@ internal class WKWebViewHandler : global::Avalonia.Controls.NativeControlHost
         platformHandle = new WKWebViewControlHandle(webView);
         return platformHandle;
     }
-}
-
-partial class WebView2 : Control
-{
-    [Content]
-    private Control? Child
-    {
-        get => GetValue(ChildProperty);
-        set => SetValue(ChildProperty, value);
-    }
-
-    private static readonly StyledProperty<Control?> ChildProperty =
-        AvaloniaProperty.Register<WebView2, Control?>(nameof(Child));
-
-
-    readonly Border _partInnerContainer = new()
-    {
-        ClipToBounds = true,
-    };
-
-    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        Child = _partInnerContainer;
-        base.OnAttachedToLogicalTree(e);
-        wkWebViewHandler = new WKWebViewHandler();
-
-        _partInnerContainer.Child = wkWebViewHandler;
-
-        wkWebViewHandler.WKWebView.LoadRequest(new NSUrlRequest(new NSUrl("https://baidu.com", false)));
-    }
-
-    WKWebViewHandler? wkWebViewHandler;
-
-
-    public WKWebView? WKWebView => wkWebViewHandler?.WKWebView;
 }
 
 sealed class WKWebViewControlHandle : PlatformHandle, INativeControlHostDestroyableControlHandle
