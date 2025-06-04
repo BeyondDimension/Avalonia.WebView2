@@ -23,7 +23,7 @@ partial class WebView2
         {
             aWebView.LoadData(htmlContent, "text/html", "UTF-8");
         }
-#elif IOS
+#elif IOS || MACOS || MACCATALYST
         var wkWebView = WKWebView;
         if (wkWebView != null)
         {
@@ -45,7 +45,7 @@ partial class WebView2
         {
             aWebView.LoadUrl(uri);
         }
-#elif IOS
+#elif IOS || MACOS || MACCATALYST
         var wkWebView = WKWebView;
         if (wkWebView != null)
         {
@@ -67,8 +67,11 @@ partial class WebView2
             var req = CoreWebView2.Environment.CreateWebResourceRequest(uri, WebResourceRequestUri.GetMethod(method), content, headers);
             CoreWebView2.NavigateWithWebResourceRequest(req);
         }
-#else
+#elif LINUX
         // CEF_TODO: 待实现 Navigate
+#elif IOS || MACOS || MACCATALYST
+
+#elif ANDROID
 #endif
     }
 
@@ -83,8 +86,12 @@ partial class WebView2
 #if !DISABLE_WEBVIEW2_CORE && (WINDOWS || NETFRAMEWORK)
         VerifyBrowserNotCrashedGuard();
         CoreWebView2?.Reload();
-#else
+#elif LINUX
         // CEF_TODO: 待实现 Reload
+#elif IOS || MACOS || MACCATALYST
+        WKWebView?.Reload();
+#elif ANDROID
+
 #endif
     }
 
@@ -98,8 +105,11 @@ partial class WebView2
 #if !DISABLE_WEBVIEW2_CORE && (WINDOWS || NETFRAMEWORK)
         VerifyBrowserNotCrashedGuard();
         CoreWebView2?.Stop();
-#else
+#elif LINUX
         // CEF_TODO: 待实现 Stop
+#elif IOS || MACOS || MACCATALYST
+        WKWebView?.StopLoading();
+#elif ANDROID
 #endif
     }
 
@@ -131,18 +141,24 @@ partial class WebView2
     /// </summary>
     /// <exception cref="InvalidOperationException">The underlying WebView2.CoreWebView2 is not yet initialized.</exception>
     /// <exception cref="InvalidOperationException">Thrown when browser process has unexpectedly and left this control in an invalid state. We are considering throwing a different type of exception for this case in the future.</exception>
-    public Task<string?> ExecuteScriptAsync(string script)
+    public async Task<string?> ExecuteScriptAsync(string script)
     {
 #if !DISABLE_WEBVIEW2_CORE && (WINDOWS || NETFRAMEWORK)
         VerifyBrowserNotCrashedGuard();
         if (CoreWebView2 != null)
         {
-            return CoreWebView2.ExecuteScriptAsync(script);
+            return await CoreWebView2.ExecuteScriptAsync(script);
         }
-#else
+#elif LINUX
         // CEF_TODO: 待实现 ExecuteScriptAsync
+#elif IOS || MACOS || MACCATALYST
+        if (WKWebView != null)
+        {
+            var result = await WKWebView.EvaluateJavaScriptAsync(new NSString(script));
+            return result.ToString();
+        }
 #endif
-        return Task.FromResult((string?)null);
+        return (string?)null;
     }
 
     ///// <summary>
