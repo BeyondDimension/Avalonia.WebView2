@@ -9,7 +9,7 @@ partial class WebView2 : IDisposable
     /// 验证当前控件没有被释放，被释放后操作将抛出 <see cref="InvalidOperationException"/>
     /// </summary>
     /// <exception cref="InvalidOperationException">当前控件被释放后操作引发</exception>
-    void VerifyNotClosedGuard()
+    protected void VerifyNotClosedGuard()
     {
         if (disposedValue)
         {
@@ -34,7 +34,11 @@ partial class WebView2 : IDisposable
                 UnsubscribeHandlersAndCloseController();
 #endif
 #if !(WINDOWS || NETFRAMEWORK) && NET8_0_OR_GREATER && !ANDROID && !IOS && !MACOS && !MACCATALYST && !DISABLE_CEFGLUE
-                CefGuleDispose(disposing);
+                //CefGuleDispose(disposing);
+#endif
+#if IOS || MACCATALYST || (MACOS && !USE_DEPRECATED_WEBVIEW) || ANDROID
+                nativeControlHost = null;
+                platformHandle = null;
 #endif
                 _disposables.ForEach(d => d.Dispose());
             }

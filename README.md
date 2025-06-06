@@ -5,7 +5,7 @@ Build .NET Avalonia Microsoft Edge WebView2 HTML5 Desktop Hybrid Apps
 - [x] Windows (Edge WebView2)
 - [x] macOS (~~WebKit.WebView~~ | WebKit.WKWebView)
 - [ ] ~~Linux (CefGlue)~~
-- [ ] ~~Android (Xamarin.AndroidX.WebKit)~~
+- [ ] Android (Android.Webkit.WebView + Xamarin.AndroidX.WebKit)
 - [ ] iOS (WebKit.WKWebView)
 
 ## [简介](https://docs.microsoft.com/zh-cn/microsoft-edge/webview2)

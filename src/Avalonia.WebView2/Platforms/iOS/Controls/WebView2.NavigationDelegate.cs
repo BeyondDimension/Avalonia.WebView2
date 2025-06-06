@@ -27,7 +27,9 @@ public class WebView2NavigationDelegate : WKNavigationDelegate
     {
         var webView2 = WebView2;
         var requestUri = GetCurrentUrl();
+#if DEBUG
         Console.WriteLine($"WebView2 DidFinishNavigation: {requestUri}");
+#endif
         if (webView2 is not null)
         {
             webView2.NavigationDelegate_DidFinishNavigation(null, requestUri);

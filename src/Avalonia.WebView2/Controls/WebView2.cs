@@ -1,3 +1,6 @@
+#if ANDROID
+using Android.Views;
+#endif
 using Avalonia.Input;
 
 namespace Avalonia.Controls;
@@ -11,6 +14,10 @@ public partial class WebView2
     {
 #if WINDOWS && !DISABLE_WEBVIEW2_CORE
         RefreshIsSupported();
+#endif
+
+#if ANDROID || IOS || MACCATALYST || (MACOS && !USE_DEPRECATED_WEBVIEW)
+        ChildProperty.Changed.AddClassHandler<WebView2, Control?>((x, e) => x.ChildChanged(e));
 #endif
     }
 
@@ -26,9 +33,13 @@ public partial class WebView2
         _disposables.Add(this.GetPropertyChangedObservable(IsVisibleProperty).AddClassHandler<WebView2>((t, args) => { IsVisibleChanged(args); }));
         SetDefaultBackgroundColor(_defaultBackgroundColorDefaultValue);
 
-
 #if !(WINDOWS || NETFRAMEWORK) && NET8_0_OR_GREATER && !ANDROID && !IOS && !MACOS && !MACCATALYST && !DISABLE_CEFGLUE
-        CefGuleInitialize();
+        //CefGuleInitialize();
+#endif
+
+#if IOS || MACCATALYST || (MACOS && !USE_DEPRECATED_WEBVIEW) || ANDROID
+        nativeControlHost = new NativeWebViewControlHost(this);
+        Child = nativeControlHost;
 #endif
     }
 
@@ -49,10 +60,21 @@ public partial class WebView2
     /// </summary>
     protected virtual void IsVisibleChanged(EventArgs e)
     {
+        // 本机控件不在自绘层，在移动端自绘层通常是本机画布控件单独绘制，例如 Android 的 SurfaceView
+        // 自绘层在父元素下，本机控件将在父元素下方，Z 轴会大于自绘层，这将导致 AXaml 控件无法遮盖住本机控件
+        // 在 WebView2 的占位符层，即 Rectangle 矩形控件上，监听 Visual.IsVisible 属性传递值至本机控件
+        // 还需要重写 Visual.OnAttachedToVisualTree/OnDetachedFromVisualTree 处理虚拟树的显示与隐藏
+
 #if !DISABLE_WEBVIEW2_CORE && (WINDOWS || NETFRAMEWORK)
         if (_coreWebView2Controller == null)
             return;
         _coreWebView2Controller.IsVisible = IsVisible;
+#elif ANDROID
+        var nwv = AWebView;
+        nwv?.Visibility = IsVisible ? ViewStates.Visible : ViewStates.Gone;
+#elif IOS || MACCATALYST || (MACOS && !USE_DEPRECATED_WEBVIEW)
+        var nwv = WKWebView;
+        nwv?.Hidden = !IsVisible;
 #endif
     }
 
@@ -89,8 +111,11 @@ public partial class WebView2
     protected static bool IsInDesignMode => Design.IsDesignMode;
 }
 
-#if !(WINDOWS || NETFRAMEWORK) && !NET8_0_OR_GREATER && !(ANDROID || IOS || MACCATALYST || MACOS)
 partial class WebView2 : global::Avalonia.Controls.Shapes.Rectangle
 {
+    // 使用矩形控件作为占位符，监听布局矩阵坐标传递值给本机控件
+    // 处理显示隐藏属性
+    // 转发功能函数逻辑
+    // 订阅事件
+    // 释放时销毁资源
 }
-#endif

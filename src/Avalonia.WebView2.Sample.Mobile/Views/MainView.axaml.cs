@@ -13,22 +13,16 @@ public partial class MainView : UserControl, IStorageService
     {
         InitializeComponent();
 
-        Button = this.FindControl<Button>("Button");
-        Button.Click += ButtonClick;
+        UrlTextBox.KeyDown += UrlTextBox_KeyDown;
 
-
-        WebView2 = this.FindControl<Controls.WebView2>("WebView2")!;
-        WebView2.StorageService = this;
+        WV.StorageService = this;
     }
 
     void ButtonClick(object? sender, RoutedEventArgs e)
     {
-        if (WebView2 is not null)
-        {
-            var url = UrlTextBox.Text;
-            if (!IsHttpUrl(url)) url = $"{Prefix_HTTPS}{url}";
-            WebView2?.Navigate(url);
-        }
+        var url = UrlTextBox.Text;
+        if (!IsHttpUrl(url)) url = $"{Prefix_HTTPS}{url}";
+        WV.Navigate(url);
     }
 
     static bool IsHttpUrl([NotNullWhen(true)] string? url, bool httpsOnly = false) => url != null &&
@@ -72,6 +66,22 @@ public partial class MainView : UserControl, IStorageService
             foreach (var it in dict2)
             {
                 yield return it;
+            }
+        }
+    }
+
+    void UrlTextBox_KeyDown(object? sender, KeyEventArgs e)
+    {
+        if (e.Key == Key.Enter)
+        {
+            var text = UrlTextBox.Text;
+            if (!string.IsNullOrWhiteSpace(text) && text.Contains('.'))
+            {
+                if (!text.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
+                {
+                    text = $"https://{text}";
+                }
+                WV.Navigate(text);
             }
         }
     }

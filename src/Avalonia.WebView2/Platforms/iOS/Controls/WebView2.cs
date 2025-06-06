@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace Avalonia.Controls;
 
-partial class WebView2 : global::Avalonia.Controls.NativeControlHost
+partial class WebView2
 {
     // https://github.com/dotnet/maui/blob/9.0.70/src/Controls/src/Core/HybridWebView/HybridWebView.cs
     // https://github.com/dotnet/maui/blob/9.0.70/src/Controls/src/Core/WebView/WebView.cs
@@ -27,13 +27,6 @@ partial class WebView2 : global::Avalonia.Controls.NativeControlHost
 
     [UnconditionalSuppressMessage("Memory", "MEM0002", Justification = "Used to persist cookies across WebView instances. Not a leak.")]
     static WKProcessPool? SharedPool;
-
-
-    protected override void OnSizeChanged(SizeChangedEventArgs e)
-    {
-        Console.WriteLine($"WebView2 OnSizeChanged: {e.NewSize.Width}x{e.NewSize.Height}");
-        base.OnSizeChanged(e);
-    }
 
     /// <summary>
     /// https://developer.apple.com/forums/thread/99674
@@ -105,8 +98,9 @@ partial class WebView2 : global::Avalonia.Controls.NativeControlHost
         WKUserContentController userContentController = webView.Configuration.UserContentController;
         webView.NavigationDelegate = new WebView2NavigationDelegate(this);
 
-
-        Console.WriteLine($"_source: {_source.OriginalString}");
+#if DEBUG
+        Console.WriteLine($"_source: {_source?.OriginalString}");
+#endif
         if (_source is not null)
         {
             Navigate(_source.OriginalString);
@@ -116,16 +110,7 @@ partial class WebView2 : global::Avalonia.Controls.NativeControlHost
 
     public WKWebView? WKWebView => platformHandle?.WebView;
 
-
     WKWebViewControlHandle? platformHandle;
-
-    /// <inheritdoc/>
-    protected override IPlatformHandle CreateNativeControlCore(IPlatformHandle parent)
-    {
-        var webView = CreatePlatformView();
-        platformHandle = new WKWebViewControlHandle(webView);
-        return platformHandle;
-    }
 }
 
 sealed class WKWebViewControlHandle : PlatformHandle, INativeControlHostDestroyableControlHandle

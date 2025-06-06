@@ -25,8 +25,7 @@
 		<!-- 👇 在 macOS 上开发 -->
 		<When Condition="$([System.OperatingSystem]::IsMacOS())">
 			<PropertyGroup>
-				<!--<TargetFrameworks>net9.0-ios;net9.0-macos</TargetFrameworks>-->
-				<TargetFrameworks>net9.0-macos</TargetFrameworks>
+				<TargetFrameworks>net9.0;net9.0-ios;net9.0-macos</TargetFrameworks>
 			</PropertyGroup>
 		</When>
 		<!-- 👇 在 Linux 上开发 -->

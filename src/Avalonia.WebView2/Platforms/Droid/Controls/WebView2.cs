@@ -1,5 +1,7 @@
 #if ANDROID
 using Android.Content;
+using Android.Graphics;
+using Android.Graphics.Drawables;
 using Android.Views;
 using Android.Webkit;
 using Avalonia.Android;
@@ -11,7 +13,7 @@ using AWebView = Android.Webkit.WebView;
 
 namespace Avalonia.Controls;
 
-partial class WebView2 : global::Avalonia.Controls.NativeControlHost
+partial class WebView2
 {
     // https://github.com/dotnet/maui/blob/9.0.70/src/Controls/src/Core/HybridWebView/HybridWebView.cs
     // https://github.com/dotnet/maui/blob/9.0.70/src/Controls/src/Core/WebView/WebView.cs
@@ -45,10 +47,12 @@ partial class WebView2 : global::Avalonia.Controls.NativeControlHost
         platformView.Settings.DomStorageEnabled = true;
         platformView.Settings.SetSupportMultipleWindows(true);
 
+#if DEBUG
+        platformView.Background = new ColorDrawable(Color.Purple);
+#endif
+
         return platformView;
     }
-
-    AndroidWebViewControlHandle? platformHandle;
 
     public AWebView? AWebView
     {
@@ -63,14 +67,7 @@ partial class WebView2 : global::Avalonia.Controls.NativeControlHost
         }
     }
 
-    /// <inheritdoc/>
-    protected override IPlatformHandle CreateNativeControlCore(IPlatformHandle parent)
-    {
-        var parentContext = GetContext(parent);
-        var view = CreatePlatformView(parentContext);
-        platformHandle = new AndroidWebViewControlHandle(view);
-        return platformHandle;
-    }
+    AndroidWebViewControlHandle? platformHandle;
 }
 
 sealed class AndroidWebViewControlHandle : PlatformHandle, INativeControlHostDestroyableControlHandle

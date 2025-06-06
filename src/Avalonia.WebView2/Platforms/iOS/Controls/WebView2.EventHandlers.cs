@@ -23,11 +23,15 @@ partial class WebView2
         }
         finally
         {
+#if DEBUG
             Console.WriteLine($"NavigationDelegate_DidFinishNavigationEvent {e}");
+#endif
             if (!string.IsNullOrEmpty(e))
             {
                 var js = HandlerStorageServiceGenerateJSString(StorageService, e);
+#if DEBUG
                 Console.WriteLine($"NavigationDelegate_DidFinishNavigationEvent js: {js}");
+#endif
                 if (js != null)
                 {
                     await ExecuteScriptAsync(js);
