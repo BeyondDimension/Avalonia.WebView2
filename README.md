@@ -15,6 +15,24 @@ Microsoft Edge WebView2 控件允许在本机应用中嵌入 web 技术(HTML、C
 
 ![应用示意图，其中本机 UI 区域位于左上角，WebView2 UI 区域位于右上角底部。](https://docs.microsoft.com/zh-cn/microsoft-edge/webview2/media/webview2/what-webview.png)
 
+## 安装和使用
+
+### 安装 NuGet 包
+
+通过 NuGet 包管理器安装 `WebView2.Avalonia`：
+
+```bash
+dotnet add package WebView2.Avalonia
+```
+
+### 使用示例
+
+在 XAML 中使用 WebView2 控件：
+
+```xml
+<controls:WebView2 x:Name="WebView2" Source="https://bing.com" />
+```
+
 ## Screenshots
 ![Win11 Sample Screenshot](https://raw.githubusercontent.com/BeyondDimension/Avalonia.WebView2/main/res/screenshots/Avalonia.WebView2.Sample.Win11.webp)  
 ![Win7 Sample Screenshot](https://raw.githubusercontent.com/BeyondDimension/Avalonia.WebView2/main/res/screenshots/Avalonia.WebView2.Sample.Win7.webp)
