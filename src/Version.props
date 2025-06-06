@@ -4,7 +4,7 @@
 		<DotNet_Version>9.0</DotNet_Version>
 		<WinSDK_Version>10.0.19041.0</WinSDK_Version>
 		<WebView2_WinSDK_Version>10.0.17763.0</WebView2_WinSDK_Version>
-		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">11.0</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">18.0</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">13.1</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
 		<!-- 👇 TFM 对齐包 https://www.nuget.org/packages/Microsoft.Web.WebView2，与 Common 仓库不同，注释以下内容  -->

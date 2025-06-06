@@ -49,6 +49,8 @@ partial class WebView2
         var wkWebView = WKWebView;
         if (wkWebView != null)
         {
+            Console.WriteLine($"Navigate: {uri}");
+            Console.WriteLine($"width: {wkWebView.Bounds.Width}, height: {wkWebView.Bounds.Height}");
             NSUrl nsUrl = new(uri);
             NSUrlRequest nsUrlRequest = new(nsUrl);
             wkWebView.LoadRequest(nsUrlRequest);
@@ -154,8 +156,13 @@ partial class WebView2
 #elif IOS || MACOS || MACCATALYST
         if (WKWebView != null)
         {
-            var result = await WKWebView.EvaluateJavaScriptAsync(new NSString(script));
-            return result.ToString();
+            string res = string.Empty;
+            WKWebView.EvaluateJavaScript(script, (result, err) =>
+            {
+                res = result.ToString();
+                Console.WriteLine(err.ToString());
+            });
+            return res;
         }
 #endif
         return (string?)null;

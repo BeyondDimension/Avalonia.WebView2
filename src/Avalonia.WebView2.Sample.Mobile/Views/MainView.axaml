@@ -18,5 +18,26 @@
         <vm:MainViewModel />
     </Design.DataContext>
 
-    <wv2:WebView2 x:Name="WebView2" Source="{Binding Source}" />
+    <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto Auto * Auto">
+        <TextBox
+            x:Name="UrlTextBox"
+            Grid.Row="0"
+            Grid.Column="0"
+            Text="https://bing.com"
+            Watermark="Enter the URL address and press enter to navigate" />
+
+        <Button
+            x:Name="Button"
+            Grid.Row="0"
+            Grid.Column="1"
+            Content="Go"
+            FontSize="12"
+            FontWeight="Bold" />
+        <wv2:WebView2
+            x:Name="WebView2"
+            Grid.Row="1"
+            Grid.ColumnSpan="2"
+            Height="800"
+            Source="{Binding Source}" />
+    </Grid>
 </UserControl>

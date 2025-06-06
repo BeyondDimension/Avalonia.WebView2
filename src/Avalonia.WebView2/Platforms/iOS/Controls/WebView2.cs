@@ -9,6 +9,7 @@ using WebKit;
 using Avalonia.LogicalTree;
 using Avalonia.Controls.Presenters;
 using Avalonia.Metadata;
+using System.Threading.Tasks;
 
 namespace Avalonia.Controls;
 
@@ -26,6 +27,13 @@ partial class WebView2 : global::Avalonia.Controls.NativeControlHost
 
     [UnconditionalSuppressMessage("Memory", "MEM0002", Justification = "Used to persist cookies across WebView instances. Not a leak.")]
     static WKProcessPool? SharedPool;
+
+
+    protected override void OnSizeChanged(SizeChangedEventArgs e)
+    {
+        Console.WriteLine($"WebView2 OnSizeChanged: {e.NewSize.Width}x{e.NewSize.Height}");
+        base.OnSizeChanged(e);
+    }
 
     /// <summary>
     /// https://developer.apple.com/forums/thread/99674
@@ -67,21 +75,38 @@ partial class WebView2 : global::Avalonia.Controls.NativeControlHost
         else
             config.ProcessPool = SharedPool;
 
+        config.UserContentController = new WKUserContentController();
         return config;
     }
 
 
     protected virtual WKWebView CreatePlatformView()
     {
-        var webView = new WKWebView(CGRect.Empty, CreateConfiguration())
+        var config = CreateConfiguration();
+        var webView = new WKWebView(CGRect.Empty, config)
         {
 #if !MACOS
             BackgroundColor = UIColor.Clear,
             AutosizesSubviews = true,
 #endif
         };
-        //webView.NavigationDelegate = new WebView2NavigationDelegate(handler);
 
+#if DEBUG
+        config.Preferences.SetValueForKey(NSObject.FromObject(true), new NSString("developerExtrasEnabled"));
+
+        if (OperatingSystem.IsIOSVersionAtLeast(16, 4) || OperatingSystem.IsMacCatalystVersionAtLeast(16, 6))
+        {
+            // Enable Developer Extras for iOS builds for 16.4+ and Mac Catalyst builds for 16.6 (macOS 13.5)+
+            webView.SetValueForKey(NSObject.FromObject(true), new NSString("inspectable"));
+        }
+#endif
+
+        //this.DidFinishNavigationEvent += NavigationDelegate_DidFinishNavigation;
+        WKUserContentController userContentController = webView.Configuration.UserContentController;
+        webView.NavigationDelegate = new WebView2NavigationDelegate(this);
+
+
+        Console.WriteLine($"_source: {_source.OriginalString}");
         if (_source is not null)
         {
             Navigate(_source.OriginalString);
@@ -138,48 +163,5 @@ sealed class WKWebViewControlHandle : PlatformHandle, INativeControlHostDestroya
         // 不要更改此代码。请将清理代码放入“Dispose(bool disposing)”方法中
         Dispose(disposing: true);
     }
-}
-
-// Use interface instead of base class here
-// https://developer.apple.com/documentation/webkit/wknavigationdelegate/1455641-webview?language=objc#discussion
-// The newer policy method is implemented in the base class
-// and the doc remarks state the older policy method is not called
-// if the newer one is implemented, but the new one is v13+
-// so we'd like to stick with the older one for now
-public class WebView2NavigationDelegate : NSObject, IWKNavigationDelegate
-{
-    // https://github.com/dotnet/maui/blob/9.0.70/src/Core/src/Platform/iOS/MauiWebViewNavigationDelegate.cs
-
-    [Export("webView:didFinishNavigation:")]
-    public void DidFinishNavigation(WKWebView webView, WKNavigation navigation)
-    {
-    }
-
-    [Export("webView:didFailNavigation:withError:")]
-    public void DidFailNavigation(WKWebView webView, WKNavigation navigation, NSError error)
-    {
-    }
-
-    [Export("webView:didFailProvisionalNavigation:withError:")]
-    public void DidFailProvisionalNavigation(WKWebView webView, WKNavigation navigation, NSError error)
-    {
-    }
-
-    // https://stackoverflow.com/questions/37509990/migrating-from-uiwebview-to-wkwebview
-    [Export("webView:decidePolicyForNavigationAction:decisionHandler:")]
-    public void DecidePolicy(WKWebView webView, WKNavigationAction navigationAction, Action<WKNavigationActionPolicy> decisionHandler)
-    {
-    }
-
-    //string GetCurrentUrl()
-    //{
-    //    return Handler?.PlatformView?.Url?.AbsoluteUrl?.ToString() ?? string.Empty;
-    //}
-
-    //internal WebNavigationEvent CurrentNavigationEvent
-    //{
-    //    get;
-    //    set;
-    //}
 }
 #endif
