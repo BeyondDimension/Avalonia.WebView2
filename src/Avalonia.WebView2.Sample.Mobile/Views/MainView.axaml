@@ -23,7 +23,7 @@
             x:Name="UrlTextBox"
             Margin="{Binding StatusBarMargin}"
             DockPanel.Dock="Top"
-            Watermark="输入 URL 地址，然后按 Enter 键导航" />
+            Watermark="Enter the HTTPS address, then press the Enter key to navigate." />
         <wv2:WebView2
             x:Name="WV"
             DockPanel.Dock="Bottom"

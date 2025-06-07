@@ -99,8 +99,6 @@
 		<PackageReference Include="Avalonia.ReactiveUI" />
 	</ItemGroup>
 
-	<Import Project="..\GeneratePackage.props" />
-
 	<!--<Import Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios' OR $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'" Project="..\Microsoft.Maui.WebView\Microsoft.Maui.WebView.projitems" Label="Shared" />-->
 
 	<Import Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0')) AND ($([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == '')" Project="$(MSBuildThisFileDirectory)..\..\ref\CefGlue.Avalonia.props" />

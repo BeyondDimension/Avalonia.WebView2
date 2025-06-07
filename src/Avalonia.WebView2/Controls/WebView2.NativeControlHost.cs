@@ -16,13 +16,24 @@ partial class WebView2
     static readonly StyledProperty<Control?> ChildProperty =
             AvaloniaProperty.Register<WebView2, Control?>(nameof(Child));
 
-    NativeWebViewControlHost? nativeControlHost;
+    Handler? viewHandler;
 
-    sealed partial class NativeWebViewControlHost : NativeControlHost
+    ///// <summary>
+    ///// For internal use by the .NET MAUI platform.
+    ///// Raised after web navigation completes.
+    ///// </summary>
+    //public void Navigated(WebView2NavigationEvent evnt, string url, WebView2NavigationResult result)
+    //{
+
+    //}
+
+    public partial class Handler : NativeControlHost
     {
         readonly WebView2 wv2;
 
-        internal NativeWebViewControlHost(WebView2 webView2)
+        public WebView2 VirtualView => wv2;
+
+        internal Handler(WebView2 webView2)
         {
             wv2 = webView2;
         }
@@ -32,11 +43,13 @@ partial class WebView2
         {
 #if ANDROID
             var parentContext = GetContext(parent);
-            var view = wv2.CreatePlatformView(parentContext);
-            return wv2.platformHandle = new AndroidWebViewControlHandle(view);
+            var view = CreatePlatformView(parentContext);
+            wv2.SetValue(view);
+            return wv2.platformHandle = new AndroidWebViewControlHandle(view, this);
 #elif IOS || MACCATALYST || (MACOS && !USE_DEPRECATED_WEBVIEW)
-            var webView = wv2.CreatePlatformView();
-            return wv2.platformHandle = new WKWebViewControlHandle(webView);
+            var view = CreatePlatformView();
+            wv2.SetValue(view);
+            return wv2.platformHandle = new WKWebViewControlHandle(view);
 #endif
         }
     }

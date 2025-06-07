@@ -18,3 +18,5 @@ Microsoft Edge WebView2 控件允许在本机应用中嵌入 web 技术(HTML、C
 ## Screenshots
 ![Win11 Sample Screenshot](https://raw.githubusercontent.com/BeyondDimension/Avalonia.WebView2/main/res/screenshots/Avalonia.WebView2.Sample.Win11.webp)  
 ![Win7 Sample Screenshot](https://raw.githubusercontent.com/BeyondDimension/Avalonia.WebView2/main/res/screenshots/Avalonia.WebView2.Sample.Win7.webp)
+![Android Sample Screenshot](https://raw.githubusercontent.com/BeyondDimension/Avalonia.WebView2/main/res/screenshots/Avalonia.WebView2.Sample.Mobile.Android.webp)
+![Android Storage Sample Screenshot](https://raw.githubusercontent.com/BeyondDimension/Avalonia.WebView2/main/res/screenshots/Avalonia.WebView2.Sample.Mobile.Android-Storage.webp)

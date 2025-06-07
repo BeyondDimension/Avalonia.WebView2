@@ -3,6 +3,7 @@ using Avalonia.Controls.Platforms.Windows.Interop;
 #endif
 using Avalonia.Platform;
 using Avalonia.Threading;
+using Rectangle = System.Drawing.Rectangle;
 
 namespace Avalonia.Controls;
 
@@ -17,29 +18,51 @@ partial class WebView2
 
         base.OnSizeChanged(e);
 
+#if !DISABLE_WEBVIEW2_CORE && (WINDOWS || NETFRAMEWORK)
         Dispatcher.UIThread.Post(() =>
         {
             OnBoundsChanged(EventArgs.Empty);
         }, DispatcherPriority.Render);
+#else
+        OnBoundsChanged(EventArgs.Empty);
+#endif
     }
 
     /// <inheritdoc cref="OnSizeChanged"/>
     protected virtual void OnBoundsChanged(EventArgs e)
     {
+#if ANDROID && DEBUG
+        {
+            var eBounds = e is AvaloniaPropertyChangedEventArgs<Rect> e2 ? e2.NewValue.GetValueOrDefault() : default;
+            global::Android.Util.Log.Warn("WebView2",
+$"""
+OnBoundsChanged: x={Bounds.X}, y={Bounds.Y}, w={Bounds.Width}, h={Bounds.Height}
+eBounds: x={eBounds.X}, y={eBounds.Y}, w={eBounds.Width}, h={eBounds.Height}
+""");
+        }
+#endif
+
 #if !DISABLE_WEBVIEW2_CORE && (WINDOWS || NETFRAMEWORK)
         if (_coreWebView2Controller != null)
 #endif
         {
-            var bounds = GetBoundsRectangle();
+            Rectangle bounds;
+            if (e is AvaloniaPropertyChangedEventArgs<Rect> e2)
+            {
+                bounds = GetBoundsRectangle(e2.NewValue.GetValueOrDefault());
+            }
+            else
+            {
+                bounds = GetBoundsRectangle();
+            }
             OnWindowPositionChanged(bounds);
         }
     }
 
     /// <summary>
-    /// <see cref="Visual.Bounds"/> 的 <see cref="global::System.Drawing.Rectangle"/> 值
+    /// <see cref="Visual.Bounds"/> 的 <see cref="Rectangle"/> 值
     /// </summary>
-    /// <returns></returns>
-    protected virtual global::System.Drawing.Rectangle GetBoundsRectangle()
+    protected virtual Rectangle GetBoundsRectangle(Rect? bounds = null)
     {
 #if MACOS || WINDOWS || LINUX || NETFRAMEWORK
         var window = Window;
@@ -50,7 +73,7 @@ partial class WebView2
         var screen = GetScreenFromTopLevel(topLevel);
         Visual? relativeTo = topLevel;
 #endif
-        var result = GetBoundsRectangle(Bounds, this, relativeTo, screen);
+        var result = GetBoundsRectangle(bounds ?? Bounds, this, relativeTo, screen);
         return result;
     }
 
@@ -62,14 +85,14 @@ partial class WebView2
     /// <returns></returns>
     protected static int ToPxSize(double d, Screen? screen)
     {
-        if (screen != null)
-        {
-            // 乘以 DPI 缩放
-            d *= screen.Scaling;
-        }
         if (double.IsNaN(d) || d <= 0D)
         {
             return 0;
+        }
+        else if (screen != null)
+        {
+            // 乘以 DPI 缩放
+            d *= screen.Scaling;
         }
         var result = Math.Ceiling(d);
         return Convert.ToInt32(result);
@@ -108,7 +131,7 @@ partial class WebView2
     /// <param name="bounds"></param>
     /// <param name="screen"></param>
     /// <returns></returns>
-    protected static global::System.Drawing.Rectangle GetBoundsRectangle(Rect bounds, Screen? screen)
+    protected static Rectangle GetBoundsRectangle(Rect bounds, Screen? screen)
     {
         int x = ToPxSize(bounds.X, screen);
         int y = ToPxSize(bounds.Y, screen);
@@ -120,7 +143,7 @@ partial class WebView2
     /// <summary>
     /// 根据 Avalonia 控件的边界与当前控件所在的窗口以及屏幕获取像素点的边界
     /// </summary>
-    protected static global::System.Drawing.Rectangle GetBoundsRectangle(Rect bounds, Visual visual, Visual? relativeTo, Screen? screen)
+    protected static Rectangle GetBoundsRectangle(Rect bounds, Visual visual, Visual? relativeTo, Screen? screen)
     {
         if (relativeTo != null)
         {
@@ -143,7 +166,7 @@ partial class WebView2
     /// The HwndHost takes care of updating the HWND we created.
     /// What we need to do is move our CoreWebView2 to match the new location.
     /// </summary>
-    protected virtual void OnWindowPositionChanged(global::System.Drawing.Rectangle rectangle)
+    protected virtual void OnWindowPositionChanged(Rectangle rectangle)
     {
 #if !DISABLE_WEBVIEW2_CORE && (WINDOWS || NETFRAMEWORK)
         if (_coreWebView2Controller != null)
@@ -164,15 +187,22 @@ partial class WebView2
                 layout.LeftMargin = rectangle.X;
                 layout.TopMargin = rectangle.Y;
                 nwv.LayoutParameters = layout; // 调用 java set 函数更新布局参数
+                nwv.RequestLayout(); // 重新布局
+#if ANDROID && DEBUG
+                {
+                    global::Android.Util.Log.Warn("WebView2",
+$"""
+OnWindowPositionChanged: x={rectangle.X}, y={rectangle.Y}, w={rectangle.Width}, h={rectangle.Height}
+""");
+                }
+#endif
             }
         }
 #elif IOS || MACCATALYST || (MACOS && !USE_DEPRECATED_WEBVIEW)
         var nwv = WKWebView;
-        if (nwv != null)
-        {
-            // TODO: 将 xywh 矩阵值传递给本机控件
-            //nwv.LayoutGuides
-        }
+        // TODO: 将 xywh 矩阵值传递给本机控件，CGRect 使用浮点型，疑似逻辑值，而不是物理像素值，需要计算 DPI 缩放？
+        // 增加 #if 在 iOS 上使用 global::System.Drawing.RectangleF 浮点单精度坐标系
+        nwv?.Frame = new CGRect(rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height);
 #endif
     }
 }

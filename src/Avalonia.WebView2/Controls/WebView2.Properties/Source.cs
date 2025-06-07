@@ -56,18 +56,10 @@ partial class WebView2
                 }
 #elif ANDROID
                 var aWebView = AWebView;
-                if (aWebView != null)
-                {
-                    aWebView.LoadUrl(value.AbsoluteUri);
-                }
+                aWebView?.SetSource(value);
 #elif IOS || MACOS || MACCATALYST
                 var wkWebView = WKWebView;
-                if (wkWebView != null)
-                {
-                    NSUrl nsUrl = new(value.AbsoluteUri);
-                    NSUrlRequest nsUrlRequest = new(nsUrl);
-                    wkWebView.LoadRequest(nsUrlRequest);
-                }
+                wkWebView?.SetSource(value);
 #else
                 // CEF_TODO: 待实现 Navigate
 #endif
@@ -82,7 +74,7 @@ partial class WebView2
     /// 与 WebResourceRequested 事件一起使用的 HTTP 请求，继承自 <see cref="Uri"/>，可自定义响应内容并赋值给属性 <see cref="Source"/>，默认 <see cref="HttpMethod"/> 为 <see cref="HttpMethod.Get"/>
     /// <para>示例：https://learn.microsoft.com/en-us/dotnet/api/microsoft.web.webview2.core.corewebview2.navigatewithwebresourcerequest</para>
     /// </summary>
-    public sealed class WebResourceRequestUri(string uriString, Stream? content, HttpMethod? method = null) : Uri(uriString, UriKind.Absolute)
+    public sealed partial class WebResourceRequestUri(string uriString, Stream? content, HttpMethod? method = null) : Uri(uriString, UriKind.Absolute)
     {
         readonly string uriString = uriString;
 
@@ -90,6 +82,8 @@ partial class WebView2
         /// 以流形式获取或设置 HTTP 请求消息正文
         /// </summary>
         public Stream? Content { get; set; } = content;
+
+        public string? StringContent { get; set; }
 
         /// <summary>
         /// 获取或设置可变 HTTP 请求头

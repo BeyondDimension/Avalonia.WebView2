@@ -20,8 +20,13 @@ namespace Avalonia.WebView2.Sample;
     RoundIcon = "@mipmap/ic_launcher_round",
     MainLauncher = true,
     ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize | ConfigChanges.UiMode)]
-public sealed class MainActivity : AvaloniaMainActivity<App>
+sealed class MainActivity : AvaloniaMainActivity<App>
 {
+    /// <summary>
+    /// 获取状态栏的高度
+    /// </summary>
+    /// <param name="ctx"></param>
+    /// <returns></returns>
     static int GetStatusBarHeight(Context ctx)
     {
         var resId = ctx.Resources!.GetIdentifier("status_bar_height", "dimen", "android");
@@ -33,17 +38,33 @@ public sealed class MainActivity : AvaloniaMainActivity<App>
         return default;
     }
 
+    /// <summary>
+    /// 获取 DPI 缩放比例
+    /// </summary>
+    /// <param name="ctx"></param>
+    /// <returns></returns>
+    static double GetScaling(Context ctx)
+    {
+        // https://github.com/AvaloniaUI/Avalonia/blob/a8fb53e92ae31eced207c56d4d2662467afa7d9e/src/Android/Avalonia.Android/Platform/AndroidScreens.cs#L41-L44
+        if (ctx.Resources?.Configuration is { } config)
+        {
+            return config.DensityDpi / (double)global::Android.Util.DisplayMetricsDensity.Default;
+        }
+        return 1D;
+    }
+
     protected override void OnCreate(Bundle? savedInstanceState)
     {
-        MainViewModel.StatusBarMarginTop = GetStatusBarHeight(this);
+        var statusBarHeight = GetStatusBarHeight(this);
+        var scaling = GetScaling(this);
+        MainViewModel.SetStatusBarMargin(top: statusBarHeight, scaling: scaling);
 
         base.OnCreate(savedInstanceState);
     }
 
     protected override AppBuilder CustomizeAppBuilder(AppBuilder builder)
     {
-        return base.CustomizeAppBuilder(builder)
-            .WithInterFont()
+        return App.BuildAvaloniaApp(base.CustomizeAppBuilder(builder))
             .UseReactiveUI();
     }
 }

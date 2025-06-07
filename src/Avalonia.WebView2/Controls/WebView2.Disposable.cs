@@ -36,15 +36,15 @@ partial class WebView2 : IDisposable
 #if !(WINDOWS || NETFRAMEWORK) && NET8_0_OR_GREATER && !ANDROID && !IOS && !MACOS && !MACCATALYST && !DISABLE_CEFGLUE
                 //CefGuleDispose(disposing);
 #endif
-#if IOS || MACCATALYST || (MACOS && !USE_DEPRECATED_WEBVIEW) || ANDROID
-                nativeControlHost = null;
-                platformHandle = null;
-#endif
                 _disposables.ForEach(d => d.Dispose());
             }
 
             // 释放未托管的资源(未托管的对象)并重写终结器
             // 将大型字段设置为 null
+#if IOS || MACCATALYST || (MACOS && !USE_DEPRECATED_WEBVIEW) || ANDROID
+            viewHandler = null;
+            platformHandle = null;
+#endif
             disposedValue = true;
         }
     }

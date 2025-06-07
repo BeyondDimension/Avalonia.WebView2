@@ -17,8 +17,9 @@ public partial class WebView2
 #endif
 
 #if ANDROID || IOS || MACCATALYST || (MACOS && !USE_DEPRECATED_WEBVIEW)
-        ChildProperty.Changed.AddClassHandler<WebView2, Control?>((x, e) => x.ChildChanged(e));
+        ChildProperty.Changed.AddClassHandler<WebView2, Control?>(static (x, e) => x.ChildChanged(e));
 #endif
+        //BoundsProperty.Changed.AddClassHandler<WebView2, Rect>(static (x, e) => x.OnBoundsChanged(e));
     }
 
     /// <inheritdoc />
@@ -30,7 +31,7 @@ public partial class WebView2
             return;
         }
         // 添加控件显示隐藏切时通知 CoreWebView2Controller
-        _disposables.Add(this.GetPropertyChangedObservable(IsVisibleProperty).AddClassHandler<WebView2>((t, args) => { IsVisibleChanged(args); }));
+        _disposables.Add(this.GetPropertyChangedObservable(IsVisibleProperty).AddClassHandler<WebView2>(static (s, e) => { s.IsVisibleChanged(e); }));
         SetDefaultBackgroundColor(_defaultBackgroundColorDefaultValue);
 
 #if !(WINDOWS || NETFRAMEWORK) && NET8_0_OR_GREATER && !ANDROID && !IOS && !MACOS && !MACCATALYST && !DISABLE_CEFGLUE
@@ -38,10 +39,28 @@ public partial class WebView2
 #endif
 
 #if IOS || MACCATALYST || (MACOS && !USE_DEPRECATED_WEBVIEW) || ANDROID
-        nativeControlHost = new NativeWebViewControlHost(this);
-        Child = nativeControlHost;
+        unsafe
+        {
+            var createViewHandler = CreateViewHandlerDelegate;
+            if (createViewHandler == default)
+            {
+                viewHandler = new Handler(this);
+            }
+            else
+            {
+                viewHandler = createViewHandler(this);
+            }
+        }
+        Child = viewHandler;
 #endif
     }
+
+#if IOS || MACCATALYST || (MACOS && !USE_DEPRECATED_WEBVIEW) || ANDROID
+    /// <summary>
+    /// 自定义创建 ViewHandler 的函数指针
+    /// </summary>
+    public static unsafe delegate* managed<WebView2, Handler> CreateViewHandlerDelegate { private get; set; }
+#endif
 
     /// <inheritdoc />
     protected override void OnInitialized()

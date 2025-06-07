@@ -34,15 +34,6 @@
 		<AssemblyVersion>$(Version)</AssemblyVersion>
 	</PropertyGroup>
 
-	<!-- 👇 静态本机编译 & 剪裁 | AOT & Trimmable -->
-	<PropertyGroup Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net7.0'))">
-		<IsTrimmable>true</IsTrimmable>
-		<EnableTrimAnalyzer>true</EnableTrimAnalyzer>
-		<EnableSingleFileAnalyzer>true</EnableSingleFileAnalyzer>
-		<EnableAotAnalyzer>true</EnableAotAnalyzer>
-		<IsAotCompatible>true</IsAotCompatible>
-	</PropertyGroup>
-
 	<!-- 👇 CompilerVisibleProperty 配置源生成器中 MSBuild Property 可见性 -->
 	<ItemGroup>
 		<CompilerVisibleProperty Include="Deterministic" />

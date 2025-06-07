@@ -10,6 +10,7 @@
     <File Path="README.md" />
     <File Path="src/.editorconfig" />
     <File Path="src/Directory.Build.props" />
+    <File Path="src/Directory.Build.targets" />
     <File Path="src/Directory.Packages.props" />
     <File Path="src/GeneratePackage.props" />
     <File Path="src/Version.props" />
