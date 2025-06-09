@@ -37,22 +37,6 @@ public partial class WebView2
 #if !(WINDOWS || NETFRAMEWORK) && NET8_0_OR_GREATER && !ANDROID && !IOS && !MACOS && !MACCATALYST && !DISABLE_CEFGLUE
         //CefGuleInitialize();
 #endif
-
-#if IOS || MACCATALYST || (MACOS && !USE_DEPRECATED_WEBVIEW) || ANDROID
-        unsafe
-        {
-            var createViewHandler = CreateViewHandlerDelegate;
-            if (createViewHandler == default)
-            {
-                viewHandler = new Handler(this);
-            }
-            else
-            {
-                viewHandler = createViewHandler(this);
-            }
-        }
-        Child = viewHandler;
-#endif
     }
 
 #if IOS || MACCATALYST || (MACOS && !USE_DEPRECATED_WEBVIEW) || ANDROID

@@ -175,29 +175,37 @@ eBounds: x={eBounds.X}, y={eBounds.Y}, w={eBounds.Width}, h={eBounds.Height}
             _coreWebView2Controller.NotifyParentWindowPositionChanged();
         }
 #elif ANDROID
-        var nwv = AWebView;
-        if (nwv != null)
-        {
-            // https://github.com/AvaloniaUI/Avalonia/blob/11.3.1/src/Android/Avalonia.Android/AvaloniaView.cs
-            // AvaloniaView 使用 FrameLayout 实现
-            if (nwv.LayoutParameters is FrameLayout.LayoutParams layout)
-            {
-                layout.Height = rectangle.Height;
-                layout.Width = rectangle.Width;
-                layout.LeftMargin = rectangle.X;
-                layout.TopMargin = rectangle.Y;
-                nwv.LayoutParameters = layout; // 调用 java set 函数更新布局参数
-                nwv.RequestLayout(); // 重新布局
-#if ANDROID && DEBUG
-                {
-                    global::Android.Util.Log.Warn("WebView2",
-$"""
-OnWindowPositionChanged: x={rectangle.X}, y={rectangle.Y}, w={rectangle.Width}, h={rectangle.Height}
-""");
-                }
-#endif
-            }
-        }
+        //        var nwv = AWebView;
+        //        if (nwv != null)
+        //        {
+        //            // https://github.com/AvaloniaUI/Avalonia/blob/11.3.1/src/Android/Avalonia.Android/AvaloniaView.cs
+        //            // AvaloniaView 使用 FrameLayout 实现
+        //            if (nwv.LayoutParameters is FrameLayout.LayoutParams layout)
+        //            {
+        //                layout.Height = rectangle.Height;
+        //                layout.Width = rectangle.Width;
+        //                layout.LeftMargin = rectangle.X;
+        //                layout.TopMargin = rectangle.Y;
+        //                nwv.LayoutParameters = layout; // 调用 java set 函数更新布局参数
+        //                nwv.RequestLayout(); // 重新布局
+        //#if ANDROID && DEBUG
+        //                {
+        //                    var isUIThread = Dispatcher.UIThread.CheckAccess();
+        //                    var isUIThreadA = (int)global::Android.OS.Build.VERSION.SdkInt >= 23 ?
+        //#pragma warning disable CA1416 // 验证平台兼容性
+        //                        global::Android.OS.Looper.MainLooper!.IsCurrentThread :
+        //#pragma warning restore CA1416 // 验证平台兼容性
+        //                        (global::Android.OS.Looper.MainLooper!.Thread == global::Java.Lang.Thread.CurrentThread());
+        //                    global::Android.Util.Log.Warn("WebView2",
+        //    $"""
+        //OnWindowPositionChanged: x={rectangle.X}, y={rectangle.Y}, w={rectangle.Width}, h={rectangle.Height}
+        //isUIThread: {isUIThread}
+        //isUIThreadA: {isUIThreadA}
+        //""");
+        //                }
+        //#endif
+        //            }
+        //        }
 #elif IOS || MACCATALYST || (MACOS && !USE_DEPRECATED_WEBVIEW)
         var nwv = WKWebView;
         // TODO: 将 xywh 矩阵值传递给本机控件，CGRect 使用浮点型，疑似逻辑值，而不是物理像素值，需要计算 DPI 缩放？

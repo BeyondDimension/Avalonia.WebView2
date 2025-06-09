@@ -70,16 +70,11 @@ partial class WebView2
             TopLevel = topLevel;
         }
 #if ANDROID        
-        if (IsVisible)
+        if (viewHandler == null)
         {
-            var nwv = AWebView;
-            if (nwv != null)
-            {
-                if (nwv.Visibility != global::Android.Views.ViewStates.Visible)
-                {
-                    nwv.Visibility = global::Android.Views.ViewStates.Visible;
-                }
-            }
+        {
+            viewHandler = CreateViewHandler(this);
+            Child = viewHandler;
         }
 #elif IOS || MACCATALYST || (MACOS && !USE_DEPRECATED_WEBVIEW)
         if (IsVisible)

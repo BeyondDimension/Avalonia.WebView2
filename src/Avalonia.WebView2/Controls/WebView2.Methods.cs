@@ -36,15 +36,15 @@ partial class WebView2
 
     public void Navigate(string uri)
     {
+        _source = null;
+        _htmlSource = null;
+
 #if !DISABLE_WEBVIEW2_CORE && (WINDOWS || NETFRAMEWORK)
         VerifyBrowserNotCrashedGuard();
         CoreWebView2?.Navigate(uri);
 #elif ANDROID
         var aWebView = AWebView;
-        if (aWebView != null)
-        {
-            aWebView.LoadUrl(uri);
-        }
+        aWebView?.LoadUrl(uri);
 #elif IOS || MACOS || MACCATALYST
         var wkWebView = WKWebView;
         if (wkWebView != null)

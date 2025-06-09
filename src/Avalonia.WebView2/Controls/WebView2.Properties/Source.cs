@@ -38,7 +38,9 @@ partial class WebView2
             {
                 throw new ArgumentException("Only absolute URI is allowed", "Source");
             }
-            else if (_source == null || _source.AbsoluteUri != value.AbsoluteUri)
+            else if (_source == null ||
+                _source.GetType() != value.GetType() || // 允许 Uri 的派生类
+                _source.AbsoluteUri != value.AbsoluteUri)
             {
                 _htmlSource = null;
                 SetAndRaise(SourceProperty, ref _source, value);

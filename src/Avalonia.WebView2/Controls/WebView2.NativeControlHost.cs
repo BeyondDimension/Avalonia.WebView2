@@ -18,6 +18,19 @@ partial class WebView2
 
     Handler? viewHandler;
 
+    static unsafe Handler CreateViewHandler(WebView2 wv2)
+    {
+        var createViewHandler = CreateViewHandlerDelegate;
+        if (createViewHandler == default)
+        {
+            return new Handler(wv2);
+        }
+        else
+        {
+            return = createViewHandler(wv2);
+        }
+    }
+
     ///// <summary>
     ///// For internal use by the .NET MAUI platform.
     ///// Raised after web navigation completes.
@@ -45,7 +58,7 @@ partial class WebView2
             var parentContext = GetContext(parent);
             var view = CreatePlatformView(parentContext);
             wv2.SetValue(view);
-            return wv2.platformHandle = new AndroidWebViewControlHandle(view, this);
+            return this;
 #elif IOS || MACCATALYST || (MACOS && !USE_DEPRECATED_WEBVIEW)
             var view = CreatePlatformView();
             wv2.SetValue(view);

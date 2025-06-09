@@ -43,7 +43,6 @@ partial class WebView2 : IDisposable
             // 将大型字段设置为 null
 #if IOS || MACCATALYST || (MACOS && !USE_DEPRECATED_WEBVIEW) || ANDROID
             viewHandler = null;
-            platformHandle = null;
 #endif
             disposedValue = true;
         }

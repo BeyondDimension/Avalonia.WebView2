@@ -3,6 +3,7 @@ using Android.Content;
 using Android.Graphics;
 using Android.Graphics.Drawables;
 using Android.OS;
+using Android.Runtime;
 using Android.Views;
 using Android.Webkit;
 using AndroidX.Core.View;
@@ -24,8 +25,6 @@ partial class WebView2
     /// </summary>
     partial class Handler
     {
-        public AWebView? PlatformView => wv2.platformHandle?.WebView;
-
         protected virtual WebViewClientCompat CreateWebViewClient() => new WebViewClientCompat2(this);
 
         protected virtual WebChromeClient CreateWebChromeClient() => new WebChromeClient2(this);
@@ -85,16 +84,55 @@ partial class WebView2
         }
     }
 
+    partial class Handler : IPlatformHandle, INativeControlHostDestroyableControlHandle
+    {
+        nint IPlatformHandle.Handle => webView == default ? default : webView.Handle;
+
+        string? IPlatformHandle.HandleDescriptor => "android.view.View";
+
+        bool disposedValue;
+        protected AWebView? webView;
+
+        protected bool DisposedValue => disposedValue;
+
+        public AWebView? PlatformView => webView;
+
+        void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    // 释放托管状态(托管对象)
+                    if (webView != null)
+                    {
+                        DisconnectHandler(webView);
+                        webView.Destroy(); // 销毁平台控件
+                        webView.Dispose();
+                    }
+                }
+
+                // 释放未托管的资源(未托管的对象)并重写终结器
+                // 将大型字段设置为 null
+                webView = null;
+                disposedValue = true;
+            }
+        }
+
+        /// <inheritdoc/>
+        public void Destroy()
+        {
+            // 不要更改此代码。请将清理代码放入“Dispose(bool disposing)”方法中
+            Dispose(disposing: true);
+        }
+    }
+
 
     public static Context? GetContext(IPlatformHandle platformHandle)
     {
         if (platformHandle is AndroidViewControlHandle viewControlHandle)
         {
             return viewControlHandle.View?.Context;
-        }
-        else if (platformHandle is AndroidWebViewControlHandle webView2ControlHandle)
-        {
-            return webView2ControlHandle.WebView?.Context;
         }
         return null;
     }
@@ -103,7 +141,7 @@ partial class WebView2
     {
         get
         {
-            var result = platformHandle?.WebView;
+            var result = viewHandler?.PlatformView;
             if (result.IsAlive())
             {
                 return result;
@@ -111,8 +149,6 @@ partial class WebView2
             return null;
         }
     }
-
-    AndroidWebViewControlHandle? platformHandle;
 
     protected virtual void SetValue(AWebView webView)
     {
@@ -242,51 +278,6 @@ partial class WebView2
             //}
             webView.LoadDataWithBaseURL(uriString, content ?? "", "text/html", "UTF-8", null);
         }
-    }
-}
-
-sealed class AndroidWebViewControlHandle : PlatformHandle, INativeControlHostDestroyableControlHandle
-{
-    bool disposedValue;
-    AWebView? webView;
-    WebView2.Handler? handler;
-
-    internal AndroidWebViewControlHandle(AWebView webView, WebView2.Handler handler) : base(webView.Handle, "android.webkit.WebView")
-    {
-        this.webView = webView;
-        this.handler = handler;
-    }
-
-    public AWebView? WebView => webView;
-
-    void Dispose(bool disposing)
-    {
-        if (!disposedValue)
-        {
-            if (disposing)
-            {
-                // 释放托管状态(托管对象)
-                if (webView != null)
-                {
-                    handler?.DisconnectHandler(webView);
-                    webView.Destroy(); // 销毁平台控件
-                    webView.Dispose();
-                }
-            }
-
-            // 释放未托管的资源(未托管的对象)并重写终结器
-            // 将大型字段设置为 null
-            webView = null;
-            handler = null;
-            disposedValue = true;
-        }
-    }
-
-    /// <inheritdoc/>
-    public void Destroy()
-    {
-        // 不要更改此代码。请将清理代码放入“Dispose(bool disposing)”方法中
-        Dispose(disposing: true);
     }
 }
 
