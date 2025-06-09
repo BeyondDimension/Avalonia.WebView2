@@ -72,7 +72,6 @@ partial class WebView2
 #if ANDROID        
         if (viewHandler == null)
         {
-        {
             viewHandler = CreateViewHandler(this);
             Child = viewHandler;
         }
