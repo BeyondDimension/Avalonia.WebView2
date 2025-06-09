@@ -27,7 +27,7 @@ partial class WebView2
         }
         else
         {
-            return = createViewHandler(wv2);
+            return createViewHandler(wv2);
         }
     }
 
@@ -55,9 +55,6 @@ partial class WebView2
         protected override IPlatformHandle CreateNativeControlCore(IPlatformHandle parent)
         {
 #if ANDROID
-            var parentContext = GetContext(parent);
-            var view = CreatePlatformView(parentContext);
-            wv2.SetValue(view);
             return this;
 #elif IOS || MACCATALYST || (MACOS && !USE_DEPRECATED_WEBVIEW)
             var view = CreatePlatformView();
