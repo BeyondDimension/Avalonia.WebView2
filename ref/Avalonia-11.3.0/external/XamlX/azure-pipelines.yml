@@ -1,0 +1,65 @@
+jobs:
+  - job: Linux
+    pool:
+      vmImage: 'ubuntu-20.04'
+    steps:
+      - task: UseDotNet@2
+        displayName: 'Use .NET SDK 8.0.203'
+        inputs:
+          version: 8.0.203
+
+      - task: UseDotNet@2
+        displayName: 'Use .NET Runtime 6.0'
+        inputs:
+          packageType: runtime
+          version: 6.0.x
+
+      - task: CmdLine@2
+        displayName: 'Run Tests'
+        inputs:
+          script: |
+            mono --version
+            dotnet --info
+            dotnet build
+            dotnet test -f net8.0 --logger "trx" --results-directory artifacts/test-results
+            dotnet test -f net6.0 --logger "trx" --results-directory artifacts/test-results
+            dotnet test -f net47  --logger "trx" --results-directory artifacts/test-results
+      - task: PublishTestResults@2
+        inputs:
+          testResultsFormat: 'VSTest'
+          testResultsFiles: '$(Build.SourcesDirectory)/artifacts/test-results/*.trx'
+        condition: not(canceled())
+
+
+  - job: Windows
+    pool:
+      vmImage: 'windows-2022'
+    variables:
+      SolutionDir: '$(Build.SourcesDirectory)'
+    steps:
+      - task: UseDotNet@2
+        displayName: 'Use .NET SDK 8.0.203'
+        inputs:
+          version: 8.0.203
+          
+      - task: UseDotNet@2
+        displayName: 'Use .NET Runtime 6.0'
+        inputs:
+          packageType: runtime
+          version: 6.0.x
+
+      - task: CmdLine@2
+        displayName: 'Run Tests'
+        inputs:
+          script: |
+            dotnet --info
+            dotnet build
+            dotnet test -f net8.0 --logger "trx" --results-directory artifacts/test-results
+            dotnet test -f net6.0 --logger "trx" --results-directory artifacts/test-results
+            dotnet test -f net47  --logger "trx" --results-directory artifacts/test-results
+
+      - task: PublishTestResults@2
+        inputs:
+          testResultsFormat: 'VSTest'
+          testResultsFiles: '$(Build.SourcesDirectory)/artifacts/test-results/*.trx'
+        condition: not(canceled())

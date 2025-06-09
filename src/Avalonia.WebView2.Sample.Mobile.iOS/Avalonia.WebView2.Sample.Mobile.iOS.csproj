@@ -11,10 +11,8 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Avalonia.iOS" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<ProjectReference Include="..\Avalonia.WebView2.Sample.Mobile\Avalonia.WebView2.Sample.Mobile.csproj" />
 	</ItemGroup>
+
+	<Import Project="$(MSBuildThisFileDirectory)..\..\ref\Avalonia.$(AvaloniaRef).props" />
 </Project>

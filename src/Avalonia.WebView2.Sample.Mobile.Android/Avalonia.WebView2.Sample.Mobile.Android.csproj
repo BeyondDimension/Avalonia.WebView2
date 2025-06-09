@@ -27,11 +27,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Avalonia.Android" />
 		<PackageReference Include="Xamarin.AndroidX.Core.SplashScreen" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\Avalonia.WebView2.Sample.Mobile\Avalonia.WebView2.Sample.Mobile.csproj" />
 	</ItemGroup>
+
+	<Import Project="$(MSBuildThisFileDirectory)..\..\ref\Avalonia.$(AvaloniaRef).props" />
 </Project>

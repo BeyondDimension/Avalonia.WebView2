@@ -1,0 +1,40 @@
+<Project>
+	<Choose>
+		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
+			<ItemGroup>
+				<PackageReference Include="Avalonia.iOS" />
+			</ItemGroup>
+		</When>
+		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
+			<ItemGroup>
+				<PackageReference Include="Avalonia.Android" />
+			</ItemGroup>
+		</When>
+		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
+			<ItemGroup>
+				<PackageReference Include="Avalonia.Skia" />
+				<PackageReference Include="Avalonia.Win32" />
+			</ItemGroup>
+		</When>
+		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'macos'">
+			<ItemGroup>
+				<PackageReference Include="Avalonia.Skia" />
+				<PackageReference Include="Avalonia.Native" />
+			</ItemGroup>
+		</When>
+		<When Condition="$(DefineConstants.Contains('LINUX'))">
+			<ItemGroup>
+				<PackageReference Include="Avalonia.Skia" />
+				<PackageReference Include="Avalonia.X11" />
+			</ItemGroup>
+		</When>
+	</Choose>
+
+	<ItemGroup>
+		<PackageReference Include="Avalonia" />
+		<!-- Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration. -->
+		<PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" />
+		<PackageReference Condition="$(AvaloniaFeatures.Contains('Avalonia.ReactiveUI;'))"  Include="Avalonia.ReactiveUI" />
+		<PackageReference Condition="$(AvaloniaFeatures.Contains('Avalonia.Themes.Fluent;'))" Include="Avalonia.Themes.Fluent" />
+	</ItemGroup>
+</Project>

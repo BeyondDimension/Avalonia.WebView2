@@ -3,6 +3,10 @@
 	<PropertyGroup>
 		<TargetFramework>net9.0</TargetFramework>
 		<RootNamespace>Avalonia.WebView2.Sample</RootNamespace>
+		<AvaloniaFeatures>
+			Avalonia.Themes.Fluent;
+			Avalonia.ReactiveUI;
+		</AvaloniaFeatures>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -21,16 +25,13 @@
 		<Compile Remove="Views\MainWindow.axaml.cs" />
 	</ItemGroup>
 
-	<ItemGroup>
-		<PackageReference Include="Avalonia" />
-		<PackageReference Include="Avalonia.Themes.Fluent" />
+	<!--<ItemGroup>
 		<PackageReference Include="BD.Avalonia8.Fonts.HarmonyOS_Sans_SC" />
-		<!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
-		<PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" />
-		<PackageReference Include="Avalonia.ReactiveUI" />
-	</ItemGroup>
+	</ItemGroup>-->
 
 	<ItemGroup>
 		<ProjectReference Include="..\Avalonia.WebView2\Avalonia.WebView2.csproj" />
 	</ItemGroup>
+
+	<Import Project="$(MSBuildThisFileDirectory)..\..\ref\Avalonia.$(AvaloniaRef).props" />
 </Project>

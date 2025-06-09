@@ -48,7 +48,6 @@
 
 	<!-- 👇 引用 NuGet 包 -->
 	<ItemGroup>
-		<PackageReference Include="Avalonia" />
 		<PackageReference Include="Utf8StringInterpolation" />
 		<PackageReference Include="Microsoft.IO.RecyclableMemoryStream" />
 	</ItemGroup>
@@ -79,16 +78,12 @@
 		</When>
 		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
 			<ItemGroup>
-				<PackageReference Include="Avalonia.Android" />
 				<PackageReference Include="Xamarin.AndroidX.WebKit" />
 			</ItemGroup>
 		</When>
 		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
 			<!-- Avalonia.iOS 包似乎不兼容 -maccatalyst TFM -->
 			<!--<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios' OR $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">-->
-			<ItemGroup>
-				<PackageReference Include="Avalonia.iOS" />
-			</ItemGroup>
 		</When>
 	</Choose>
 
@@ -96,10 +91,12 @@
 		<!--<PackageReference Include="CefGlue.Avalonia" />-->
 		<!--<PackageReference Include="WebViewControl-Avalonia" />-->
 		<!--<ProjectReference Include="..\CefGlue.Avalonia\CefGlue.Avalonia.csproj" />-->
-		<PackageReference Include="Avalonia.ReactiveUI" />
+		<!--<PackageReference Include="Avalonia.ReactiveUI" />-->
 	</ItemGroup>
 
 	<!--<Import Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios' OR $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'" Project="..\Microsoft.Maui.WebView\Microsoft.Maui.WebView.projitems" Label="Shared" />-->
 
-	<Import Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0')) AND ($([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == '')" Project="$(MSBuildThisFileDirectory)..\..\ref\CefGlue.Avalonia.props" />
+	<!--<Import Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0')) AND ($([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == '')" Project="$(MSBuildThisFileDirectory)..\..\ref\CefGlue.Avalonia.props" />-->
+
+	<Import Project="$(MSBuildThisFileDirectory)..\..\ref\Avalonia.$(AvaloniaRef).props" />
 </Project>

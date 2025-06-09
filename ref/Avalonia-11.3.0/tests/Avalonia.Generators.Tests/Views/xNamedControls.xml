@@ -1,0 +1,15 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="Sample.App.xNamedControls">
+    <StackPanel>
+        <TextBox x:Name="UserNameTextBox"
+                 Watermark="Username input"
+                 UseFloatingWatermark="True" />
+        <TextBox x:Name="PasswordTextBox"
+                 Watermark="Password input"
+                 UseFloatingWatermark="True" />
+        <!-- Name generator should still generate members, even if XAML is invalid -->
+        <Button x:Name="SignUpButton"
+                Content="{x:Static NonExistent.Member}" />
+    </StackPanel>
+</Window>

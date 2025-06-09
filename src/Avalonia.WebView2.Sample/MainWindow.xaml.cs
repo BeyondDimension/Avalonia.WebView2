@@ -27,10 +27,8 @@ public sealed partial class MainWindow : Window
         var webView2AssemblyVersion =
 #if WINDOWS
             $"Microsoft.Web.WebView2.Core: {GetVersion(typeof(CoreWebView2).Assembly)}";
-#elif !(WINDOWS || NETFRAMEWORK) && NET8_0_OR_GREATER
-            $"Microsoft.Web.WebView2.Core: {GetVersion(typeof(global::Xilium.CefGlue.Avalonia.AvaloniaCefBrowser).Assembly)}";
 #else
-            $"Xilium.CefGlue.Avalonia: {GetVersion(typeof(CoreWebView2).Assembly)}";
+            $"TODO: ";
 #endif
 
         AboutTextBlock.Text = $"Runtime: {Environment.Version}{Environment.NewLine}OSArchitecture: {RuntimeInformation.OSArchitecture}{Environment.NewLine}ProcessArchitecture: {RuntimeInformation.ProcessArchitecture}{Environment.NewLine}Avalonia: {GetVersion(typeof(Window).Assembly)}{Environment.NewLine}Avalonia.WebView2: {GetVersion(typeof(WV2).Assembly)}{Environment.NewLine}{webView2AssemblyVersion}";

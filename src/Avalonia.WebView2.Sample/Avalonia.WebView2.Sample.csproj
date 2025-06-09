@@ -8,13 +8,13 @@
 		<!-- 👇 在 Windows 上开发 -->
 		<When Condition="$([System.OperatingSystem]::IsWindows())">
 			<PropertyGroup>
-				<TargetFrameworks>net9.0-windows;net9.0</TargetFrameworks>
+				<TargetFrameworks>net9.0-windows;net9.0;net9.0-macos</TargetFrameworks>
 			</PropertyGroup>
 		</When>
 		<!-- 👇 在 macOS 上开发 -->
 		<When Condition="$([System.OperatingSystem]::IsMacOS())">
 			<PropertyGroup>
-				<TargetFrameworks>net9.0-macos</TargetFrameworks>
+				<TargetFrameworks>net9.0;net9.0-macos</TargetFrameworks>
 			</PropertyGroup>
 		</When>
 		<!-- 👇 在 Linux 上开发 -->
@@ -35,15 +35,14 @@
 			<PropertyGroup>
 				<OutputType>WinExe</OutputType>
 				<ApplicationManifest>Properties\app.manifest</ApplicationManifest>
-				<TargetFrameworks>net9.0-windows;net9.0</TargetFrameworks>
 			</PropertyGroup>
-			<ItemGroup>
+			<!--<ItemGroup>
 				<ProjectReference Include="..\Avalonia.Ref\Avalonia.Desktop\Avalonia.Desktop.csproj" />
 				<ProjectReference Include="..\Avalonia.Ref\Avalonia.Native\Avalonia.Native.csproj" />
 				<ProjectReference Include="..\Avalonia.Ref\Avalonia.X11\Avalonia.X11.csproj" />
-			</ItemGroup>
+			</ItemGroup>-->
 		</When>
-		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'macos'">
+		<!--<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'macos'">
 			<ItemGroup>
 				<PackageReference Include="Avalonia.Desktop" />
 				<PackageReference Include="Avalonia.Native" />
@@ -54,7 +53,7 @@
 				<PackageReference Include="Avalonia.Desktop" />
 				<PackageReference Include="Avalonia.X11" />
 			</ItemGroup>
-		</When>
+		</When>-->
 		<Otherwise>
 			<PropertyGroup>
 				<OutputType>Exe</OutputType>
@@ -85,13 +84,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Avalonia" />
 		<PackageReference Include="FluentAvaloniaUI" />
-		<!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
-		<PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\Avalonia.WebView2\Avalonia.WebView2.csproj" />
 	</ItemGroup>
+
+	<Import Project="$(MSBuildThisFileDirectory)..\..\ref\Avalonia.$(AvaloniaRef).props" />
 </Project>

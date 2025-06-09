@@ -71,7 +71,7 @@ partial class WebView2
             platformView.Background = new ColorDrawable(Color.Purple);
 #endif
 
-            return platformView;
+            return webView = platformView;
         }
 
         public virtual void DisconnectHandler(AWebView platformView)

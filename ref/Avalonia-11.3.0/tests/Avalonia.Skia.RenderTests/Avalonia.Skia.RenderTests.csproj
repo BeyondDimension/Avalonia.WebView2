@@ -1,0 +1,41 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>$(AvsCurrentTargetFramework)</TargetFramework>
+    <DefineConstants>$(DefineConstants);AVALONIA_SKIA</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <IncludeLinuxSkia>true</IncludeLinuxSkia>
+    <IncludeWasmSkia>true</IncludeWasmSkia>
+
+<!--    <AvaSkiaRenderTestsIncludeSkiaSharp3>true</AvaSkiaRenderTestsIncludeSkiaSharp3>-->
+    <AvsIncludeSkiaSharp3 Condition="'$(AvsIncludeSkiaSharp3)' == '' AND '$(AvaSkiaRenderTestsIncludeSkiaSharp3)' == 'true'">true</AvsIncludeSkiaSharp3>
+    <DefineConstants Condition="'$(AvsIncludeSkiaSharp3)' == 'true'">$(DefineConstants);AVALONIA_SKIA3</DefineConstants>
+    <DefineConstants Condition="'$(AvsIncludeSkiaSharp3)' != 'true'">$(DefineConstants);AVALONIA_SKIA2</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="..\Avalonia.RenderTests\**\*.cs" />
+    <Compile Update="..\Avalonia.RenderTests\Media\EffectTests.cs">
+      <Link>Media\EffectTests.cs</Link>
+    </Compile>
+    <Compile Update="..\Avalonia.RenderTests\Media\BitmapMemoryTests.cs">
+      <Link>Media\BitmapMemoryTests.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="..\Avalonia.RenderTests\*\*.ttf" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Markup\Avalonia.Markup.Xaml\Avalonia.Markup.Xaml.csproj" />
+    <ProjectReference Include="..\..\src\Markup\Avalonia.Markup\Avalonia.Markup.csproj" />
+    <ProjectReference Include="..\..\src\Avalonia.Base\Avalonia.Base.csproj" />
+    <ProjectReference Include="..\..\src\Avalonia.Controls\Avalonia.Controls.csproj" />
+    <ProjectReference Include="..\..\src\Avalonia.Themes.Simple\Avalonia.Themes.Simple.csproj" />
+    <ProjectReference Include="..\..\src\Skia\Avalonia.Skia\Avalonia.Skia.csproj" />
+    <ProjectReference Include="..\Avalonia.UnitTests\Avalonia.UnitTests.csproj" />
+  </ItemGroup>
+  <Import Project="..\..\build\Moq.props" />
+  <Import Project="..\..\build\Rx.props" />
+  <Import Project="..\..\build\XUnit.props" />
+  <Import Project="..\..\build\ImageSharp.props" />
+  <Import Project="..\..\build\SkiaSharp.props" />
+  <Import Project="..\..\build\SharedVersion.props" />
+</Project>

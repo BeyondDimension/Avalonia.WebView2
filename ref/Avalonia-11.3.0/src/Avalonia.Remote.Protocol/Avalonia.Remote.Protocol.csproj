@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>$(AvsCurrentTargetFramework);$(AvsLegacyTargetFrameworks);netstandard2.0</TargetFrameworks>
+    <DefineConstants>AVALONIA_REMOTE_PROTOCOL;$(DefineConstants)</DefineConstants>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>Key.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="..\Avalonia.Base\Input\Key.cs" />
+    <Compile Include="..\Avalonia.Base\Input\PhysicalKey.cs" />
+    <Compile Include="..\Avalonia.Base\Compatibility\TrimmingAttributes.cs" Visible="False" />
+  </ItemGroup>
+  <Import Project="..\..\build\TrimmingEnable.props" />
+</Project>
