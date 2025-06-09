@@ -1,0 +1,215 @@
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <AvaloniaXamlReportImportance Condition="'$(AvaloniaXamlReportImportance)' == ''">low</AvaloniaXamlReportImportance>
+    <_AvaloniaSkipXamlCompilation Condition="'$(_AvaloniaSkipXamlCompilation)' == ''">false</_AvaloniaSkipXamlCompilation>
+    <AvaloniaUseCompiledBindingsByDefault Condition="'$(AvaloniaUseCompiledBindingsByDefault)' == ''">false</AvaloniaUseCompiledBindingsByDefault>
+    <AvaloniaIncludeApplicationIconAsWindowIcon Condition="'$(AvaloniaIncludeApplicationIconAsWindowIcon)' == ''">true</AvaloniaIncludeApplicationIconAsWindowIcon>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <!-- Enable property page if VisualStudioVersion is great or equal 17.0 and Language is'not VB.NET -->
+    <AvaloniaEnablePropertyPage Condition="'$(AvaloniaEnablePropertyPage)' == '' and '$(VisualStudioVersion)' &gt;= '17.0' and '$(Language)' != 'VB'">true</AvaloniaEnablePropertyPage>
+  </PropertyGroup>
+
+  <ItemGroup Label="Avalonia Property Page">
+    <PropertyPageSchema Include="$(MSBuildThisFileDirectory)\AvaloniaRules.Project.xml" Condition="'$(AvaloniaEnablePropertyPage)' == 'true'">
+      <Context>Project</Context>
+    </PropertyPageSchema>
+  </ItemGroup>
+
+  <!-- Unfortunately we have to update default items in .targets since custom nuget props are improted before Microsoft.NET.Sdk.DefaultItems.props -->
+  <ItemGroup Condition="'$(EnableDefaultItems)'=='True'">
+    <Compile Update="**\*.paml.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="**\*.axaml.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <None Remove="**\*.axaml" />
+    <None Remove="**\*.paml" />
+  </ItemGroup>
+
+  <!-- Include App icon, so we can use it as a default Window icon. -->
+  <ItemGroup Condition="'$(AvaloniaIncludeApplicationIconAsWindowIcon)' == 'true'">
+    <AvaloniaResource Include="$(ApplicationIcon)"
+                      Visible="false"
+                      Link="!__AvaloniaDefaultWindowIcon"
+                      Condition="'$(ApplicationIcon)' != ''" />
+  </ItemGroup>
+
+  <UsingTask TaskName="GenerateAvaloniaResourcesTask"
+             AssemblyFile="$(AvaloniaBuildTasksLocation)"
+             />
+
+  <UsingTask TaskName="CompileAvaloniaXamlTask"
+             AssemblyFile="$(AvaloniaBuildTasksLocation)"
+             />
+
+
+  <Target Name="AddAvaloniaResources" 
+          BeforeTargets="ResolveReferences"
+          Condition="('@(AvaloniaResource->Count())' &gt; 0) or ('@(AvaloniaXaml->Count())' &gt; 0)">
+    <PropertyGroup>
+      <AvaloniaResourcesTemporaryFilePath Condition="'$(AvaloniaResourcesTemporaryFilePath)' == ''">$(IntermediateOutputPath)/Avalonia/resources</AvaloniaResourcesTemporaryFilePath>
+    </PropertyGroup>
+    <ItemGroup>
+      <EmbeddedResource Include="$(AvaloniaResourcesTemporaryFilePath)">
+        <LogicalName>!AvaloniaResources</LogicalName>
+      </EmbeddedResource>
+    </ItemGroup>
+  </Target>
+  
+  <PropertyGroup>
+    <BuildAvaloniaResourcesDependsOn>$(BuildAvaloniaResourcesDependsOn);AddAvaloniaResources;ResolveReferences;_GenerateAvaloniaResourcesDependencyCache</BuildAvaloniaResourcesDependsOn>
+    <CompileAvaloniaXamlDependsOn>$(CompileAvaloniaXamlDependsOn);FindReferenceAssembliesForReferences</CompileAvaloniaXamlDependsOn>
+  </PropertyGroup>
+
+  <Target Name="_GenerateAvaloniaResourcesDependencyCache" BeforeTargets="GenerateAvaloniaResources">
+    <PropertyGroup>
+      <_AvaloniaResourcesInputsCacheFilePath>$(IntermediateOutputPath)/Avalonia/Resources.Inputs.cache</_AvaloniaResourcesInputsCacheFilePath>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <CustomAdditionalGenerateAvaloniaResourcesInputs Include="$(_AvaloniaResourcesInputsCacheFilePath)" />
+    </ItemGroup>
+    
+    <Hash ItemsToHash="@(AvaloniaResource);@(AvaloniaXaml);$(MSBuildAllProjects)">
+      <Output TaskParameter="HashResult" PropertyName="AvaloniaResourcesDependencyHash" />
+    </Hash>
+
+    <MakeDir Directories="$(IntermediateOutputPath)/Avalonia" />
+    <WriteLinesToFile Overwrite="true" File="$(_AvaloniaResourcesInputsCacheFilePath)" Lines="$(AvaloniaResourcesDependencyHash)" WriteOnlyWhenDifferent="True" />
+
+    <ItemGroup>
+      <FileWrites Include="$(_AvaloniaResourcesInputsCacheFilePath)" />
+    </ItemGroup>
+  </Target>
+  
+  <Target Name="GenerateAvaloniaResources" 
+          BeforeTargets="CoreCompile;CoreResGen"
+          Inputs="@(AvaloniaResource);@(AvaloniaXaml);@(CustomAdditionalGenerateAvaloniaResourcesInputs);$(MSBuildAllProjects)"
+          Outputs="$(AvaloniaResourcesTemporaryFilePath)"
+          DependsOnTargets="$(BuildAvaloniaResourcesDependsOn)"
+          Condition="('@(AvaloniaResource->Count())' &gt; 0) or ('@(AvaloniaXaml->Count())' &gt; 0)"
+          >
+    <ItemGroup>
+      <AvaloniaResource Include="@(AvaloniaXaml)" />
+    </ItemGroup>
+    <GenerateAvaloniaResourcesTask
+      Output="$(AvaloniaResourcesTemporaryFilePath)"
+      Root="$(MSBuildProjectDirectory)"
+      Resources="@(AvaloniaResource)"
+      ReportImportance="$(AvaloniaXamlReportImportance)"/>
+    <ItemGroup>
+      <FileWrites Include="$(AvaloniaResourcesTemporaryFilePath)" />
+    </ItemGroup>
+  </Target>
+
+  <!-- Adjust CoreCompile with our XAML inputs and compiler -->
+  <Target Name="AvaloniaPrepareCoreCompile" BeforeTargets="CoreCompile">
+    <PropertyGroup>
+      <TargetsTriggeredByCompilation>$(TargetsTriggeredByCompilation);CompileAvaloniaXaml</TargetsTriggeredByCompilation>
+    </PropertyGroup>
+    <ItemGroup>
+      <CustomAdditionalCompileInputs Include="@(AvaloniaResource)" />
+      <CustomAdditionalCompileInputs Include="@(AvaloniaXaml)" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="AvaloniaCollectUpToDateCheckInputDesignTime" BeforeTargets="CollectUpToDateCheckInputDesignTime">
+    <ItemGroup>
+      <UpToDateCheckInput Include="@(AvaloniaResource)" />
+      <UpToDateCheckInput Include="@(AvaloniaXaml)" />
+    </ItemGroup>
+  </Target>
+
+  <Target
+    Name="CompileAvaloniaXaml"
+    DependsOnTargets="$(CompileAvaloniaXamlDependsOn)"
+    Condition="'@(AvaloniaResource)@(AvaloniaXaml)' != '' AND $(DesignTimeBuild) != true AND $(EnableAvaloniaXamlCompilation) != false">
+
+    <PropertyGroup>
+      <AvaloniaXamlIlVerifyIl Condition="'$(AvaloniaXamlIlVerifyIl)' == ''">false</AvaloniaXamlIlVerifyIl>
+      <AvaloniaXamlIlDebuggerLaunch Condition="'$(AvaloniaXamlIlDebuggerLaunch)' == ''">false</AvaloniaXamlIlDebuggerLaunch>
+      <AvaloniaXamlVerboseExceptions Condition="'$(AvaloniaXamlVerboseExceptions)' == ''">false</AvaloniaXamlVerboseExceptions>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <IntermediateAssembly Update="*" AvaloniaCompileOutput="%(FullPath)"/>
+      <_DebugSymbolsIntermediatePath Update="*" AvaloniaCompileOutput="%(FullPath)"/>
+      <IntermediateRefAssembly Update="*" AvaloniaCompileOutput="%(FullPath)"/>
+    </ItemGroup>
+
+    <!--
+      $(IntermediateOutputPath)/Avalonia/references is using from AvaloniaVS for retrieve library references.
+    -->
+    <WriteLinesToFile
+      File="$(IntermediateOutputPath)/Avalonia/references"
+      Lines="@(ReferencePathWithRefAssemblies)"
+      Overwrite="true" />
+
+    <CompileAvaloniaXamlTask
+      AssemblyFile="@(IntermediateAssembly)"
+      References="@(ReferencePathWithRefAssemblies)"
+      RefAssemblyFile="@(IntermediateRefAssembly)"
+      ProjectDirectory="$(MSBuildProjectDirectory)"
+      VerifyIl="$(AvaloniaXamlIlVerifyIl)"
+      ReportImportance="$(AvaloniaXamlReportImportance)"
+      AssemblyOriginatorKeyFile="$(AssemblyOriginatorKeyFile)"
+      SignAssembly="$(SignAssembly)"
+      DelaySign="$(DelaySign)"
+      SkipXamlCompilation="$(_AvaloniaSkipXamlCompilation)"
+      DebuggerLaunch="$(AvaloniaXamlIlDebuggerLaunch)"
+      DefaultCompileBindings="$(AvaloniaUseCompiledBindingsByDefault)"
+      VerboseExceptions="$(AvaloniaXamlVerboseExceptions)"
+      AnalyzerConfigFiles="@(EditorConfigFiles)"/>
+  </Target>
+  
+  <PropertyGroup>
+    <AvaloniaFilePreviewDependsOn Condition="'$(SkipBuild)'!='True'">Build</AvaloniaFilePreviewDependsOn>
+  </PropertyGroup>
+  
+  <Target Name="AvaloniaFilePreview" DependsOnTargets="$(AvaloniaFilePreviewDependsOn)">
+    <PropertyGroup>
+      <APreviewerUrl>http://127.0.0.1:6001</APreviewerUrl>
+      <APreviewExecutable>$(OutputPath)/$(AssemblyName).dll</APreviewExecutable>
+      <APreviewFile Condition="$(APreviewFile) == ''">MainWindow.axaml</APreviewFile>
+      <APreviewAssembly Condition="$(APreviewAssembly) == ''">$(APreviewExecutable)</APreviewAssembly>
+      <APreviewerDepsJsonPath>$([System.IO.Path]::ChangeExtension('$(APreviewExecutable)', '.deps.json'))</APreviewerDepsJsonPath>
+      <APreviewerRuntimeConfigPath>$([System.IO.Path]::ChangeExtension('$(APreviewExecutable)', '.runtimeconfig.json'))</APreviewerRuntimeConfigPath>
+      <APreviewTransportUrl>$([System.IO.Path]::GetFullPath('$(APreviewFile)'))</APreviewTransportUrl>
+    </PropertyGroup>
+    
+    
+    <Message Importance="high" Text="Launching previewer for"/>
+    <Message Importance="high" Text="File (APreviewFile): $(APreviewTransportUrl)"/>
+    <Message Importance="high" Text="Containing assembly (APreviewAssembly): $(APreviewDefiningAssembly)"/>
+    <Message Importance="high" Text="Executable: $(APreviewExecutable)"/>
+    <Message Importance="high" Text="Url (APreviewerUrl): $(APreviewerUrl)"/>
+    
+    <Exec Command="dotnet exec --runtimeconfig &quot;$(APreviewerRuntimeConfigPath)&quot; --depsfile &quot;$(APreviewerDepsJsonPath)&quot; &quot;$(AvaloniaPreviewerNetCoreToolPath)&quot; --method html --html-url $(APreviewerUrl) --transport $(APreviewTransportUrl)  &quot;$(APreviewExecutable)&quot;"/>
+     
+  </Target>
+
+  <!--
+    Deletes the target ref assembly before the CopyRefAssembly task (in target CopyFilesToOutputDirectory) tries to access it.
+
+    CopyRefAssembly reads the ref assembly's MVID from the .mvid PE section to avoid copying if necessary.
+    However, Cecil doesn't preserve that PE section: this results in a warning.
+    By deleting the file beforehand, we're preventing the warning.
+    There are no changes in behavior since CopyRefAssembly always copy the file if it couldn't read the MVID.
+  -->
+  <Target
+    Name="AvaloniaDeleteRefAssemblyBeforeOutputCopy"
+    BeforeTargets="CopyFilesToOutputDirectory"
+    Condition="
+      '@(AvaloniaResource)@(AvaloniaXaml)' != '' and
+      '$(TargetRefPath)' != '' and
+      '$(ProduceReferenceAssembly)' == 'true' and
+      ('$(CopyBuildOutputToOutputDirectory)' == '' or '$(CopyBuildOutputToOutputDirectory)' == 'true') and
+      '$(SkipCopyBuildProduct)' != 'true'">
+    <Delete Files="$(TargetRefPath)" Condition="Exists('$(TargetRefPath)')" />
+  </Target>
+</Project>

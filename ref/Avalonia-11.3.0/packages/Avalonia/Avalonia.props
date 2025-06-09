@@ -1,0 +1,20 @@
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <AvaloniaPreviewerNetCoreToolPath>$(MSBuildThisFileDirectory)\..\tools\netstandard2.0\designer\Avalonia.Designer.HostApp.dll</AvaloniaPreviewerNetCoreToolPath>
+    <AvaloniaPreviewerNetFullToolPath>$(MSBuildThisFileDirectory)\..\tools\net461\designer\Avalonia.Designer.HostApp.exe</AvaloniaPreviewerNetFullToolPath>
+    <AvaloniaBuildTasksLocation>$(MSBuildThisFileDirectory)\..\tools\netstandard2.0\Avalonia.Build.Tasks.dll</AvaloniaBuildTasksLocation>
+    <UsedAvaloniaProducts>$(UsedAvaloniaProducts);AvaloniaUI</UsedAvaloniaProducts>
+    <EnableAvaloniaXamlCompilation Condition="'$(EnableAvaloniaXamlCompilation)'==''">true</EnableAvaloniaXamlCompilation>
+    <AvaloniaXamlIlVerifyIl Condition="'$(AvaloniaXamlIlVerifyIl)'==''">false</AvaloniaXamlIlVerifyIl>
+    <AvaloniaUseCompiledBindingsByDefault Condition="'$(AvaloniaUseCompiledBindingsByDefault)'==''">false</AvaloniaUseCompiledBindingsByDefault>
+    <AvaloniaNameGeneratorAttachDevTools Condition="'$(AvaloniaNameGeneratorAttachDevTools)' == ''">true</AvaloniaNameGeneratorAttachDevTools>
+  </PropertyGroup>
+  <Import Project="$(MSBuildThisFileDirectory)\AvaloniaBuildTasks.props"/>
+  <Import Project="$(MSBuildThisFileDirectory)\Avalonia.Generators.props"/>
+  <Import Project="$(MSBuildThisFileDirectory)..\build\AvaloniaVersion.props" />
+
+  <!-- Allow loading the AvaloniaVS extension when referencing the Avalonia nuget package -->
+  <ItemGroup>
+    <ProjectCapability Include="Avalonia"/>
+  </ItemGroup>
+</Project>
