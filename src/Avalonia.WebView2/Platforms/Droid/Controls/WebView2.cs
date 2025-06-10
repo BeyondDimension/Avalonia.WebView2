@@ -152,8 +152,6 @@ partial class WebView2
         }
     }
 
-    AndroidWebViewControlHandle? platformHandle;
-
 
 
     /// <summary>
