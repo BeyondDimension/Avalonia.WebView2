@@ -58,8 +58,9 @@ partial class WebView2
             return this;
 #elif IOS || MACCATALYST || (MACOS && !USE_DEPRECATED_WEBVIEW)
             var view = CreatePlatformView();
-            wv2.SetValue(view);
-            return wv2.platformHandle = new WKWebViewControlHandle(view);
+            wv2.platformHandle = new WKWebViewControlHandle(view);
+            wv2.SetValue(wv2);
+            return wv2.platformHandle;
 #endif
         }
     }

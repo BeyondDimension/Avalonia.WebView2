@@ -137,6 +137,8 @@ partial class WebView2
         return null;
     }
 
+    public AWebView? PlatformWebView => AWebView;
+
     public AWebView? AWebView
     {
         get
@@ -150,15 +152,9 @@ partial class WebView2
         }
     }
 
-    protected virtual void SetValue(AWebView webView)
-    {
-        if (_source != null)
-        {
-            webView?.SetSource(_source);
-        }
+    AndroidWebViewControlHandle? platformHandle;
 
-        // TODO: other properties
-    }
+
 
     /// <summary>
     /// 指示应用是否打算使用明文网络流量，如明文 HTTP

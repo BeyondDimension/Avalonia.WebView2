@@ -12,15 +12,12 @@ partial class WebView2
     {
         get
         {
-#if !DISABLE_WEBVIEW2_CORE && WINDOWS || NETFRAMEWORK
-            if (_coreWebView2Controller != null)
+#if (!DISABLE_WEBVIEW2_CORE && (WINDOWS || NETFRAMEWORK)) || ANDROID || (IOS || MACCATALYST || (MACOS && !USE_DEPRECATED_WEBVIEW))
+            var zoomFactor = GetZoomFactor(this);
+            if (zoomFactor.HasValue)
             {
-                return _coreWebView2Controller.ZoomFactor;
+                return zoomFactor.Value;
             }
-#elif ANDROID
-#elif IOS
-#else
-            // CEF_TODO: 待实现 ZoomFactor
 #endif
             return _zoomFactor;
         }
@@ -31,12 +28,9 @@ partial class WebView2
                 return;
             }
             _zoomFactor = value;
-#if !DISABLE_WEBVIEW2_CORE && WINDOWS || NETFRAMEWORK
-            _coreWebView2Controller?.ZoomFactor = value;
-#elif ANDROID
-#elif IOS
-#else
-            // CEF_TODO: 待实现 ZoomFactor
+
+#if (!DISABLE_WEBVIEW2_CORE && (WINDOWS || NETFRAMEWORK)) || ANDROID || (IOS || MACCATALYST || (MACOS && !USE_DEPRECATED_WEBVIEW))
+            SetZoomFactor(this, value);
 #endif
         }
     }

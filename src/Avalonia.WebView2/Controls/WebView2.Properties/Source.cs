@@ -19,7 +19,17 @@ partial class WebView2
     [Browsable(true)]
     public Uri? Source
     {
-        get => _source;
+        get
+        {
+#if (!DISABLE_WEBVIEW2_CORE && (WINDOWS || NETFRAMEWORK)) || ANDROID || (IOS || MACCATALYST || (MACOS && !USE_DEPRECATED_WEBVIEW))
+            var source = GetSource(this);
+            if (source != null)
+            {
+                return source;
+            }
+#endif
+            return _source;
+        }
         set
         {
             if (value == null)
@@ -44,26 +54,8 @@ partial class WebView2
             {
                 _htmlSource = null;
                 SetAndRaise(SourceProperty, ref _source, value);
-#if !DISABLE_WEBVIEW2_CORE && WINDOWS || NETFRAMEWORK
-                if (CoreWebView2 != null)
-                {
-                    if (value is WebResourceRequestUri webResourceRequest)
-                    {
-                        CoreWebView2.NavigateWithWebResourceRequest(webResourceRequest.ToRequest(CoreWebView2.Environment));
-                    }
-                    else
-                    {
-                        CoreWebView2.Navigate(value.AbsoluteUri);
-                    }
-                }
-#elif ANDROID
-                var aWebView = AWebView;
-                aWebView?.SetSource(value);
-#elif IOS || MACOS || MACCATALYST
-                var wkWebView = WKWebView;
-                wkWebView?.SetSource(value);
-#else
-                // CEF_TODO: 待实现 Navigate
+#if (!DISABLE_WEBVIEW2_CORE && (WINDOWS || NETFRAMEWORK)) || ANDROID || (IOS || MACCATALYST || (MACOS && !USE_DEPRECATED_WEBVIEW))
+                SetSource(this, value);
 #endif
             }
 #if !DISABLE_WEBVIEW2_CORE && WINDOWS || NETFRAMEWORK

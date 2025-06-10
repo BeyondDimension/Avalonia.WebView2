@@ -1,3 +1,6 @@
+#if ANDROID
+using Android.Graphics.Drawables;
+#endif
 using Avalonia.Controls.Shapes;
 using Avalonia.Media.Immutable;
 using System.Drawing;
@@ -13,30 +16,6 @@ partial class WebView2
 
     Color _defaultBackgroundColor;
 
-    void SetDefaultBackgroundColor(Color value)
-    {
-        _defaultBackgroundColor = value;
-#if !DISABLE_WEBVIEW2_CORE && WINDOWS || NETFRAMEWORK
-        if (_coreWebView2Controller == null)
-        {
-        }
-        else
-        {
-            _coreWebView2Controller.DefaultBackgroundColor = value;
-        }
-#elif ANDROID
-#elif IOS
-#else
-        // CEF_TODO: 待实现 DefaultBackgroundColor
-#endif
-        var avaColor =
-            global::Avalonia.Media.Color.FromArgb(value.A, value.R, value.G, value.B);
-        if ((object?)this is Shape shape)
-        {
-            shape.Fill = new ImmutableSolidColorBrush(avaColor);
-        }
-    }
-
     /// <summary>
     /// <see cref="WebView2"/> 的默认背景颜色
     /// </summary>
@@ -44,15 +23,10 @@ partial class WebView2
     {
         get
         {
-#if !DISABLE_WEBVIEW2_CORE && WINDOWS || NETFRAMEWORK
-            if (_coreWebView2Controller != null)
-            {
-                return _coreWebView2Controller.DefaultBackgroundColor;
-            }
-#elif ANDROID
-#elif IOS
-#else
-            // CEF_TODO: 待实现 DefaultBackgroundColor
+#if (!DISABLE_WEBVIEW2_CORE && (WINDOWS || NETFRAMEWORK)) || ANDROID || (IOS || MACCATALYST || (MACOS && !USE_DEPRECATED_WEBVIEW))
+            var defaultBackgroundColor = GetDefaultBackgroundColor(this);
+            if (defaultBackgroundColor != null)
+                return defaultBackgroundColor.Value;
 #endif
             return _defaultBackgroundColor;
         }
@@ -63,7 +37,18 @@ partial class WebView2
             {
                 return;
             }
-            SetDefaultBackgroundColor(value);
+            _defaultBackgroundColor = value;
+
+#if (!DISABLE_WEBVIEW2_CORE && (WINDOWS || NETFRAMEWORK)) || ANDROID || (IOS || MACCATALYST || (MACOS && !USE_DEPRECATED_WEBVIEW))
+            SetDefaultBackgroundColor(this, value);
+#endif
+
+            var avaColor =
+    global::Avalonia.Media.Color.FromArgb(value.A, value.R, value.G, value.B);
+            if ((object?)this is Shape shape)
+            {
+                shape.Fill = new ImmutableSolidColorBrush(avaColor);
+            }
         }
     }
 

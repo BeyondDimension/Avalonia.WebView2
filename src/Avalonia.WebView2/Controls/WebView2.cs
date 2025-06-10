@@ -8,7 +8,7 @@ namespace Avalonia.Controls;
 /// <summary>
 /// Microsoft Edge WebView2 控件允许您在本地应用程序中嵌入网络技术（HTML、CSS 和 JavaScript）。WebView2 控件使用 Microsoft Edge 作为渲染引擎，在本地应用程序中显示网页内容。使用 WebView2，您可以在本地应用程序的不同部分嵌入网页代码，或者在一个 WebView2 实例中构建所有本地应用程序。
 /// </summary>
-public partial class WebView2
+public partial class WebView2 : IWebView2, IWebView2PropertiesSetValue, IWebView2PropertiesGetValue
 {
     static WebView2()
     {
@@ -32,7 +32,7 @@ public partial class WebView2
         }
         // 添加控件显示隐藏切时通知 CoreWebView2Controller
         _disposables.Add(this.GetPropertyChangedObservable(IsVisibleProperty).AddClassHandler<WebView2>(static (s, e) => { s.IsVisibleChanged(e); }));
-        SetDefaultBackgroundColor(_defaultBackgroundColorDefaultValue);
+        DefaultBackgroundColor = _defaultBackgroundColorDefaultValue;
 
 #if !(WINDOWS || NETFRAMEWORK) && NET8_0_OR_GREATER && !ANDROID && !IOS && !MACOS && !MACCATALYST && !DISABLE_CEFGLUE
         //CefGuleInitialize();
@@ -112,6 +112,20 @@ public partial class WebView2
     /// 为 <see langword="true"/> 时，我们处于设计模式，不应创建底层 CoreWebView2
     /// </summary>
     protected static bool IsInDesignMode => Design.IsDesignMode;
+
+    List<Action<IWebView2>>? _setCommonPropertiesValueActions;
+
+    private void SetCommonPropertiesValue(IWebView2 webView2)
+    {
+        _setCommonPropertiesValueActions?.ForEach(x => x.Invoke(webView2));
+    }
+
+
+    protected virtual void SetValue(IWebView2 webView)
+    {
+        SetCommonPropertiesValue(webView);
+    }
+
 }
 
 partial class WebView2 : global::Avalonia.Controls.Shapes.Rectangle

@@ -19,6 +19,8 @@ partial class WebView2
     /// 检查当前运行的设备是否安装了 WebView2 运行时，未安装 WebView2 运行时时可引导安装，安装完成后调用此函数刷新安装状态
     /// </summary>
     public static void RefreshIsSupported() => RuntimeInit.RefreshIsSupported();
+
+    public CoreWebView2? PlatformWebView => CoreWebView2;
 }
 
 file static class RuntimeInit

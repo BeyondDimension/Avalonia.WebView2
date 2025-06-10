@@ -223,17 +223,9 @@ partial class WebView2
 
     public WKWebView? WKWebView => platformHandle?.WebView;
 
+    public WKWebView? PlatformWebView => WKWebView;
+
     WKWebViewControlHandle? platformHandle;
-
-    protected virtual void SetValue(WKWebView webView)
-    {
-        if (_source != null)
-        {
-            webView?.SetSource(_source);
-        }
-
-        // TODO: other properties
-    }
 }
 
 /// <summary>

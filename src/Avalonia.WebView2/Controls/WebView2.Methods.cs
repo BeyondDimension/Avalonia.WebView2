@@ -95,7 +95,7 @@ partial class WebView2
 #elif IOS || MACOS || MACCATALYST
         WKWebView?.Reload();
 #elif ANDROID
-
+        AWebView?.Reload();
 #endif
     }
 
@@ -114,6 +114,7 @@ partial class WebView2
 #elif IOS || MACOS || MACCATALYST
         WKWebView?.StopLoading();
 #elif ANDROID
+        AWebView?.StopLoading();
 #endif
     }
 
@@ -160,6 +161,21 @@ partial class WebView2
         {
             var result = await WKWebView.EvaluateJavaScriptAsync(script);
             return result?.ToString();
+        }
+
+#elif ANDROID
+        if (AWebView != null)
+        {
+            var tcs = new TaskCompletionSource<string?>();
+            AWebView.EvaluateJavascript(script, new JavaScriptValueCallback(obj =>
+            {
+                if (obj is Java.Lang.String jsString)
+                {
+                    tcs.TrySetResult(jsString.ToString());
+                }
+            }));
+
+            return await tcs.Task;
         }
 #endif
         return (string?)null;
