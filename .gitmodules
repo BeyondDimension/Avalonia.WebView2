@@ -1,3 +1,6 @@
 [submodule "ref/CefGlue"]
 	path = ref/CefGlue
 	url = https://github.com/BeyondDimension/CefGlue
+[submodule "ref/Avalonia"]
+	path = ref/Avalonia
+	url = https://github.com/AvaloniaUI/Avalonia
