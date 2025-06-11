@@ -1,7 +1,7 @@
 <Project>
 	<PropertyGroup>
 		<!--<AvaloniaSourceDirVersion></AvaloniaSourceDirVersion>-->
-		<AvaloniaSourceDirVersion>-$(Version_Avalonia)</AvaloniaSourceDirVersion>
+		<AvaloniaSourceDirVersion></AvaloniaSourceDirVersion>
 	</PropertyGroup>
 
 	<!--<PropertyGroup>
@@ -25,59 +25,59 @@
 		<CompilerVisibleProperty Include="AvaloniaNameGeneratorAttachDevTools"/>
 	</ItemGroup>
 
-	<Import Project="$(MSBuildThisFileDirectory)Avalonia$(AvaloniaSourceDirVersion)/src/tools/Avalonia.Generators/Avalonia.Generators.props" />-->
+	<Import Project="..\..\ref\Avalonia$(AvaloniaSourceDirVersion)/src/tools/Avalonia.Generators/Avalonia.Generators.props" />-->
 
 	<Choose>
 		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
 			<ItemGroup>
-				<ProjectReference Include="$(MSBuildThisFileDirectory)Avalonia$(AvaloniaSourceDirVersion)\src\iOS\Avalonia.iOS\Avalonia.iOS.csproj" />
+				<ProjectReference Include="..\..\ref\Avalonia$(AvaloniaSourceDirVersion)\src\iOS\Avalonia.iOS\Avalonia.iOS.csproj" />
 			</ItemGroup>
 		</When>
 		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
 			<ItemGroup>
-				<ProjectReference Include="$(MSBuildThisFileDirectory)Avalonia$(AvaloniaSourceDirVersion)\src\Android\Avalonia.Android\Avalonia.Android.csproj" />
+				<ProjectReference Include="..\..\ref\Avalonia$(AvaloniaSourceDirVersion)\src\Android\Avalonia.Android\Avalonia.Android.csproj" />
 			</ItemGroup>
 		</When>
 		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
 			<ItemGroup>
-				<ProjectReference Include="$(MSBuildThisFileDirectory)Avalonia$(AvaloniaSourceDirVersion)\src\Skia\Avalonia.Skia\Avalonia.Skia.csproj" />
-				<ProjectReference Include="$(MSBuildThisFileDirectory)Avalonia$(AvaloniaSourceDirVersion)\src\Windows\Avalonia.Win32\Avalonia.Win32.csproj" />
+				<ProjectReference Include="..\..\ref\Avalonia$(AvaloniaSourceDirVersion)\src\Skia\Avalonia.Skia\Avalonia.Skia.csproj" />
+				<ProjectReference Include="..\..\ref\Avalonia$(AvaloniaSourceDirVersion)\src\Windows\Avalonia.Win32\Avalonia.Win32.csproj" />
 			</ItemGroup>
 		</When>
 		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'macos'">
 			<ItemGroup>
-				<ProjectReference Include="$(MSBuildThisFileDirectory)Avalonia$(AvaloniaSourceDirVersion)\src\Skia\Avalonia.Skia\Avalonia.Skia.csproj" />
-				<ProjectReference Include="$(MSBuildThisFileDirectory)Avalonia$(AvaloniaSourceDirVersion)\src\Avalonia.Native\Avalonia.Native.csproj" />
+				<ProjectReference Include="..\..\ref\Avalonia$(AvaloniaSourceDirVersion)\src\Skia\Avalonia.Skia\Avalonia.Skia.csproj" />
+				<ProjectReference Include="..\..\ref\Avalonia$(AvaloniaSourceDirVersion)\src\Avalonia.Native\Avalonia.Native.csproj" />
 			</ItemGroup>
 		</When>
 		<When Condition="$(DefineConstants.Contains('LINUX'))">
 			<ItemGroup>
-				<ProjectReference Include="$(MSBuildThisFileDirectory)Avalonia$(AvaloniaSourceDirVersion)\src\Skia\Avalonia.Skia\Avalonia.Skia.csproj" />
-				<ProjectReference Include="$(MSBuildThisFileDirectory)Avalonia$(AvaloniaSourceDirVersion)\src\Avalonia.X11\Avalonia.X11.csproj" />
+				<ProjectReference Include="..\..\ref\Avalonia$(AvaloniaSourceDirVersion)\src\Skia\Avalonia.Skia\Avalonia.Skia.csproj" />
+				<ProjectReference Include="..\..\ref\Avalonia$(AvaloniaSourceDirVersion)\src\Avalonia.X11\Avalonia.X11.csproj" />
 			</ItemGroup>
 		</When>
 	</Choose>
 
 	<ItemGroup>
 		<PackageReference Include="Avalonia" />
-		<ProjectReference Include="$(MSBuildThisFileDirectory)Avalonia$(AvaloniaSourceDirVersion)\src\Avalonia.Base\Avalonia.Base.csproj" />
-		<ProjectReference Include="$(MSBuildThisFileDirectory)Avalonia$(AvaloniaSourceDirVersion)\src\Avalonia.Controls\Avalonia.Controls.csproj" />
-		<ProjectReference Include="$(MSBuildThisFileDirectory)Avalonia$(AvaloniaSourceDirVersion)\src\Avalonia.DesignerSupport\Avalonia.DesignerSupport.csproj" />
-		<ProjectReference Include="$(MSBuildThisFileDirectory)Avalonia$(AvaloniaSourceDirVersion)\src\Avalonia.Dialogs\Avalonia.Dialogs.csproj" />
-		<ProjectReference Include="$(MSBuildThisFileDirectory)Avalonia$(AvaloniaSourceDirVersion)\src\Avalonia.Metal\Avalonia.Metal.csproj" />
-		<ProjectReference Include="$(MSBuildThisFileDirectory)Avalonia$(AvaloniaSourceDirVersion)\src\Avalonia.MicroCom\Avalonia.MicroCom.csproj" />
-		<ProjectReference Include="$(MSBuildThisFileDirectory)Avalonia$(AvaloniaSourceDirVersion)\src\Avalonia.OpenGL\Avalonia.OpenGL.csproj" />
-		<ProjectReference Include="$(MSBuildThisFileDirectory)Avalonia$(AvaloniaSourceDirVersion)\src\Avalonia.Remote.Protocol\Avalonia.Remote.Protocol.csproj" />
-		<ProjectReference Include="$(MSBuildThisFileDirectory)Avalonia$(AvaloniaSourceDirVersion)\src\Avalonia.Vulkan\Avalonia.Vulkan.csproj" />
-		<ProjectReference Include="$(MSBuildThisFileDirectory)Avalonia$(AvaloniaSourceDirVersion)\src\Markup\Avalonia.Markup.Xaml\Avalonia.Markup.Xaml.csproj" />
-		<ProjectReference Include="$(MSBuildThisFileDirectory)Avalonia$(AvaloniaSourceDirVersion)\src\Markup\Avalonia.Markup\Avalonia.Markup.csproj" />
+		<ProjectReference Include="..\..\ref\Avalonia$(AvaloniaSourceDirVersion)\src\Avalonia.Base\Avalonia.Base.csproj" />
+		<ProjectReference Include="..\..\ref\Avalonia$(AvaloniaSourceDirVersion)\src\Avalonia.Controls\Avalonia.Controls.csproj" />
+		<ProjectReference Include="..\..\ref\Avalonia$(AvaloniaSourceDirVersion)\src\Avalonia.DesignerSupport\Avalonia.DesignerSupport.csproj" />
+		<ProjectReference Include="..\..\ref\Avalonia$(AvaloniaSourceDirVersion)\src\Avalonia.Dialogs\Avalonia.Dialogs.csproj" />
+		<ProjectReference Include="..\..\ref\Avalonia$(AvaloniaSourceDirVersion)\src\Avalonia.Metal\Avalonia.Metal.csproj" />
+		<ProjectReference Include="..\..\ref\Avalonia$(AvaloniaSourceDirVersion)\src\Avalonia.MicroCom\Avalonia.MicroCom.csproj" />
+		<ProjectReference Include="..\..\ref\Avalonia$(AvaloniaSourceDirVersion)\src\Avalonia.OpenGL\Avalonia.OpenGL.csproj" />
+		<ProjectReference Include="..\..\ref\Avalonia$(AvaloniaSourceDirVersion)\src\Avalonia.Remote.Protocol\Avalonia.Remote.Protocol.csproj" />
+		<ProjectReference Include="..\..\ref\Avalonia$(AvaloniaSourceDirVersion)\src\Avalonia.Vulkan\Avalonia.Vulkan.csproj" />
+		<ProjectReference Include="..\..\ref\Avalonia$(AvaloniaSourceDirVersion)\src\Markup\Avalonia.Markup.Xaml\Avalonia.Markup.Xaml.csproj" />
+		<ProjectReference Include="..\..\ref\Avalonia$(AvaloniaSourceDirVersion)\src\Markup\Avalonia.Markup\Avalonia.Markup.csproj" />
 		<!--<ProjectReference
-		  Include="$(MSBuildThisFileDirectory)Avalonia$(AvaloniaSourceDirVersion)/src/tools/Avalonia.Generators/Avalonia.Generators.csproj"
+		  Include="..\..\ref\Avalonia$(AvaloniaSourceDirVersion)/src/tools/Avalonia.Generators/Avalonia.Generators.csproj"
 		  OutputItemType="Analyzer"
 		  ReferenceOutputAssembly="false"
 		  PrivateAssets="all" />-->
 		<!--<ProjectReference
-		  Include="$(MSBuildThisFileDirectory)Avalonia$(AvaloniaSourceDirVersion)/src/tools/DevGenerators/DevGenerators.csproj"
+		  Include="..\..\ref\Avalonia$(AvaloniaSourceDirVersion)/src/tools/DevGenerators/DevGenerators.csproj"
 		  OutputItemType="Analyzer"
 		  ReferenceOutputAssembly="false"
 		  PrivateAssets="all" />-->
@@ -85,8 +85,8 @@
 
 	<ItemGroup>
 		<!-- Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration. -->
-		<ProjectReference Condition="'$(Configuration)' == 'Debug'" Include="$(MSBuildThisFileDirectory)Avalonia$(AvaloniaSourceDirVersion)\src\Avalonia.Diagnostics\Avalonia.Diagnostics.csproj" />
-		<ProjectReference Condition="$(AvaloniaFeatures.Contains('Avalonia.ReactiveUI;'))" Include="$(MSBuildThisFileDirectory)Avalonia$(AvaloniaSourceDirVersion)\src\Avalonia.ReactiveUI\Avalonia.ReactiveUI.csproj" />
-		<ProjectReference Condition="$(AvaloniaFeatures.Contains('Avalonia.Themes.Fluent;'))" Include="$(MSBuildThisFileDirectory)Avalonia$(AvaloniaSourceDirVersion)\src\Avalonia.Themes.Fluent\Avalonia.Themes.Fluent.csproj" />
+		<ProjectReference Condition="'$(Configuration)' == 'Debug'" Include="..\..\ref\Avalonia$(AvaloniaSourceDirVersion)\src\Avalonia.Diagnostics\Avalonia.Diagnostics.csproj" />
+		<ProjectReference Condition="$(AvaloniaFeatures.Contains('Avalonia.ReactiveUI;'))" Include="..\..\ref\Avalonia$(AvaloniaSourceDirVersion)\src\Avalonia.ReactiveUI\Avalonia.ReactiveUI.csproj" />
+		<ProjectReference Condition="$(AvaloniaFeatures.Contains('Avalonia.Themes.Fluent;'))" Include="..\..\ref\Avalonia$(AvaloniaSourceDirVersion)\src\Avalonia.Themes.Fluent\Avalonia.Themes.Fluent.csproj" />
 	</ItemGroup>
 </Project>
