@@ -6,9 +6,9 @@ namespace Avalonia.Controls;
 partial class WebView2
 {
     /// <summary>
-    /// The <see cref="AvaloniaProperty" /> which backs the <see cref="HtmlSource" /> property.
+    /// The <see cref="AvaloniaProperty" /> which backs the <see cref="Cookies" /> property.
     /// </summary>
-    public static readonly DirectProperty<WebView2, CookieContainer?> CookiesProperty = AvaloniaProperty.RegisterDirect<WebView2, CookieContainer?>(nameof(HtmlSource), x => x.Cookies);
+    public static readonly DirectProperty<WebView2, CookieContainer?> CookiesProperty = AvaloniaProperty.RegisterDirect<WebView2, CookieContainer?>(nameof(Cookies), x => x.Cookies);
 
     public CookieContainer Cookies
     {
