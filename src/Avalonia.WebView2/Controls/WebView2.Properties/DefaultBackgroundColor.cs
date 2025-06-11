@@ -43,12 +43,12 @@ partial class WebView2
             SetDefaultBackgroundColor(this, value);
 #endif
 
-            var avaColor =
-    global::Avalonia.Media.Color.FromArgb(value.A, value.R, value.G, value.B);
-            if ((object?)this is Shape shape)
-            {
-                shape.Fill = new ImmutableSolidColorBrush(avaColor);
-            }
+            //        var avaColor =
+            //global::Avalonia.Media.Color.FromArgb(value.A, value.R, value.G, value.B);
+            //        if ((object?)this is Shape shape)
+            //        {
+            //            shape.Fill = new ImmutableSolidColorBrush(avaColor);
+            //        }
         }
     }
 

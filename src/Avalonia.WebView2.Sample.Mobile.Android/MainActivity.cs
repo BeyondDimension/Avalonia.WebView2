@@ -22,14 +22,9 @@ namespace Avalonia.WebView2.Sample;
     ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize | ConfigChanges.UiMode)]
 sealed class MainActivity : AvaloniaMainActivity<App>
 {
-    /// <summary>
-    /// 获取状态栏的高度
-    /// </summary>
-    /// <param name="ctx"></param>
-    /// <returns></returns>
-    static int GetStatusBarHeight(Context ctx)
+    static int GetDimensionPixelSizeByAndroidDimen(Context ctx, string identifierName)
     {
-        var resId = ctx.Resources!.GetIdentifier("status_bar_height", "dimen", "android");
+        var resId = ctx.Resources!.GetIdentifier(identifierName, "dimen", "android");
         if (resId > 0)
         {
             var h = ctx.Resources.GetDimensionPixelSize(resId);
@@ -37,6 +32,20 @@ sealed class MainActivity : AvaloniaMainActivity<App>
         }
         return default;
     }
+
+    /// <summary>
+    /// 获取顶部状态栏的高度
+    /// </summary>
+    /// <param name="ctx"></param>
+    /// <returns></returns>
+    static int GetStatusBarHeight(Context ctx) => GetDimensionPixelSizeByAndroidDimen(ctx, "status_bar_height");
+
+    /// <summary>
+    /// 获取底部导航栏的高度
+    /// </summary>
+    /// <param name="ctx"></param>
+    /// <returns></returns>
+    static int GetNavigationBarHeight(Context ctx) => GetDimensionPixelSizeByAndroidDimen(ctx, "navigation_bar_height");
 
     /// <summary>
     /// 获取 DPI 缩放比例
@@ -60,6 +69,23 @@ sealed class MainActivity : AvaloniaMainActivity<App>
         MainViewModel.SetStatusBarMargin(top: statusBarHeight, scaling: scaling);
 
         base.OnCreate(savedInstanceState);
+
+        Window!.DecorView.ApplyWindowInsets += OnApplyWindowInsets;
+    }
+
+    WindowInsets OnApplyWindowInsets(View v, WindowInsets insets)
+    {
+        var insetsCompat = WindowInsetsCompat.ToWindowInsetsCompat(insets, v)!; // https://developer.android.google.cn/reference/androidx/core/view/WindowInsetsCompat#toWindowInsetsCompat(android.view.WindowInsets,android.view.View)
+        // https://developer.android.google.cn/reference/androidx/core/view/WindowInsetsCompat#getInsetsIgnoringVisibility(int)
+        // https://developer.android.google.cn/reference/androidx/core/view/WindowInsetsCompat.Type
+        var navigationBars = insetsCompat.GetInsetsIgnoringVisibility(WindowInsetsCompat.Type.NavigationBars())!;
+        var statusBars = insetsCompat.GetInsetsIgnoringVisibility(WindowInsetsCompat.Type.StatusBars())!;
+        global::Android.Util.Log.Warn("WebView2",
+$"""
+NavigationBars: l={navigationBars.Left}, r={navigationBars.Right}, t={navigationBars.Top}, b={navigationBars.Bottom}
+StatusBars: l={statusBars.Left}, r={statusBars.Right}, t={statusBars.Top}, b={statusBars.Bottom}
+""");
+        return insets;
     }
 
     protected override AppBuilder CustomizeAppBuilder(AppBuilder builder)

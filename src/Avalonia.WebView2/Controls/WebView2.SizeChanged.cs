@@ -1,4 +1,7 @@
 #if !DISABLE_WEBVIEW2_CORE && (WINDOWS || NETFRAMEWORK)
+// 仅 Windows Edge WebView2 处理 OnSizeChanged 事件
+
+#if !DISABLE_WEBVIEW2_CORE && (WINDOWS || NETFRAMEWORK)
 using Avalonia.Controls.Platforms.Windows.Interop;
 #endif
 using Avalonia.Platform;
@@ -214,3 +217,4 @@ eBounds: x={eBounds.X}, y={eBounds.Y}, w={eBounds.Width}, h={eBounds.Height}
 #endif
     }
 }
+#endif

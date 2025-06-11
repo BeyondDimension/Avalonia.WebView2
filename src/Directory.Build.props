@@ -17,8 +17,8 @@
 		<!--<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>-->
 		<!-- 👇 使用编译绑定替代反射绑定实现 -->
 		<AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
-		<!--<AvaloniaRef>PackageReference</AvaloniaRef>-->
-		<AvaloniaRef>ProjectReference</AvaloniaRef>
+		<AvaloniaRef>PackageReference</AvaloniaRef>
+		<!--<AvaloniaRef>ProjectReference</AvaloniaRef>-->
 	</PropertyGroup>
 
 	<!-- 👇 TFM != .NET Framework 3.5 -->

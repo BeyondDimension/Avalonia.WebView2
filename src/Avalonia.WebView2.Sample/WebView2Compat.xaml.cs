@@ -18,7 +18,7 @@ public sealed partial class WebView2Compat : UserControl, IStorageService
 #if WINDOWS
         WebView2.IsVisible = false;
         // 设置背景色透明
-        WebView2.Fill = new SolidColorBrush(Colors.Transparent);
+        //WebView2.Fill = new SolidColorBrush(Colors.Transparent);
         if (!IsSupported)
         {
             TextBlock.Text = "Couldn't find a compatible Webview2 Runtime installation to host WebViews.";

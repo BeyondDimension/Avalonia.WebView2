@@ -156,7 +156,21 @@ partial class WebView2
         }
     }
 
+    protected virtual void SetInitValue(AWebView webView)
+    {
+        var visibility = IsVisible ? ViewStates.Visible : ViewStates.Gone;
+        if (webView.Visibility != visibility)
+        {
+            webView.Visibility = visibility;
+        }
 
+        if (_source != null)
+        {
+            webView.SetSource(_source);
+        }
+
+        // TODO: other properties
+    }
 
     /// <summary>
     /// 指示应用是否打算使用明文网络流量，如明文 HTTP

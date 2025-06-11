@@ -132,7 +132,7 @@ public partial class WebView2 : IWebView2, IWebView2PropertiesSetValue, IWebView
 
 }
 
-partial class WebView2 : global::Avalonia.Controls.Shapes.Rectangle
+partial class WebView2 : global::Avalonia.Controls.Control
 {
     // 使用矩形控件作为占位符，监听布局矩阵坐标传递值给本机控件
     // 处理显示隐藏属性

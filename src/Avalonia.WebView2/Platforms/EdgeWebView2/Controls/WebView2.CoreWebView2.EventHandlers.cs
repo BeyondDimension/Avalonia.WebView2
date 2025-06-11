@@ -169,7 +169,7 @@ partial class WebView2
                     {
                         Source = new Uri(args.Uri, UriKind.Absolute),
                         //EnabledDevTools = coreWebView2.Settings.AreDevToolsEnabled,
-                        Fill = Fill,
+                        //Fill = Fill,
                         //UserDataFolder = coreWebView2.Environment.UserDataFolder,
                     },
                 };

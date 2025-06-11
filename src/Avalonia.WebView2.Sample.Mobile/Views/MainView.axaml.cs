@@ -17,7 +17,7 @@ public partial class MainView : UserControl, IStorageService
         UrlTextBox.KeyDown += UrlTextBox_KeyDown;
 
         WV.StorageService = this;
-        WV.Fill = new SolidColorBrush(Colors.Purple);
+        //WV.Fill = new SolidColorBrush(Colors.Purple);
     }
 
     IEnumerable<KeyValuePair<(StorageItemType type, string key), StorageItemValue>>? IStorageService.GetStorages(string requestUri)

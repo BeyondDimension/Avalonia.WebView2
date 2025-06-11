@@ -74,7 +74,7 @@ partial class WebView2
         {
             viewHandler = CreateViewHandler(this);
             var view = viewHandler.CreatePlatformView();
-            SetValue(this);
+            SetInitValue(view);
             Child = viewHandler;
         }
 #elif IOS || MACCATALYST || (MACOS && !USE_DEPRECATED_WEBVIEW)
