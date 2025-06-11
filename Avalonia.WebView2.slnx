@@ -1,10 +1,16 @@
 <Solution>
+  <Folder Name="/ref/">
+    <Project Path="ref/Avalonia/src/Android/Avalonia.Android/Avalonia.Android.csproj" />
+    <Project Path="ref/Avalonia/src/Avalonia.Controls/Avalonia.Controls.csproj" />
+    <Project Path="ref/Avalonia/src/Avalonia.Themes.Fluent/Avalonia.Themes.Fluent.csproj" />
+  </Folder>
   <Folder Name="/_Root/">
     <File Path=".github/workflows/CI.yml" />
     <File Path=".gitignore" />
     <File Path="README.md" />
     <File Path="ref/Avalonia.PackageReference.props" />
     <File Path="ref/Avalonia.ProjectReference.props" />
+    <File Path="ref/Avalonia.ProjectReferenceAndroidSimplify.props" />
     <File Path="src/.editorconfig" />
     <File Path="src/Directory.Build.props" />
     <File Path="src/Directory.Build.targets" />

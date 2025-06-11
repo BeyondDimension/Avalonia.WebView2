@@ -84,7 +84,7 @@
 		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
 			<!-- Avalonia.iOS 包似乎不兼容 -maccatalyst TFM -->
 			<!--<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios' OR $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">-->
-		</When>
+	</When>
 	</Choose>
 
 	<ItemGroup Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0')) AND ($([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == '' OR $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'macos')">
