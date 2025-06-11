@@ -10,7 +10,7 @@ partial class WebView2
     ///// </summary>
     //public static readonly DirectProperty<WebView2, CookieContainer?> CookiesProperty = AvaloniaProperty.RegisterDirect<WebView2, CookieContainer?>(nameof(Cookies), x => x.Cookies);
 
-    public CookieContainer Cookies { get; set; } = null;
+    public CookieContainer Cookies { get; set; } = new();
 
     readonly HashSet<string> _loadedCookies = new HashSet<string>();
 

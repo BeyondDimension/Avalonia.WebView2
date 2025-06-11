@@ -156,7 +156,7 @@ partial class WebView2
         }
     }
 
-    protected virtual void SetInitValue(AWebView webView)
+    void SetInitValue(AWebView webView)
     {
         var visibility = IsVisible ? ViewStates.Visible : ViewStates.Gone;
         if (webView.Visibility != visibility)
@@ -164,12 +164,7 @@ partial class WebView2
             webView.Visibility = visibility;
         }
 
-        if (_source != null)
-        {
-            webView.SetSource(_source);
-        }
-
-        // TODO: other properties
+        SetValue(this);
     }
 
     /// <summary>
