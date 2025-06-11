@@ -70,23 +70,24 @@ sealed class MainActivity : AvaloniaMainActivity<App>
 
         base.OnCreate(savedInstanceState);
 
-        Window!.DecorView.ApplyWindowInsets += OnApplyWindowInsets;
+        //ViewCompat.SetOnApplyWindowInsetsListener(Window!.DecorView, new OnApplyWindowInsetsListener(OnApplyWindowInsets));
+        //Window!.DecorView.ApplyWindowInsets += OnApplyWindowInsets;
     }
 
-    WindowInsets OnApplyWindowInsets(View v, WindowInsets insets)
-    {
-        var insetsCompat = WindowInsetsCompat.ToWindowInsetsCompat(insets, v)!; // https://developer.android.google.cn/reference/androidx/core/view/WindowInsetsCompat#toWindowInsetsCompat(android.view.WindowInsets,android.view.View)
-        // https://developer.android.google.cn/reference/androidx/core/view/WindowInsetsCompat#getInsetsIgnoringVisibility(int)
-        // https://developer.android.google.cn/reference/androidx/core/view/WindowInsetsCompat.Type
-        var navigationBars = insetsCompat.GetInsetsIgnoringVisibility(WindowInsetsCompat.Type.NavigationBars())!;
-        var statusBars = insetsCompat.GetInsetsIgnoringVisibility(WindowInsetsCompat.Type.StatusBars())!;
-        global::Android.Util.Log.Warn("WebView2",
-$"""
-NavigationBars: l={navigationBars.Left}, r={navigationBars.Right}, t={navigationBars.Top}, b={navigationBars.Bottom}
-StatusBars: l={statusBars.Left}, r={statusBars.Right}, t={statusBars.Top}, b={statusBars.Bottom}
-""");
-        return insets;
-    }
+    //    WindowInsets OnApplyWindowInsets(View v, WindowInsets insets)
+    //    {
+    //        var insetsCompat = WindowInsetsCompat.ToWindowInsetsCompat(insets, v)!; // https://developer.android.google.cn/reference/androidx/core/view/WindowInsetsCompat#toWindowInsetsCompat(android.view.WindowInsets,android.view.View)
+    //        // https://developer.android.google.cn/reference/androidx/core/view/WindowInsetsCompat#getInsetsIgnoringVisibility(int)
+    //        // https://developer.android.google.cn/reference/androidx/core/view/WindowInsetsCompat.Type
+    //        var navigationBars = insetsCompat.GetInsetsIgnoringVisibility(WindowInsetsCompat.Type.NavigationBars())!;
+    //        var statusBars = insetsCompat.GetInsetsIgnoringVisibility(WindowInsetsCompat.Type.StatusBars())!;
+    //        global::Android.Util.Log.Warn("WebView2",
+    //$"""
+    //NavigationBars: l={navigationBars.Left}, r={navigationBars.Right}, t={navigationBars.Top}, b={navigationBars.Bottom}
+    //StatusBars: l={statusBars.Left}, r={statusBars.Right}, t={statusBars.Top}, b={statusBars.Bottom}
+    //""");
+    //        return insets;
+    //    }
 
     protected override AppBuilder CustomizeAppBuilder(AppBuilder builder)
     {

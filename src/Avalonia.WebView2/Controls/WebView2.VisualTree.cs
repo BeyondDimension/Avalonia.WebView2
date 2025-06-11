@@ -69,7 +69,7 @@ partial class WebView2
         {
             TopLevel = topLevel;
         }
-#if ANDROID        
+#if ANDROID
         if (viewHandler == null)
         {
             viewHandler = CreateViewHandler(this);
@@ -78,16 +78,11 @@ partial class WebView2
             Child = viewHandler;
         }
 #elif IOS || MACCATALYST || (MACOS && !USE_DEPRECATED_WEBVIEW)
-        if (IsVisible)
+        if (viewHandler != null)
         {
-            var nwv = WKWebView;
-            if (nwv != null)
-            {
-                if (nwv.Hidden)
-                {
-                    nwv.Hidden = false;
-                }
-            }
+            viewHandler = CreateViewHandler(this);
+            var view = viewHandler.CreatePlatformView();
+            SetValue(this);
         }
 #endif
 #endif

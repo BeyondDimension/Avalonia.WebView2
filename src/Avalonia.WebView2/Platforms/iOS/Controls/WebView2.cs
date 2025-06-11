@@ -22,7 +22,7 @@ partial class WebView2
     /// </summary>
     partial class Handler
     {
-        public WKWebView? PlatformView => wv2.platformHandle?.WebView;
+        public WKWebView? PlatformView => webView;
 
         protected virtual float MinimumSize => 44f;
 
@@ -50,7 +50,7 @@ partial class WebView2
                 webView.SetValueForKey(NSObject.FromObject(true), new NSString("inspectable"));
             }
 #endif
-            return webView;
+            return this.webView = webView;
         }
 
 #if !MACOS
@@ -221,11 +221,48 @@ partial class WebView2
 
     }
 
-    public WKWebView? WKWebView => platformHandle?.WebView;
+    partial class Handler : IPlatformHandle, INativeControlHostDestroyableControlHandle
+    {
+        nint IPlatformHandle.Handle => webView == default ? default : webView.Handle;
+
+        string? IPlatformHandle.HandleDescriptor => "UIView";
+
+        bool disposedValue;
+
+        protected bool DisposedValue => disposedValue;
+
+        WKWebView? webView;
+
+        public WKWebView? WebView => webView;
+
+        void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    // 释放托管状态(托管对象)
+                    webView?.Dispose();
+                }
+
+                // 释放未托管的资源(未托管的对象)并重写终结器
+                // 将大型字段设置为 null
+                webView = null;
+                disposedValue = true;
+            }
+        }
+
+        /// <inheritdoc/>
+        public void Destroy()
+        {
+            // 不要更改此代码。请将清理代码放入“Dispose(bool disposing)”方法中
+            Dispose(disposing: true);
+        }
+    }
+
+    public WKWebView? WKWebView => viewHandler?.WebView;
 
     public WKWebView? PlatformWebView => WKWebView;
-
-    WKWebViewControlHandle? platformHandle;
 }
 
 /// <summary>
@@ -360,43 +397,6 @@ public class WKWebView2 : WKWebView
     //    add => _movedToWindow += value;
     //    remove => _movedToWindow -= value;
     //}
-}
-
-sealed class WKWebViewControlHandle : PlatformHandle, INativeControlHostDestroyableControlHandle
-{
-    bool disposedValue;
-    WKWebView? webView;
-
-    internal WKWebViewControlHandle(WKWebView webView) : base(webView.Handle, "WKWebView")
-    {
-        this.webView = webView;
-    }
-
-    public WKWebView? WebView => webView;
-
-    void Dispose(bool disposing)
-    {
-        if (!disposedValue)
-        {
-            if (disposing)
-            {
-                // 释放托管状态(托管对象)
-                webView?.Dispose();
-            }
-
-            // 释放未托管的资源(未托管的对象)并重写终结器
-            // 将大型字段设置为 null
-            webView = null;
-            disposedValue = true;
-        }
-    }
-
-    /// <inheritdoc/>
-    public void Destroy()
-    {
-        // 不要更改此代码。请将清理代码放入“Dispose(bool disposing)”方法中
-        Dispose(disposing: true);
-    }
 }
 
 static partial class WKWebView2Extensions
