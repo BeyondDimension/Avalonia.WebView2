@@ -52,6 +52,11 @@ partial class WebView2
         }
         finally
         {
+            if (_source != null)
+            {
+                SyncPlatformCookiesToWebView2(_source.OriginalString).FireAndForget();
+            }
+
             dictNavigationStarting.TryRemove(e.NavigationId, out var _);
         }
     }

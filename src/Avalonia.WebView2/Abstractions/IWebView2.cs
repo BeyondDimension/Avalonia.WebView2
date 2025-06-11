@@ -2,6 +2,7 @@ using Avalonia.Controls;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 #if (!DISABLE_WEBVIEW2_CORE && (WINDOWS || NETFRAMEWORK))
@@ -24,4 +25,6 @@ public interface IWebView2 : IWebView2Properties
 #if (!DISABLE_WEBVIEW2_CORE && (WINDOWS || NETFRAMEWORK))
     CoreWebView2Controller? CoreWebView2Controller { get; }
 #endif
+
+    CookieContainer Cookies { get; }
 }

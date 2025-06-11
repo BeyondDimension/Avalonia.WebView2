@@ -199,9 +199,10 @@ partial class WebView2
             sender.CoreWebView2InitializationCompleted?.Invoke(sender, new CoreWebView2InitializationCompletedEventArgs());
 
             //await InitJavaScriptOnDocumentCreatedAsync();
-
             if (sender._source != null)
             {
+
+                SyncCookieToPlatformWebView(sender._source.OriginalString).FireAndForget();
                 sender._coreWebView2Controller.CoreWebView2.Navigate(sender._source.AbsoluteUri);
             }
             else if (sender._htmlSource != null)

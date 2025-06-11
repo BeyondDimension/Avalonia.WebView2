@@ -58,6 +58,8 @@ partial class WebView2
                 return;
 
             var url = webView.GetCurrentUrl();
+
+            virtualView.SyncPlatformCookiesToWebView2(url).FireAndForget();
             //virtualView.Navigated(_lastEvent, url, WebView2NavigationResult.Success);
 
 #if DEBUG

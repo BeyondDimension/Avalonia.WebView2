@@ -412,50 +412,50 @@ static partial class WKWebView2Extensions
             webView.LoadHtmlString(html, baseUrl == null ? new NSUrl(NSBundle.MainBundle.BundlePath, true) : new NSUrl(baseUrl, true));
     }
 
-    static void LoadUrlAsync(this WKWebView webView, string? url)
-    {
-        try
-        {
-            var uri = new Uri(url ?? string.Empty);
-            var safeHostUri = new Uri($"{uri.Scheme}://{uri.Authority}", UriKind.Absolute);
-            var safeRelativeUri = new Uri($"{uri.PathAndQuery}{uri.Fragment}", UriKind.Relative);
-            var safeFullUri = new Uri(safeHostUri, safeRelativeUri);
-            var request = new NSUrlRequest(new NSUrl(safeFullUri.AbsoluteUri));
+    //static void LoadUrlAsync(this WKWebView webView, string? url)
+    //{
+    //    try
+    //    {
+    //        var uri = new Uri(url ?? string.Empty);
+    //        var safeHostUri = new Uri($"{uri.Scheme}://{uri.Authority}", UriKind.Absolute);
+    //        var safeRelativeUri = new Uri($"{uri.PathAndQuery}{uri.Fragment}", UriKind.Relative);
+    //        var safeFullUri = new Uri(safeHostUri, safeRelativeUri);
+    //        var request = new NSUrlRequest(new NSUrl(safeFullUri.AbsoluteUri));
 
-            //if (_handler.TryGetTarget(out var handler))
-            //{
-            //    if (handler.HasCookiesToLoad(safeFullUri.AbsoluteUri) &&
-            //        !(OperatingSystem.IsIOSVersionAtLeast(11) || OperatingSystem.IsTvOSVersionAtLeast(11)))
-            //    {
-            //        return;
-            //    }
+    //        //if (_handler.TryGetTarget(out var handler))
+    //        //{
+    //        //    if (handler.HasCookiesToLoad(safeFullUri.AbsoluteUri) &&
+    //        //        !(OperatingSystem.IsIOSVersionAtLeast(11) || OperatingSystem.IsTvOSVersionAtLeast(11)))
+    //        //    {
+    //        //        return;
+    //        //    }
 
-            //    await handler.SyncPlatformCookiesAsync(safeFullUri.AbsoluteUri);
-            //}
+    //        //    await handler.SyncPlatformCookiesAsync(safeFullUri.AbsoluteUri);
+    //        //}
 
-            webView.LoadRequest(request);
-        }
-        catch (UriFormatException formatException)
-        {
-            // If we got a format exception trying to parse the URI, it might be because
-            // someone is passing in a local bundled file page. If we can find a better way
-            // to detect that scenario, we should use it; until then, we'll fall back to 
-            // local file loading here and see if that works:
-            if (!string.IsNullOrEmpty(url))
-            {
-                if (!webView.LoadFile(url))
-                {
-                    Logger.Sink?.Log(LogEventLevel.Warning, "WebView2", webView,
-                        $"Unable to Load Url {url}: {formatException}");
-                }
-            }
-        }
-        catch (Exception exc)
-        {
-            Logger.Sink?.Log(LogEventLevel.Warning, "WebView2", webView,
-                $"Unable to Load Url {url}: {exc}");
-        }
-    }
+    //        webView.LoadRequest(request);
+    //    }
+    //    catch (UriFormatException formatException)
+    //    {
+    //        // If we got a format exception trying to parse the URI, it might be because
+    //        // someone is passing in a local bundled file page. If we can find a better way
+    //        // to detect that scenario, we should use it; until then, we'll fall back to 
+    //        // local file loading here and see if that works:
+    //        if (!string.IsNullOrEmpty(url))
+    //        {
+    //            if (!webView.LoadFile(url))
+    //            {
+    //                Logger.Sink?.Log(LogEventLevel.Warning, "WebView2", webView,
+    //                    $"Unable to Load Url {url}: {formatException}");
+    //            }
+    //        }
+    //    }
+    //    catch (Exception exc)
+    //    {
+    //        Logger.Sink?.Log(LogEventLevel.Warning, "WebView2", webView,
+    //            $"Unable to Load Url {url}: {exc}");
+    //    }
+    //}
 
     public static bool LoadFile(this WKWebView webView, string url)
     {
@@ -484,12 +484,12 @@ static partial class WKWebView2Extensions
         return false;
     }
 
-    public static void LoadUrl(this WKWebView webView, string? url)
-    {
-        webView.LoadUrlAsync(url);
-    }
+    //public static void LoadUrl(this WKWebView webView, string? url)
+    //{
+    //    webView.LoadUrlAsync(url);
+    //}
 
-    public static void SetSource(this WKWebView webView, Uri? value) => webView.LoadUrl(value?.AbsoluteUri);
+    //public static void SetSource(this WKWebView webView, Uri? value) => webView.LoadUrl(value?.AbsoluteUri);
 }
 #endif
 

@@ -39,8 +39,11 @@ partial class WebView2
 
     public void SetSource(IWebView2 webView2, Uri? source)
     {
-        var wkWebView = webView2.PlatformWebView;
-        wkWebView?.SetSource(source);
+        if (source == null || string.IsNullOrEmpty(source.AbsoluteUri))
+        {
+            return;
+        }
+        LoadUrl(source.AbsoluteUri);
     }
 
     public void SetZoomFactor(IWebView2 webView2, double zoomFactor)

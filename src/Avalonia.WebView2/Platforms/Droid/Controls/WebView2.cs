@@ -71,6 +71,10 @@ partial class WebView2
             platformView.Background = new ColorDrawable(Color.Purple);
 #endif
 
+            platformView.Settings.JavaScriptEnabled = true;
+            platformView.Settings.DomStorageEnabled = true;
+            platformView.Settings.SetSupportMultipleWindows(true);
+
             return webView = platformView;
         }
 
@@ -238,6 +242,11 @@ partial class WebView2
 
         public override void OnPageStarted(AWebView? view, string? url, Bitmap? favicon)
         {
+            if (!string.IsNullOrWhiteSpace(url))
+            {
+                handler.VirtualView.SyncPlatformCookiesToWebView2(url).FireAndForget();
+            }
+
             if (view != null)
             {
                 if (!string.IsNullOrWhiteSpace(url))
@@ -249,6 +258,18 @@ partial class WebView2
                     }
                 }
             }
+
+            base.OnPageStarted(view, url, favicon);
+        }
+
+        public override void OnPageFinished(AWebView? view, string? url)
+        {
+            if (!string.IsNullOrWhiteSpace(url))
+            {
+                handler.VirtualView.SyncPlatformCookiesToWebView2(url).FireAndForget();
+            }
+
+            base.OnPageFinished(view, url);
         }
     }
 

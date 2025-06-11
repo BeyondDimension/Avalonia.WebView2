@@ -8,7 +8,7 @@ namespace Avalonia.Controls;
 /// <summary>
 /// Microsoft Edge WebView2 控件允许您在本地应用程序中嵌入网络技术（HTML、CSS 和 JavaScript）。WebView2 控件使用 Microsoft Edge 作为渲染引擎，在本地应用程序中显示网页内容。使用 WebView2，您可以在本地应用程序的不同部分嵌入网页代码，或者在一个 WebView2 实例中构建所有本地应用程序。
 /// </summary>
-public partial class WebView2 : IWebView2, IWebView2PropertiesSetValue, IWebView2PropertiesGetValue
+public partial class WebView2 : IWebView2, IWebView2PropertiesSetValue, IWebView2PropertiesGetValue, IWebView2Cookie
 {
     static WebView2()
     {
@@ -113,11 +113,15 @@ public partial class WebView2 : IWebView2, IWebView2PropertiesSetValue, IWebView
     /// </summary>
     protected static bool IsInDesignMode => Design.IsDesignMode;
 
-    List<Action<IWebView2>>? _setCommonPropertiesValueActions;
-
     private void SetCommonPropertiesValue(IWebView2 webView2)
     {
-        _setCommonPropertiesValueActions?.ForEach(x => x.Invoke(webView2));
+#if (!DISABLE_WEBVIEW2_CORE && (WINDOWS || NETFRAMEWORK)) || (IOS || MACCATALYST || (MACOS && !USE_DEPRECATED_WEBVIEW)) || ANDROID
+        SetAllowExternalDrop(webView2, webView2.AllowExternalDrop);
+        SetDefaultBackgroundColor(webView2, webView2.DefaultBackgroundColor);
+        SetHtmlSource(webView2, webView2.HtmlSource);
+        SetSource(webView2, webView2.Source);
+        SetZoomFactor(webView2, webView2.ZoomFactor);
+#endif
     }
 
 

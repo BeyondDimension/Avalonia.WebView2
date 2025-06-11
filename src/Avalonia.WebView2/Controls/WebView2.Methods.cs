@@ -53,9 +53,7 @@ partial class WebView2
             Console.WriteLine($"Navigate: {uri}");
             Console.WriteLine($"width: {wkWebView.Bounds.Width}, height: {wkWebView.Bounds.Height}");
 #endif
-            NSUrl nsUrl = new(uri);
-            NSUrlRequest nsUrlRequest = new(nsUrl);
-            wkWebView.LoadRequest(nsUrlRequest);
+            LoadUrl(uri);
         }
 #else
         // CEF_TODO: 待实现 Navigate
@@ -74,7 +72,6 @@ partial class WebView2
 #elif LINUX
         // CEF_TODO: 待实现 Navigate
 #elif IOS || MACOS || MACCATALYST
-
 #elif ANDROID
 #endif
     }
