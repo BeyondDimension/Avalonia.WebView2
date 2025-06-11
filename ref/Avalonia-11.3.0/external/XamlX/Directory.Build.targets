@@ -1,5 +1,0 @@
-<Project>
-  <PropertyGroup Condition="'$(IsTestProject)'!='true' and '$(Configuration)'=='Release'">
-    <WarningsAsErrors >CS0162;$(TreatWarningsAsErrors)</WarningsAsErrors >
-  </PropertyGroup>
-</Project>

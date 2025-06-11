@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "Profile 1": {
-      "commandName": "DebugRoslynComponent",
-      "targetProject": "..\\..\\Markup\\Avalonia.Markup.Xaml.Loader\\Avalonia.Markup.Xaml.Loader.csproj"
-    }
-  }
-}

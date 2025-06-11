@@ -1,37 +1,4 @@
 <Solution>
-  <Folder Name="/Avalonia.Ref/">
-    <Project Path="ref/Avalonia-11.3.0/packages/Avalonia/Avalonia.csproj" />
-    <Project Path="ref/Avalonia-11.3.0/src/Android/Avalonia.Android/Avalonia.Android.csproj" />
-    <Project Path="ref/Avalonia-11.3.0/src/Avalonia.Base/Avalonia.Base.csproj" />
-    <Project Path="ref/Avalonia-11.3.0/src/Avalonia.Build.Tasks/Avalonia.Build.Tasks.csproj" />
-    <Project Path="ref/Avalonia-11.3.0/src/Avalonia.Controls.ColorPicker/Avalonia.Controls.ColorPicker.csproj" />
-    <Project Path="ref/Avalonia-11.3.0/src/Avalonia.Controls/Avalonia.Controls.csproj" />
-    <Project Path="ref/Avalonia-11.3.0/src/Avalonia.DesignerSupport/Avalonia.DesignerSupport.csproj" />
-    <Project Path="ref/Avalonia-11.3.0/src/Avalonia.Diagnostics/Avalonia.Diagnostics.csproj" />
-    <Project Path="ref/Avalonia-11.3.0/src/Avalonia.Dialogs/Avalonia.Dialogs.csproj" />
-    <Project Path="ref/Avalonia-11.3.0/src/Avalonia.FreeDesktop/Avalonia.FreeDesktop.csproj" />
-    <Project Path="ref/Avalonia-11.3.0/src/Avalonia.Metal/Avalonia.Metal.csproj" />
-    <Project Path="ref/Avalonia-11.3.0/src/Avalonia.MicroCom/Avalonia.MicroCom.csproj" />
-    <Project Path="ref/Avalonia-11.3.0/src/Avalonia.Native/Avalonia.Native.csproj" />
-    <Project Path="ref/Avalonia-11.3.0/src/Avalonia.OpenGL/Avalonia.OpenGL.csproj" />
-    <Project Path="ref/Avalonia-11.3.0/src/Avalonia.ReactiveUI/Avalonia.ReactiveUI.csproj" />
-    <Project Path="ref/Avalonia-11.3.0/src/Avalonia.Remote.Protocol/Avalonia.Remote.Protocol.csproj" />
-    <Project Path="ref/Avalonia-11.3.0/src/Avalonia.Themes.Fluent/Avalonia.Themes.Fluent.csproj" />
-    <Project Path="ref/Avalonia-11.3.0/src/Avalonia.Themes.Simple/Avalonia.Themes.Simple.csproj" />
-    <Project Path="ref/Avalonia-11.3.0/src/Avalonia.Vulkan/Avalonia.Vulkan.csproj" />
-    <Project Path="ref/Avalonia-11.3.0/src/Avalonia.X11/Avalonia.X11.csproj" />
-    <Project Path="ref/Avalonia-11.3.0/src/iOS/Avalonia.iOS/Avalonia.iOS.csproj" />
-    <Project Path="ref/Avalonia-11.3.0/src/Markup/Avalonia.Markup.Xaml/Avalonia.Markup.Xaml.csproj" />
-    <Project Path="ref/Avalonia-11.3.0/src/Markup/Avalonia.Markup/Avalonia.Markup.csproj" />
-    <Project Path="ref/Avalonia-11.3.0/src/Skia/Avalonia.Skia/Avalonia.Skia.csproj" />
-    <Project Path="ref/Avalonia-11.3.0/src/tools/Avalonia.Analyzers/Avalonia.Analyzers.csproj" />
-    <Project Path="ref/Avalonia-11.3.0/src/tools/Avalonia.Designer.HostApp/Avalonia.Designer.HostApp.csproj" />
-    <Project Path="ref/Avalonia-11.3.0/src/tools/Avalonia.Generators/Avalonia.Generators.csproj" />
-    <Project Path="ref/Avalonia-11.3.0/src/tools/DevAnalyzers/DevAnalyzers.csproj" />
-    <Project Path="ref/Avalonia-11.3.0/src/tools/DevGenerators/DevGenerators.csproj" />
-    <Project Path="ref/Avalonia-11.3.0/src/Windows/Avalonia.Win32.Automation/Avalonia.Win32.Automation.csproj" />
-    <Project Path="ref/Avalonia-11.3.0/src/Windows/Avalonia.Win32/Avalonia.Win32.csproj" />
-  </Folder>
   <Folder Name="/_Root/">
     <File Path=".github/workflows/CI.yml" />
     <File Path=".gitignore" />
