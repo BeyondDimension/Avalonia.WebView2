@@ -42,7 +42,10 @@ partial class WebView2
 
     public void SetZoomFactor(IWebView2 webView2, double zoomFactor)
     {
-        webView2.PlatformWebView?.ZoomBy((float)zoomFactor);
+        if (zoomFactor >= 0.01d)
+        {
+            webView2.PlatformWebView?.ZoomBy((float)zoomFactor);
+        }
     }
 }
 #endif

@@ -5,16 +5,12 @@ namespace Avalonia.Controls;
 
 partial class WebView2
 {
-    /// <summary>
-    /// The <see cref="AvaloniaProperty" /> which backs the <see cref="Cookies" /> property.
-    /// </summary>
-    public static readonly DirectProperty<WebView2, CookieContainer?> CookiesProperty = AvaloniaProperty.RegisterDirect<WebView2, CookieContainer?>(nameof(Cookies), x => x.Cookies);
+    ///// <summary>
+    ///// The <see cref="AvaloniaProperty" /> which backs the <see cref="Cookies" /> property.
+    ///// </summary>
+    //public static readonly DirectProperty<WebView2, CookieContainer?> CookiesProperty = AvaloniaProperty.RegisterDirect<WebView2, CookieContainer?>(nameof(Cookies), x => x.Cookies);
 
-    public CookieContainer Cookies
-    {
-        get { return (CookieContainer)GetValue(CookiesProperty); }
-        set { SetValue(CookiesProperty, value); }
-    }
+    public CookieContainer Cookies { get; set; } = null;
 
     readonly HashSet<string> _loadedCookies = new HashSet<string>();
 

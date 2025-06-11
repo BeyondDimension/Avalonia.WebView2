@@ -189,6 +189,8 @@ partial class WebView2
     /// <param name="handler"></param>
     public partial class WebViewClientCompat2(Handler handler) : WebViewClientCompat
     {
+        readonly WeakReference<Handler> handler = new(handler);
+
         /// <summary>
         /// 获取允许的 URL 协议列表，当非标准协议时，WebView 会显示 net::ERR_UNKNOWN_URL_SCHEME 错误页，设置白名单以屏蔽错误
         /// </summary>
@@ -256,6 +258,7 @@ partial class WebView2
 
         public override void OnPageStarted(AWebView? view, string? url, Bitmap? favicon)
         {
+            var handler = Handler;
             if (!string.IsNullOrWhiteSpace(url))
             {
                 handler.VirtualView.SyncPlatformCookiesToWebView2(url).FireAndForget();
@@ -278,12 +281,26 @@ partial class WebView2
 
         public override void OnPageFinished(AWebView? view, string? url)
         {
+            var handler = Handler;
             if (!string.IsNullOrWhiteSpace(url))
             {
                 handler.VirtualView.SyncPlatformCookiesToWebView2(url).FireAndForget();
             }
 
             base.OnPageFinished(view, url);
+        }
+
+        protected Handler? Handler
+        {
+            get
+            {
+                if (handler.TryGetTarget(out var h))
+                {
+                    return h;
+                }
+
+                return null;
+            }
         }
     }
 
