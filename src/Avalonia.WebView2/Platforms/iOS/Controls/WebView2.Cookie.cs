@@ -161,7 +161,7 @@ partial class WebView2
     {
         NSHttpCookie[]? _initialCookiesLoaded = null;
 
-        if (OperatingSystem.IsIOSVersionAtLeast(11))
+        if (OperatingSystem.IsIOSVersionAtLeast(11) && PlatformWebView != null)
         {
             _initialCookiesLoaded = await PlatformWebView.Configuration.WebsiteDataStore.HttpCookieStore.GetAllCookiesAsync();
         }
@@ -195,6 +195,9 @@ partial class WebView2
 
     async Task SetCookie(List<Cookie> cookies)
     {
+        if (PlatformWebView is null)
+            return;
+
         if (OperatingSystem.IsIOSVersionAtLeast(11))
         {
             foreach (var cookie in cookies)
@@ -215,6 +218,10 @@ partial class WebView2
 
     async Task DeleteCookies(List<NSHttpCookie> cookies)
     {
+        if (PlatformWebView is null)
+            return;
+
+
         if (OperatingSystem.IsIOSVersionAtLeast(11))
         {
             foreach (var cookie in cookies)

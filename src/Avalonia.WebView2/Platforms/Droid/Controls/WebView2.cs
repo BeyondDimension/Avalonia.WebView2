@@ -254,22 +254,27 @@ partial class WebView2
         public override void OnPageStarted(AWebView? view, string? url, Bitmap? favicon)
         {
             var handler = Handler;
-            if (!string.IsNullOrWhiteSpace(url))
-            {
-                handler.VirtualView.SyncPlatformCookiesToWebView2(url).FireAndForget();
-            }
 
-            if (view != null)
+            if (handler != null)
             {
                 if (!string.IsNullOrWhiteSpace(url))
                 {
-                    var js = HandlerStorageServiceGenerateJSString(handler.VirtualView.StorageService, url);
-                    if (js != null)
+                    handler.VirtualView.SyncPlatformCookiesToWebView2(url).FireAndForget();
+                }
+
+                if (view != null)
+                {
+                    if (!string.IsNullOrWhiteSpace(url))
                     {
-                        view.EvaluateJavascript(js, null);
+                        var js = HandlerStorageServiceGenerateJSString(handler.VirtualView.StorageService, url);
+                        if (js != null)
+                        {
+                            view.EvaluateJavascript(js, null);
+                        }
                     }
                 }
             }
+
 
             base.OnPageStarted(view, url, favicon);
         }

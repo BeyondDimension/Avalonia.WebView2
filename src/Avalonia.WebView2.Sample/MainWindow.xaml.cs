@@ -95,11 +95,6 @@ public sealed partial class MainWindow : Window
     void SetTitle(string? browserVersion, Architecture architecture = Unknown)
         => Title.Content = base.Title = GetTitle(browserVersion, architecture);
 
-    void InitializeComponent()
-    {
-        AvaloniaXamlLoader.Load(this);
-    }
-
     //void Environment_ProcessInfosChanged(object? sender, object e)
     //{
     //    var processInfos = Environment!.GetProcessInfos();

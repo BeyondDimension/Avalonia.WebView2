@@ -43,11 +43,6 @@ public sealed partial class WebView2Compat : UserControl, IStorageService
     }
 #endif
 
-    private void InitializeComponent()
-    {
-        AvaloniaXamlLoader.Load(this);
-    }
-
     IEnumerable<KeyValuePair<(StorageItemType type, string key), StorageItemValue>>? IStorageService.GetStorages(string requestUri)
     {
         var result = SampleHelper.GetStorages(requestUri);
