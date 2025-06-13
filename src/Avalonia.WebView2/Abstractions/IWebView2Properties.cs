@@ -1,3 +1,4 @@
+using BD.Avalonia8.Media;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -15,7 +16,7 @@ public interface IWebView2Properties
 
     bool CanGoForward { get; }
 
-    Color DefaultBackgroundColor { get; set; }
+    ColorF DefaultBackgroundColor { get; set; }
 
     string? HtmlSource { get; set; }
 

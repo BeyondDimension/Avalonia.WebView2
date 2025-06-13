@@ -78,11 +78,12 @@ partial class WebView2
             Child = viewHandler;
         }
 #elif IOS || MACCATALYST || (MACOS && !USE_DEPRECATED_WEBVIEW)
-        if (viewHandler != null)
+        if (viewHandler == null)
         {
             viewHandler = CreateViewHandler(this);
             var view = viewHandler.CreatePlatformView();
             SetValue(this);
+            Child = viewHandler;
         }
 #endif
 #endif

@@ -1,6 +1,7 @@
 #if ANDROID
 using Android.Graphics.Drawables;
 using Avalonia.Controls;
+using BD.Avalonia8.Media;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -28,12 +29,12 @@ partial class WebView2
         return platformWebView?.CanGoForward() ?? null;
     }
 
-    public Color? GetDefaultBackgroundColor(IWebView2 webView2)
+    public ColorF? GetDefaultBackgroundColor(IWebView2 webView2)
     {
         var platformWebView = webView2.PlatformWebView;
         if (platformWebView != null && platformWebView.Background is ColorDrawable drawable)
         {
-            return drawable.Color.AsColor();
+            return drawable.Color;
         }
         return null;
     }

@@ -159,7 +159,7 @@ partial class WebView2
             }
             if (sender._defaultBackgroundColor != _defaultBackgroundColorDefaultValue)
             {
-                global::System.Environment.SetEnvironmentVariable("WEBVIEW2_DEFAULT_BACKGROUND_COLOR", global::System.Drawing.Color.FromArgb(sender.DefaultBackgroundColor.ToArgb()).Name);
+                global::System.Environment.SetEnvironmentVariable("WEBVIEW2_DEFAULT_BACKGROUND_COLOR", ((System.Drawing.Color)sender._defaultBackgroundColor).Name);
             }
 
             var hwnd = await _hwndTaskSource.Task;

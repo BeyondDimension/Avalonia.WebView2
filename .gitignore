@@ -358,4 +358,4 @@ Microsoft.Web.WebView2.Wpf.dll
 Microsoft.Web.WebView2.Wpf.xml
 
 # Xamarin.IOS
-net9.0-ios
+net9.0-ios*

@@ -1,4 +1,5 @@
 #if IOS || MACCATALYST || (MACOS && !USE_DEPRECATED_WEBVIEW)
+using BD.Avalonia8.Media;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -15,15 +16,15 @@ partial class WebView2
         // Not supported on iOS/macOS/MACCATALYST WebView2
     }
 
-    public void SetDefaultBackgroundColor(IWebView2 webView2, Color defaultBackgroundColor)
+    public void SetDefaultBackgroundColor(IWebView2 webView2, ColorF defaultBackgroundColor)
     {
         var wkWebView = webView2?.PlatformWebView;
         if (wkWebView != null)
         {
 #if IOS
-            wkWebView.BackgroundColor = defaultBackgroundColor.ToPlatform();
+            wkWebView.BackgroundColor = defaultBackgroundColor;
 #elif MACCATALYST || (MACOS && !USE_DEPRECATED_WEBVIEW)
-            wkWebView.UnderPageBackgroundColor = defaultBackgroundColor.ToPlatform();
+            wkWebView.UnderPageBackgroundColor = defaultBackgroundColor;
 #endif
         }
     }

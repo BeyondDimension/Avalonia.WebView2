@@ -113,65 +113,65 @@ partial class WebView2
             //platformView.UpdateCanGoBackForward(virtualView);
         }
 
-        // https://stackoverflow.com/questions/37509990/migrating-from-uiwebview-to-wkwebview
-        [Export("webView:decidePolicyForNavigationAction:decisionHandler:")]
-        public void DecidePolicy(WKWebView webView, WKNavigationAction navigationAction, Action<WKNavigationActionPolicy> decisionHandler)
-        {
-            //var handler = Handler;
+        //// https://stackoverflow.com/questions/37509990/migrating-from-uiwebview-to-wkwebview
+        //[Export("webView:decidePolicyForNavigationAction:decisionHandler:")]
+        //public void DecidePolicy(WKWebView webView, WKNavigationAction navigationAction, Action<WKNavigationActionPolicy> decisionHandler)
+        //{
+        //    var handler = Handler;
 
-            //if (handler is null || !handler.IsConnected())
-            //{
-            //    decisionHandler.Invoke(WKNavigationActionPolicy.Cancel);
-            //    return;
-            //}
+        //    if (handler is null || !handler.IsConnected())
+        //    {
+        //        decisionHandler.Invoke(WKNavigationActionPolicy.Cancel);
+        //        return;
+        //    }
 
-            //var platformView = handler?.PlatformView;
-            //var virtualView = handler?.VirtualView;
+        //    var platformView = handler?.PlatformView;
+        //    var virtualView = handler?.VirtualView;
 
-            //if (platformView is null || virtualView is null)
-            //{
-            //    decisionHandler.Invoke(WKNavigationActionPolicy.Cancel);
-            //    return;
-            //}
+        //    if (platformView is null || virtualView is null)
+        //    {
+        //        decisionHandler.Invoke(WKNavigationActionPolicy.Cancel);
+        //        return;
+        //    }
 
-            //var navEvent = WebNavigationEvent.NewPage;
-            //var navigationType = navigationAction.NavigationType;
+        //    var navEvent = WebNavigationEvent.NewPage;
+        //    var navigationType = navigationAction.NavigationType;
 
-            //switch (navigationType)
-            //{
-            //    case WKNavigationType.LinkActivated:
-            //        navEvent = WebNavigationEvent.NewPage;
+        //    switch (navigationType)
+        //    {
+        //        case WKNavigationType.LinkActivated:
+        //            navEvent = WebNavigationEvent.NewPage;
 
-            //        if (navigationAction.TargetFrame == null)
-            //            webView?.LoadRequest(navigationAction.Request);
+        //            if (navigationAction.TargetFrame == null)
+        //                webView?.LoadRequest(navigationAction.Request);
 
-            //        break;
-            //    case WKNavigationType.FormSubmitted:
-            //        navEvent = WebNavigationEvent.NewPage;
-            //        break;
-            //    case WKNavigationType.BackForward:
-            //        navEvent = CurrentNavigationEvent;
-            //        break;
-            //    case WKNavigationType.Reload:
-            //        navEvent = WebNavigationEvent.Refresh;
-            //        break;
-            //    case WKNavigationType.FormResubmitted:
-            //        navEvent = WebNavigationEvent.NewPage;
-            //        break;
-            //    case WKNavigationType.Other:
-            //        navEvent = WebNavigationEvent.NewPage;
-            //        break;
-            //}
+        //            break;
+        //        case WKNavigationType.FormSubmitted:
+        //            navEvent = WebNavigationEvent.NewPage;
+        //            break;
+        //        case WKNavigationType.BackForward:
+        //            navEvent = CurrentNavigationEvent;
+        //            break;
+        //        case WKNavigationType.Reload:
+        //            navEvent = WebNavigationEvent.Refresh;
+        //            break;
+        //        case WKNavigationType.FormResubmitted:
+        //            navEvent = WebNavigationEvent.NewPage;
+        //            break;
+        //        case WKNavigationType.Other:
+        //            navEvent = WebNavigationEvent.NewPage;
+        //            break;
+        //    }
 
-            //_lastEvent = navEvent;
+        //    _lastEvent = navEvent;
 
-            //var request = navigationAction.Request;
-            //var lastUrl = request.Url.ToString();
+        //    var request = navigationAction.Request;
+        //    var lastUrl = request.Url.ToString();
 
-            //bool cancel = virtualView.Navigating(navEvent, lastUrl);
-            //platformView.UpdateCanGoBackForward(virtualView);
-            //decisionHandler(cancel ? WKNavigationActionPolicy.Cancel : WKNavigationActionPolicy.Allow);
-        }
+        //    bool cancel = virtualView.Navigating(navEvent, lastUrl);
+        //    platformView.UpdateCanGoBackForward(virtualView);
+        //    decisionHandler(cancel ? WKNavigationActionPolicy.Cancel : WKNavigationActionPolicy.Allow);
+        //}
 
         protected Handler? Handler
         {

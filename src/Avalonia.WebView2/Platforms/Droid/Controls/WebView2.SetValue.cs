@@ -1,4 +1,5 @@
 #if ANDROID
+using BD.Avalonia8.Media;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -14,11 +15,11 @@ partial class WebView2
         // not supported on Android WebView
     }
 
-    public void SetDefaultBackgroundColor(IWebView2 webView2, Color defaultBackgroundColor)
+    public void SetDefaultBackgroundColor(IWebView2 webView2, ColorF defaultBackgroundColor)
     {
         if (webView2.PlatformWebView != null)
         {
-            webView2.PlatformWebView.SetBackgroundColor(defaultBackgroundColor.ToPlatform());
+            webView2.PlatformWebView.SetBackgroundColor(defaultBackgroundColor);
         }
     }
 

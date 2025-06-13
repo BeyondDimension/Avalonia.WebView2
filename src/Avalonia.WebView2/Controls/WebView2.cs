@@ -116,11 +116,11 @@ public partial class WebView2 : IWebView2, IWebView2PropertiesSetValue, IWebView
     private void SetCommonPropertiesValue(IWebView2 webView2)
     {
 #if (!DISABLE_WEBVIEW2_CORE && (WINDOWS || NETFRAMEWORK)) || (IOS || MACCATALYST || (MACOS && !USE_DEPRECATED_WEBVIEW)) || ANDROID
-        SetAllowExternalDrop(webView2, webView2.AllowExternalDrop);
-        SetDefaultBackgroundColor(webView2, webView2.DefaultBackgroundColor);
-        SetHtmlSource(webView2, webView2.HtmlSource);
-        SetSource(webView2, webView2.Source);
-        SetZoomFactor(webView2, webView2.ZoomFactor);
+        SetAllowExternalDrop(webView2, _allowExternalDrop);
+        SetDefaultBackgroundColor(webView2, _defaultBackgroundColor);
+        SetHtmlSource(webView2, _htmlSource);
+        SetSource(webView2, _source);
+        SetZoomFactor(webView2, _zoomFactor);
 #endif
     }
 

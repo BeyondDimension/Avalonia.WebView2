@@ -1,4 +1,5 @@
 #if IOS || MACCATALYST || (MACOS && !USE_DEPRECATED_WEBVIEW)
+using BD.Avalonia8.Media;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -29,16 +30,16 @@ partial class WebView2
         return platformWebView != null ? platformWebView.CanGoForward : null;
     }
 
-    public Color? GetDefaultBackgroundColor(IWebView2 webView2)
+    public ColorF? GetDefaultBackgroundColor(IWebView2 webView2)
     {
         var platformWebView = webView2?.PlatformWebView;
         if (platformWebView == null)
             return null;
 
 #if IOS
-        return platformWebView.BackgroundColor.AsColor();
+        return platformWebView.BackgroundColor;
 #elif MACCATALYST || (MACOS && !USE_DEPRECATED_WEBVIEW)
-        return platformWebView.UnderPageBackgroundColor.AsColor();
+        return platformWebView.UnderPageBackgroundColor;
 #endif
 
     }

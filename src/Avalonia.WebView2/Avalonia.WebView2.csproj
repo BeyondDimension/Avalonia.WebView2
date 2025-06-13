@@ -50,6 +50,7 @@
 	<ItemGroup>
 		<PackageReference Include="Utf8StringInterpolation" />
 		<PackageReference Include="Microsoft.IO.RecyclableMemoryStream" />
+		<PackageReference Include="BD.Avalonia8.Media.ColorF" />
 	</ItemGroup>
 
 	<!-- .NET Framework 4.x -->

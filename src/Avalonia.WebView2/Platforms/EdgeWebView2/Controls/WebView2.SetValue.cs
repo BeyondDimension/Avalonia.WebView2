@@ -1,4 +1,5 @@
 #if !DISABLE_WEBVIEW2_CORE && (WINDOWS || NETFRAMEWORK)
+using BD.Avalonia8.Media;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -18,7 +19,7 @@ partial class WebView2
         }
     }
 
-    public void SetDefaultBackgroundColor(IWebView2 webView2, Color defaultBackgroundColor)
+    public void SetDefaultBackgroundColor(IWebView2 webView2, ColorF defaultBackgroundColor)
     {
         var coreWebViewController = webView2?.CoreWebView2Controller;
         if (coreWebViewController != null)

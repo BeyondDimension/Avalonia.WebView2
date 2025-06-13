@@ -40,6 +40,8 @@
 		</PackageVersion>
 		<PackageVersion Include="BD.Avalonia8.Fonts.HarmonyOS_Sans_SC" Version="8.25.10522.11700">
 		</PackageVersion>
+		<PackageVersion Include="BD.Avalonia8.Media.ColorF" Version="8.25.10613.11000">
+		</PackageVersion>
 	</ItemGroup>
 	<!-- 👇 WebView2 -->
 	<ItemGroup>
