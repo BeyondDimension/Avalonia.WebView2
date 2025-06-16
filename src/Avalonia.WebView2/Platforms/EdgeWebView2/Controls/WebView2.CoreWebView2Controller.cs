@@ -8,6 +8,8 @@ partial class WebView2
     CoreWebView2Controller? _coreWebView2Controller;
     bool _browserCrashed;
 
+    public CoreWebView2Controller? CoreWebView2Controller => _coreWebView2Controller;
+
     /// <summary>
     /// 解除订阅和关闭 CoreWebView2 控制器
     /// </summary>

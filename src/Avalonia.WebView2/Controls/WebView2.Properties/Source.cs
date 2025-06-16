@@ -19,7 +19,17 @@ partial class WebView2
     [Browsable(true)]
     public Uri? Source
     {
-        get => _source;
+        get
+        {
+#if (!DISABLE_WEBVIEW2_CORE && (WINDOWS || NETFRAMEWORK)) || ANDROID || (IOS || MACCATALYST || (MACOS && !USE_DEPRECATED_WEBVIEW))
+            var source = GetSource(this);
+            if (source != null)
+            {
+                return source;
+            }
+#endif
+            return _source;
+        }
         set
         {
             if (value == null)
@@ -38,38 +48,14 @@ partial class WebView2
             {
                 throw new ArgumentException("Only absolute URI is allowed", "Source");
             }
-            else if (_source == null || _source.AbsoluteUri != value.AbsoluteUri)
+            else if (_source == null ||
+                _source.GetType() != value.GetType() || // 允许 Uri 的派生类
+                _source.AbsoluteUri != value.AbsoluteUri)
             {
                 _htmlSource = null;
                 SetAndRaise(SourceProperty, ref _source, value);
-#if !DISABLE_WEBVIEW2_CORE && WINDOWS || NETFRAMEWORK
-                if (CoreWebView2 != null)
-                {
-                    if (value is WebResourceRequestUri webResourceRequest)
-                    {
-                        CoreWebView2.NavigateWithWebResourceRequest(webResourceRequest.ToRequest(CoreWebView2.Environment));
-                    }
-                    else
-                    {
-                        CoreWebView2.Navigate(value.AbsoluteUri);
-                    }
-                }
-#elif ANDROID
-                var aWebView = AWebView;
-                if (aWebView != null)
-                {
-                    aWebView.LoadUrl(value.AbsoluteUri);
-                }
-#elif IOS || MACOS || MACCATALYST
-                var wkWebView = WKWebView;
-                if (wkWebView != null)
-                {
-                    NSUrl nsUrl = new(value.AbsoluteUri);
-                    NSUrlRequest nsUrlRequest = new(nsUrl);
-                    wkWebView.LoadRequest(nsUrlRequest);
-                }
-#else
-                // CEF_TODO: 待实现 Navigate
+#if (!DISABLE_WEBVIEW2_CORE && (WINDOWS || NETFRAMEWORK)) || ANDROID || (IOS || MACCATALYST || (MACOS && !USE_DEPRECATED_WEBVIEW))
+                SetSource(this, value);
 #endif
             }
 #if !DISABLE_WEBVIEW2_CORE && WINDOWS || NETFRAMEWORK
@@ -82,7 +68,7 @@ partial class WebView2
     /// 与 WebResourceRequested 事件一起使用的 HTTP 请求，继承自 <see cref="Uri"/>，可自定义响应内容并赋值给属性 <see cref="Source"/>，默认 <see cref="HttpMethod"/> 为 <see cref="HttpMethod.Get"/>
     /// <para>示例：https://learn.microsoft.com/en-us/dotnet/api/microsoft.web.webview2.core.corewebview2.navigatewithwebresourcerequest</para>
     /// </summary>
-    public sealed class WebResourceRequestUri(string uriString, Stream? content, HttpMethod? method = null) : Uri(uriString, UriKind.Absolute)
+    public sealed partial class WebResourceRequestUri(string uriString, Stream? content, HttpMethod? method = null) : Uri(uriString, UriKind.Absolute)
     {
         readonly string uriString = uriString;
 
@@ -90,6 +76,8 @@ partial class WebView2
         /// 以流形式获取或设置 HTTP 请求消息正文
         /// </summary>
         public Stream? Content { get; set; } = content;
+
+        public string? StringContent { get; set; }
 
         /// <summary>
         /// 获取或设置可变 HTTP 请求头

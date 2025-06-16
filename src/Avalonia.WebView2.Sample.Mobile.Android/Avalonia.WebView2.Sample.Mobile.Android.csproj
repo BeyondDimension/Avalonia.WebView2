@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
@@ -9,6 +9,15 @@
 		<AndroidPackageFormat>apk</AndroidPackageFormat>
 		<AndroidEnableProfiledAot>false</AndroidEnableProfiledAot>
 		<RootNamespace>Avalonia.WebView2.Sample</RootNamespace>
+		<IsAotCompatible>true</IsAotCompatible>
+	</PropertyGroup>
+
+	<!--<PropertyGroup Condition="'$(Configuration)'=='Debug'">
+		<EmbedAssembliesIntoApk>True</EmbedAssembliesIntoApk>
+	</PropertyGroup>-->
+
+	<PropertyGroup Condition="'$(Configuration)'=='Release'">
+		<AndroidCreatePackagePerAbi>true</AndroidCreatePackagePerAbi>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -18,11 +27,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Avalonia.Android" />
 		<PackageReference Include="Xamarin.AndroidX.Core.SplashScreen" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\Avalonia.WebView2.Sample.Mobile\Avalonia.WebView2.Sample.Mobile.csproj" />
 	</ItemGroup>
+
+	<Import Project="$(MSBuildThisFileDirectory)..\..\ref\Avalonia.$(AvaloniaRef).props" />
 </Project>

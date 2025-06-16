@@ -5,7 +5,7 @@ Build .NET Avalonia Microsoft Edge WebView2 HTML5 Desktop Hybrid Apps
 - [x] Windows (Edge WebView2)
 - [x] macOS (~~WebKit.WebView~~ | WebKit.WKWebView)
 - [ ] ~~Linux (CefGlue)~~
-- [ ] ~~Android (Xamarin.AndroidX.WebKit)~~
+- [ ] Android (Android.Webkit.WebView + Xamarin.AndroidX.WebKit)
 - [ ] iOS (WebKit.WKWebView)
 
 ## [简介](https://docs.microsoft.com/zh-cn/microsoft-edge/webview2)
@@ -36,3 +36,5 @@ dotnet add package WebView2.Avalonia
 ## Screenshots
 ![Win11 Sample Screenshot](https://raw.githubusercontent.com/BeyondDimension/Avalonia.WebView2/main/res/screenshots/Avalonia.WebView2.Sample.Win11.webp)  
 ![Win7 Sample Screenshot](https://raw.githubusercontent.com/BeyondDimension/Avalonia.WebView2/main/res/screenshots/Avalonia.WebView2.Sample.Win7.webp)
+![Android Sample Screenshot](https://raw.githubusercontent.com/BeyondDimension/Avalonia.WebView2/main/res/screenshots/Avalonia.WebView2.Sample.Mobile.Android.webp)
+![Android Storage Sample Screenshot](https://raw.githubusercontent.com/BeyondDimension/Avalonia.WebView2/main/res/screenshots/Avalonia.WebView2.Sample.Mobile.Android-Storage.webp)

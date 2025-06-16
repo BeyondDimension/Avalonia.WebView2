@@ -52,6 +52,11 @@ partial class WebView2
         }
         finally
         {
+            if (_source != null)
+            {
+                SyncPlatformCookiesToWebView2(_source.OriginalString).FireAndForget();
+            }
+
             dictNavigationStarting.TryRemove(e.NavigationId, out var _);
         }
     }
@@ -164,7 +169,7 @@ partial class WebView2
                     {
                         Source = new Uri(args.Uri, UriKind.Absolute),
                         //EnabledDevTools = coreWebView2.Settings.AreDevToolsEnabled,
-                        Fill = Fill,
+                        //Fill = Fill,
                         //UserDataFolder = coreWebView2.Environment.UserDataFolder,
                     },
                 };

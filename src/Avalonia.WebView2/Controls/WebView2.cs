@@ -1,3 +1,6 @@
+#if ANDROID
+using Android.Views;
+#endif
 using Avalonia.Input;
 
 namespace Avalonia.Controls;
@@ -5,13 +8,18 @@ namespace Avalonia.Controls;
 /// <summary>
 /// Microsoft Edge WebView2 控件允许您在本地应用程序中嵌入网络技术（HTML、CSS 和 JavaScript）。WebView2 控件使用 Microsoft Edge 作为渲染引擎，在本地应用程序中显示网页内容。使用 WebView2，您可以在本地应用程序的不同部分嵌入网页代码，或者在一个 WebView2 实例中构建所有本地应用程序。
 /// </summary>
-public partial class WebView2
+public partial class WebView2 : IWebView2, IWebView2PropertiesSetValue, IWebView2PropertiesGetValue, IWebView2Cookie
 {
     static WebView2()
     {
 #if WINDOWS && !DISABLE_WEBVIEW2_CORE
         RefreshIsSupported();
 #endif
+
+#if ANDROID || IOS || MACCATALYST || (MACOS && !USE_DEPRECATED_WEBVIEW)
+        ChildProperty.Changed.AddClassHandler<WebView2, Control?>(static (x, e) => x.ChildChanged(e));
+#endif
+        //BoundsProperty.Changed.AddClassHandler<WebView2, Rect>(static (x, e) => x.OnBoundsChanged(e));
     }
 
     /// <inheritdoc />
@@ -23,14 +31,20 @@ public partial class WebView2
             return;
         }
         // 添加控件显示隐藏切时通知 CoreWebView2Controller
-        _disposables.Add(this.GetPropertyChangedObservable(IsVisibleProperty).AddClassHandler<WebView2>((t, args) => { IsVisibleChanged(args); }));
-        SetDefaultBackgroundColor(_defaultBackgroundColorDefaultValue);
-
+        _disposables.Add(this.GetPropertyChangedObservable(IsVisibleProperty).AddClassHandler<WebView2>(static (s, e) => { s.IsVisibleChanged(e); }));
+        DefaultBackgroundColor = _defaultBackgroundColorDefaultValue;
 
 #if !(WINDOWS || NETFRAMEWORK) && NET8_0_OR_GREATER && !ANDROID && !IOS && !MACOS && !MACCATALYST && !DISABLE_CEFGLUE
-        CefGuleInitialize();
+        //CefGuleInitialize();
 #endif
     }
+
+#if IOS || MACCATALYST || (MACOS && !USE_DEPRECATED_WEBVIEW) || ANDROID
+    /// <summary>
+    /// 自定义创建 ViewHandler 的函数指针
+    /// </summary>
+    public static unsafe delegate* managed<WebView2, Handler> CreateViewHandlerDelegate { private get; set; }
+#endif
 
     /// <inheritdoc />
     protected override void OnInitialized()
@@ -49,10 +63,21 @@ public partial class WebView2
     /// </summary>
     protected virtual void IsVisibleChanged(EventArgs e)
     {
+        // 本机控件不在自绘层，在移动端自绘层通常是本机画布控件单独绘制，例如 Android 的 SurfaceView
+        // 自绘层在父元素下，本机控件将在父元素下方，Z 轴会大于自绘层，这将导致 AXaml 控件无法遮盖住本机控件
+        // 在 WebView2 的占位符层，即 Rectangle 矩形控件上，监听 Visual.IsVisible 属性传递值至本机控件
+        // 还需要重写 Visual.OnAttachedToVisualTree/OnDetachedFromVisualTree 处理虚拟树的显示与隐藏
+
 #if !DISABLE_WEBVIEW2_CORE && (WINDOWS || NETFRAMEWORK)
         if (_coreWebView2Controller == null)
             return;
         _coreWebView2Controller.IsVisible = IsVisible;
+#elif ANDROID
+        var nwv = AWebView;
+        nwv?.Visibility = IsVisible ? ViewStates.Visible : ViewStates.Gone;
+#elif IOS || MACCATALYST || (MACOS && !USE_DEPRECATED_WEBVIEW)
+        var nwv = WKWebView;
+        nwv?.Hidden = !IsVisible;
 #endif
     }
 
@@ -87,10 +112,31 @@ public partial class WebView2
     /// 为 <see langword="true"/> 时，我们处于设计模式，不应创建底层 CoreWebView2
     /// </summary>
     protected static bool IsInDesignMode => Design.IsDesignMode;
+
+    private void SetCommonPropertiesValue(IWebView2 webView2)
+    {
+#if (!DISABLE_WEBVIEW2_CORE && (WINDOWS || NETFRAMEWORK)) || (IOS || MACCATALYST || (MACOS && !USE_DEPRECATED_WEBVIEW)) || ANDROID
+        SetAllowExternalDrop(webView2, _allowExternalDrop);
+        SetDefaultBackgroundColor(webView2, _defaultBackgroundColor);
+        SetHtmlSource(webView2, _htmlSource);
+        SetSource(webView2, _source);
+        SetZoomFactor(webView2, _zoomFactor);
+#endif
+    }
+
+
+    protected virtual void SetValue(IWebView2 webView)
+    {
+        SetCommonPropertiesValue(webView);
+    }
+
 }
 
-#if !(WINDOWS || NETFRAMEWORK) && !NET8_0_OR_GREATER && !(ANDROID || IOS || MACCATALYST || MACOS)
-partial class WebView2 : global::Avalonia.Controls.Shapes.Rectangle
+partial class WebView2 : global::Avalonia.Controls.Control
 {
+    // 使用矩形控件作为占位符，监听布局矩阵坐标传递值给本机控件
+    // 处理显示隐藏属性
+    // 转发功能函数逻辑
+    // 订阅事件
+    // 释放时销毁资源
 }
-#endif

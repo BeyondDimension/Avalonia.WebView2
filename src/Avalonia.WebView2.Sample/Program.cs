@@ -1,9 +1,6 @@
 using Microsoft.Win32;
 using System.Windows;
 
-#if !(WINDOWS || NETFRAMEWORK) && NET8_0_OR_GREATER && !ANDROID && !IOS
-#endif
-
 
 namespace Avalonia.WebView2.Sample;
 
@@ -55,10 +52,17 @@ static class Program
     public static AppBuilder BuildAvaloniaApp()
     {
         var b = AppBuilder.Configure<App>()
-             .UsePlatformDetect()
+#if WINDOWS
+             .UseWin32()
+#elif MACOS
+             .UseAvaloniaNative()
+#elif LINUX
+             .UseX11()
+             //.With(new X11PlatformOptions())
+#endif
+             .UseSkia()
              .LogToTrace()
 #if !(WINDOWS || NETFRAMEWORK) && NET8_0_OR_GREATER && !ANDROID && !IOS
-             .With(new X11PlatformOptions())
              //.AfterSetup(_ => CefRuntimeLoader.Initialize(new CefSettings()
              //{
              //    RootCachePath = GetCachePath(),

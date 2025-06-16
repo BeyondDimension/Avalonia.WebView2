@@ -18,16 +18,12 @@ partial class WebView2
     {
         get
         {
-#if !DISABLE_WEBVIEW2_CORE && WINDOWS || NETFRAMEWORK
-            var coreWebView2 = CoreWebView2;
-            if (coreWebView2 != null)
+#if (!DISABLE_WEBVIEW2_CORE && (WINDOWS || NETFRAMEWORK)) || ANDROID || (IOS || MACCATALYST || (MACOS && !USE_DEPRECATED_WEBVIEW))
+            var canGoForward = GetCanGoForward(this);
+            if (canGoForward != null)
             {
-                return coreWebView2.CanGoForward;
+                return canGoForward.Value;
             }
-#elif ANDROID
-#elif IOS
-#else
-            // CEF_TODO: 待实现 CanGoForward
 #endif
             return false;
         }
@@ -49,7 +45,9 @@ partial class WebView2
 #if !DISABLE_WEBVIEW2_CORE && WINDOWS || NETFRAMEWORK
         CoreWebView2?.GoForward();
 #elif ANDROID
-#elif IOS
+        AWebView?.GoForward();
+#elif IOS || MACOS || MACCATALYST
+        WKWebView?.GoForward();
 #else
         // CEF_TODO: 待实现 GoForward
 #endif

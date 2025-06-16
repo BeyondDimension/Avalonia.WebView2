@@ -18,5 +18,15 @@
         <vm:MainViewModel />
     </Design.DataContext>
 
-    <wv2:WebView2 x:Name="WebView2" Source="{Binding Source}" />
+    <DockPanel>
+        <TextBox
+            x:Name="UrlTextBox"
+            Margin="{Binding StatusBarMargin}"
+            DockPanel.Dock="Top"
+            Watermark="Enter the HTTPS address, then press the Enter key to navigate." />
+        <wv2:WebView2
+            x:Name="WV"
+            DockPanel.Dock="Bottom"
+            Source="{Binding Source}" />
+    </DockPanel>
 </UserControl>

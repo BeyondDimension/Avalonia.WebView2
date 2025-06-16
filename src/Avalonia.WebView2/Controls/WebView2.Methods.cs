@@ -36,22 +36,24 @@ partial class WebView2
 
     public void Navigate(string uri)
     {
+        _source = null;
+        _htmlSource = null;
+
 #if !DISABLE_WEBVIEW2_CORE && (WINDOWS || NETFRAMEWORK)
         VerifyBrowserNotCrashedGuard();
         CoreWebView2?.Navigate(uri);
 #elif ANDROID
         var aWebView = AWebView;
-        if (aWebView != null)
-        {
-            aWebView.LoadUrl(uri);
-        }
+        aWebView?.LoadUrl(uri);
 #elif IOS || MACOS || MACCATALYST
         var wkWebView = WKWebView;
         if (wkWebView != null)
         {
-            NSUrl nsUrl = new(uri);
-            NSUrlRequest nsUrlRequest = new(nsUrl);
-            wkWebView.LoadRequest(nsUrlRequest);
+#if DEBUG
+            Console.WriteLine($"Navigate: {uri}");
+            Console.WriteLine($"width: {wkWebView.Bounds.Width}, height: {wkWebView.Bounds.Height}");
+#endif
+            LoadUrl(uri);
         }
 #else
         // CEF_TODO: 待实现 Navigate
@@ -70,7 +72,6 @@ partial class WebView2
 #elif LINUX
         // CEF_TODO: 待实现 Navigate
 #elif IOS || MACOS || MACCATALYST
-
 #elif ANDROID
 #endif
     }
@@ -91,7 +92,7 @@ partial class WebView2
 #elif IOS || MACOS || MACCATALYST
         WKWebView?.Reload();
 #elif ANDROID
-
+        AWebView?.Reload();
 #endif
     }
 
@@ -110,6 +111,7 @@ partial class WebView2
 #elif IOS || MACOS || MACCATALYST
         WKWebView?.StopLoading();
 #elif ANDROID
+        AWebView?.StopLoading();
 #endif
     }
 
@@ -154,8 +156,23 @@ partial class WebView2
 #elif IOS || MACOS || MACCATALYST
         if (WKWebView != null)
         {
-            var result = await WKWebView.EvaluateJavaScriptAsync(new NSString(script));
-            return result.ToString();
+            var result = await WKWebView.EvaluateJavaScriptAsync(script);
+            return result?.ToString();
+        }
+
+#elif ANDROID
+        if (AWebView != null)
+        {
+            var tcs = new TaskCompletionSource<string?>();
+            AWebView.EvaluateJavascript(script, new JavaScriptValueCallback(obj =>
+            {
+                if (obj is Java.Lang.String jsString)
+                {
+                    tcs.TrySetResult(jsString.ToString());
+                }
+            }));
+
+            return await tcs.Task;
         }
 #endif
         return (string?)null;

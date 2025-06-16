@@ -3,7 +3,7 @@ using Microsoft.Web.WebView2.Core;
 
 namespace Avalonia.Controls;
 
-partial class WebView2 : global::Avalonia.Controls.Shapes.Rectangle
+partial class WebView2
 {
     /// <summary>
     /// 当前运行的设备是否安装了 WebView2 运行时，未安装 WebView2 运行时时，WebView2 控件将无法正常工作
@@ -19,6 +19,8 @@ partial class WebView2 : global::Avalonia.Controls.Shapes.Rectangle
     /// 检查当前运行的设备是否安装了 WebView2 运行时，未安装 WebView2 运行时时可引导安装，安装完成后调用此函数刷新安装状态
     /// </summary>
     public static void RefreshIsSupported() => RuntimeInit.RefreshIsSupported();
+
+    public CoreWebView2? PlatformWebView => CoreWebView2;
 }
 
 file static class RuntimeInit

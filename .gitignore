@@ -356,3 +356,6 @@ Microsoft.Web.WebView2.WinForms.dll
 Microsoft.Web.WebView2.WinForms.xml
 Microsoft.Web.WebView2.Wpf.dll
 Microsoft.Web.WebView2.Wpf.xml
+
+# Xamarin.IOS
+net9.0-ios*

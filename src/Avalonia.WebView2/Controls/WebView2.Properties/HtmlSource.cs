@@ -15,7 +15,16 @@ partial class WebView2
     [Browsable(true)]
     public string? HtmlSource
     {
-        get => _htmlSource;
+        get
+        {
+#if (!DISABLE_WEBVIEW2_CORE && (WINDOWS || NETFRAMEWORK)) || ANDROID || (IOS || MACCATALYST || (MACOS && !USE_DEPRECATED_WEBVIEW))
+            var htmlSource = GetHtmlSource(this);
+            if (!string.IsNullOrEmpty(htmlSource))
+                return htmlSource;
+#endif
+
+            return _htmlSource;
+        }
         set
         {
             if (value == null)
@@ -36,22 +45,9 @@ partial class WebView2
                 {
                     _source = null;
                     SetAndRaise(HtmlSourceProperty, ref _htmlSource, value);
-#if !DISABLE_WEBVIEW2_CORE && WINDOWS || NETFRAMEWORK
-                    CoreWebView2?.NavigateToString(value);
-#elif ANDROID
-                    var aWebView = AWebView;
-                    if (aWebView != null)
-                    {
-                        aWebView.LoadData(value, "text/html", "UTF-8");
-                    }
-#elif IOS
-                    var wkWebView = WKWebView;
-                    if (wkWebView != null)
-                    {
-                        wkWebView.LoadHtmlString(value, (NSUrl?)null!);
-                    }
-#else
-                    // CEF_TODO: 待实现 NavigateToString
+
+#if (!DISABLE_WEBVIEW2_CORE && (WINDOWS || NETFRAMEWORK)) || ANDROID || (IOS || MACCATALYST || (MACOS && !USE_DEPRECATED_WEBVIEW))
+                    SetHtmlSource(this, value);
 #endif
                 }
 #if !DISABLE_WEBVIEW2_CORE && WINDOWS || NETFRAMEWORK

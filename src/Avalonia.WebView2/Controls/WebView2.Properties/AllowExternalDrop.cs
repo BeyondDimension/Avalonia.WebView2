@@ -12,13 +12,10 @@ partial class WebView2
     {
         get
         {
-#if !DISABLE_WEBVIEW2_CORE && WINDOWS || NETFRAMEWORK
-            if (_coreWebView2Controller != null)
-            {
-                return _coreWebView2Controller.AllowExternalDrop;
-            }
-#else
-            // CEF_TODO: 待实现 AllowExternalDrop
+#if (!DISABLE_WEBVIEW2_CORE && (WINDOWS || NETFRAMEWORK)) || ANDROID || (IOS || MACCATALYST || (MACOS && !USE_DEPRECATED_WEBVIEW))
+            var allowExternalDrop = GetAllowExternalDrop(this);
+            if (allowExternalDrop != null)
+                return allowExternalDrop.Value;
 #endif
             return _allowExternalDrop;
         }
@@ -29,13 +26,9 @@ partial class WebView2
                 return;
             }
             _allowExternalDrop = value;
-#if !DISABLE_WEBVIEW2_CORE && WINDOWS || NETFRAMEWORK
-            _coreWebView2Controller?.AllowExternalDrop = value;
-#elif ANDROID
-#elif IOS
-#elif MACOS
-#else
-            // CEF_TODO: 待实现 AllowExternalDrop
+
+#if (!DISABLE_WEBVIEW2_CORE && (WINDOWS || NETFRAMEWORK)) || ANDROID || (IOS || MACCATALYST || (MACOS && !USE_DEPRECATED_WEBVIEW))
+            SetAllowExternalDrop(this, value);
 #endif
         }
     }

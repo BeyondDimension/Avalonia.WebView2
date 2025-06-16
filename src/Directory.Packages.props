@@ -34,11 +34,13 @@
 		</PackageVersion>
 		<PackageVersion Include="Avalonia.Themes.Fluent" Version="$(Version_Avalonia)">
 		</PackageVersion>
-		<PackageVersion Include="Avalonia.Fonts.Inter" Version="$(Version_Avalonia)">
-		</PackageVersion>
 		<PackageVersion Include="Avalonia.ReactiveUI" Version="$(Version_Avalonia)">
 		</PackageVersion>
 		<PackageVersion Include="FluentAvaloniaUI" Version="$(Version_Avalonia_FluentUI)">
+		</PackageVersion>
+		<PackageVersion Include="BD.Avalonia8.Fonts.HarmonyOS_Sans_SC" Version="8.25.10522.11700">
+		</PackageVersion>
+		<PackageVersion Include="BD.Avalonia8.Media.ColorF" Version="8.25.10613.11000">
 		</PackageVersion>
 	</ItemGroup>
 	<!-- 👇 WebView2 -->

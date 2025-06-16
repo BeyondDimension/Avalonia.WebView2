@@ -9,12 +9,13 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using WV2 = Avalonia.Controls.WebView2;
 
 namespace Avalonia.WebView2.Sample;
 
 public sealed partial class MainWindow : Window
 {
-    global::Avalonia.Controls.WebView2? WebView => WebView2Compat?.WebView2;
+    WV2? WebView => WebView2Compat?.WebView2;
 
     //public CoreWebView2Environment? Environment { get; }
 
@@ -22,35 +23,24 @@ public sealed partial class MainWindow : Window
     {
         DataContext = this;
         InitializeComponent();
-#if DEBUG
-        this.AttachDevTools();
-#endif
-
-        Title = this.FindControl<Label>("Title");
-        WebView2Compat = this.FindControl<WebView2Compat>("WebView2Compat");
-        Button = this.FindControl<Button>("Button");
-        UrlTextBox = this.FindControl<TextBox>("UrlTextBox");
-        AboutTextBlock = this.FindControl<TextBlock>("AboutTextBlock");
 
         var webView2AssemblyVersion =
 #if WINDOWS
             $"Microsoft.Web.WebView2.Core: {GetVersion(typeof(CoreWebView2).Assembly)}";
-#elif !(WINDOWS || NETFRAMEWORK) && NET8_0_OR_GREATER
-            $"Microsoft.Web.WebView2.Core: {GetVersion(typeof(global::Xilium.CefGlue.Avalonia.AvaloniaCefBrowser).Assembly)}";
 #else
-            $"Xilium.CefGlue.Avalonia: {GetVersion(typeof(CoreWebView2).Assembly)}";
+            $"TODO: ";
 #endif
 
-        AboutTextBlock.Text = $"Runtime: {System.Environment.Version}{System.Environment.NewLine}OSArchitecture: {RuntimeInformation.OSArchitecture}{System.Environment.NewLine}ProcessArchitecture: {RuntimeInformation.ProcessArchitecture}{System.Environment.NewLine}Avalonia: {GetVersion(typeof(Window).Assembly)}{System.Environment.NewLine}Avalonia.WebView2: {GetVersion(typeof(global::Avalonia.Controls.WebView2).Assembly)}{System.Environment.NewLine}{webView2AssemblyVersion}";
+        AboutTextBlock.Text = $"Runtime: {Environment.Version}{Environment.NewLine}OSArchitecture: {RuntimeInformation.OSArchitecture}{Environment.NewLine}ProcessArchitecture: {RuntimeInformation.ProcessArchitecture}{Environment.NewLine}Avalonia: {GetVersion(typeof(Window).Assembly)}{Environment.NewLine}Avalonia.WebView2: {GetVersion(typeof(WV2).Assembly)}{Environment.NewLine}{webView2AssemblyVersion}";
         Button.Click += Button_Click;
         UrlTextBox.KeyDown += UrlTextBox_KeyDown;
 #if WINDOWS
-        if (global::Avalonia.Controls.WebView2.IsSupported)
+        if (Controls.WebView2.IsSupported)
         {
             //Environment = WebView.CreationProperties!.CreateEnvironmentAsync().GetAwaiter().GetResult();
             //Environment.ProcessInfosChanged += Environment_ProcessInfosChanged;
             //SetTitle(Environment.BrowserVersionString);
-            SetTitle(global::Avalonia.Controls.WebView2.VersionString);
+            SetTitle(Controls.WebView2.VersionString);
         }
         else
 #endif
@@ -83,44 +73,27 @@ public sealed partial class MainWindow : Window
     void UrlTextBox_KeyDown(object? sender, KeyEventArgs e)
     {
 #if WINDOWS
-        if (global::Avalonia.Controls.WebView2.IsSupported)
+        if (Controls.WebView2.IsSupported)
+#endif
         {
             if (e.Key == Key.Enter)
             {
-                var url = UrlTextBox.Text;
-                if (!IsHttpUrl(url)) url = $"{Prefix_HTTPS}{url}";
-                WebView?.CoreWebView2?.Navigate(url);
+                var wv = WebView;
+                if (wv != null)
+                {
+                    var url = UrlTextBox.Text;
+                    SampleHelper.Navigate(wv, url);
+                }
             }
         }
-#elif LINUX
-
-#elif IOS || MACCATALYST || MACOS
-        if (e.Key == Key.Enter && WebView is not null)
-        {
-            var url = UrlTextBox.Text;
-            if (!IsHttpUrl(url)) url = $"{Prefix_HTTPS}{url}";
-            WebView?.Navigate(url);
-        }
-#endif
     }
-
-    const string Prefix_HTTPS = "https://";
-    const string Prefix_HTTP = "http://";
-
-    static bool IsHttpUrl([NotNullWhen(true)] string? url, bool httpsOnly = false) => url != null &&
-       (url.StartsWith(Prefix_HTTPS, StringComparison.OrdinalIgnoreCase) ||
-             (!httpsOnly && url.StartsWith(Prefix_HTTP, StringComparison.OrdinalIgnoreCase)));
 
     const Architecture Unknown = (Architecture)int.MinValue;
 
-    static string GetTitle(string? browserVersion, Architecture architecture = Unknown) => $"Microsoft Edge WebView2{(string.IsNullOrEmpty(browserVersion) ? null : $" {browserVersion}")}{(architecture == Unknown ? null : $" {architecture}")} for Avalonia on {System.Environment.OSVersion.VersionString}";
+    static string GetTitle(string? browserVersion, Architecture architecture = Unknown) => $"Microsoft Edge WebView2{(string.IsNullOrEmpty(browserVersion) ? null : $" {browserVersion}")}{(architecture == Unknown ? null : $" {architecture}")} for Avalonia on {Environment.OSVersion.VersionString}";
 
-    void SetTitle(string? browserVersion, Architecture architecture = Unknown) => Title.Content = base.Title = GetTitle(browserVersion, architecture);
-
-    void InitializeComponent()
-    {
-        AvaloniaXamlLoader.Load(this);
-    }
+    void SetTitle(string? browserVersion, Architecture architecture = Unknown)
+        => Title.Content = base.Title = GetTitle(browserVersion, architecture);
 
     //void Environment_ProcessInfosChanged(object? sender, object e)
     //{
@@ -154,7 +127,7 @@ public sealed partial class MainWindow : Window
 #if WINDOWS
         WebView?.CoreWebView2?.OpenDevToolsWindow();
 #elif LINUX
-        WebView?.ShowDeveloperTools();
+        //WebView?.ShowDeveloperTools();
 #elif IOS || MACCATALYST || MACOS
 
 #elif ANDROID

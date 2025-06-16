@@ -15,12 +15,10 @@ public sealed partial class WebView2Compat : UserControl, IStorageService
     public WebView2Compat()
     {
         InitializeComponent();
-        WebView2 = this.FindControl<Controls.WebView2>("WebView2")!;
-        TextBlock = this.FindControl<TextBlock>("TextBlock")!;
 #if WINDOWS
         WebView2.IsVisible = false;
         // 设置背景色透明
-        WebView2.Fill = new SolidColorBrush(Colors.Transparent);
+        //WebView2.Fill = new SolidColorBrush(Colors.Transparent);
         if (!IsSupported)
         {
             TextBlock.Text = "Couldn't find a compatible Webview2 Runtime installation to host WebViews.";
@@ -45,45 +43,9 @@ public sealed partial class WebView2Compat : UserControl, IStorageService
     }
 #endif
 
-    private void InitializeComponent()
-    {
-        AvaloniaXamlLoader.Load(this);
-    }
-
-    readonly DomainPattern bingComDomainPattern = new("*bing.com");
-
     IEnumerable<KeyValuePair<(StorageItemType type, string key), StorageItemValue>>? IStorageService.GetStorages(string requestUri)
     {
-        // 测试 localStorage 注入
-        var now = DateTime.Now;
-
-        var dict = new Dictionary<(StorageItemType type, string key), StorageItemValue>()
-        {
-            { (StorageItemType.LocalStorage, "global_test"), 2 },
-            { (StorageItemType.SessionStorage, "global_test_s"), 7.5 },
-            { (StorageItemType.LocalStorage, "global_test_now"), now },
-            { (StorageItemType.AllStorage, "global_test_now_str"), now.ToString("yyyy-MM-dd HH:mm:ss.fffffff") },
-        };
-
-        foreach (var it in dict)
-        {
-            yield return it;
-        }
-
-        if (bingComDomainPattern.IsMatchOnlyDomain(requestUri))
-        {
-            var dict2 = new Dictionary<(StorageItemType type, string key), StorageItemValue>()
-            {
-                { (StorageItemType.LocalStorage, "bing.com"), 4.5f },
-                { (StorageItemType.LocalStorage, "bing"), "key4" },
-                { (StorageItemType.LocalStorage, "bing3"), now },
-                { (StorageItemType.LocalStorage, "bing4"), now.ToString("yyyy-MM-dd HH:mm:ss.fffffff") },
-            };
-
-            foreach (var it in dict2)
-            {
-                yield return it;
-            }
-        }
+        var result = SampleHelper.GetStorages(requestUri);
+        return result;
     }
 }

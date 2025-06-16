@@ -18,17 +18,12 @@ partial class WebView2
     {
         get
         {
-#if !DISABLE_WEBVIEW2_CORE && WINDOWS || NETFRAMEWORK
-            var coreWebView2 = CoreWebView2;
-            if (coreWebView2 != null)
+#if (!DISABLE_WEBVIEW2_CORE && (WINDOWS || NETFRAMEWORK)) || ANDROID || (IOS || MACCATALYST || (MACOS && !USE_DEPRECATED_WEBVIEW))
+            var canGoBack = GetCanGoBack(this);
+            if (canGoBack != null)
             {
-                return coreWebView2.CanGoBack;
+                return canGoBack.Value;
             }
-#elif ANDROID
-#elif IOS
-#elif MACOS
-#else
-            // CEF_TODO: 待实现 CanGoBack
 #endif
             return false;
         }
@@ -49,8 +44,18 @@ partial class WebView2
 #if !DISABLE_WEBVIEW2_CORE && WINDOWS || NETFRAMEWORK
         CoreWebView2?.GoBack();
 #elif ANDROID
-#elif IOS
-#else
+        var aWebView = AWebView;
+        if (aWebView != null && aWebView.CanGoBack())
+        {
+            aWebView.GoBack();
+        }
+#elif IOS || MACOS || MACCATALYST
+        var wkWebView = WKWebView;
+        if (wkWebView != null && wkWebView.CanGoBack)
+        {
+            wkWebView.GoBack();
+        }
+#elif LINUX
         // CEF_TODO: 待实现 GoBack
 #endif
     }

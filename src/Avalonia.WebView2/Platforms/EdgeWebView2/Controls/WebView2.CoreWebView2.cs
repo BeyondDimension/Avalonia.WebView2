@@ -159,7 +159,7 @@ partial class WebView2
             }
             if (sender._defaultBackgroundColor != _defaultBackgroundColorDefaultValue)
             {
-                global::System.Environment.SetEnvironmentVariable("WEBVIEW2_DEFAULT_BACKGROUND_COLOR", global::System.Drawing.Color.FromArgb(sender.DefaultBackgroundColor.ToArgb()).Name);
+                global::System.Environment.SetEnvironmentVariable("WEBVIEW2_DEFAULT_BACKGROUND_COLOR", ((System.Drawing.Color)sender._defaultBackgroundColor).Name);
             }
 
             var hwnd = await _hwndTaskSource.Task;
@@ -199,9 +199,10 @@ partial class WebView2
             sender.CoreWebView2InitializationCompleted?.Invoke(sender, new CoreWebView2InitializationCompletedEventArgs());
 
             //await InitJavaScriptOnDocumentCreatedAsync();
-
             if (sender._source != null)
             {
+
+                SyncCookieToPlatformWebView(sender._source.OriginalString).FireAndForget();
                 sender._coreWebView2Controller.CoreWebView2.Navigate(sender._source.AbsoluteUri);
             }
             else if (sender._htmlSource != null)
