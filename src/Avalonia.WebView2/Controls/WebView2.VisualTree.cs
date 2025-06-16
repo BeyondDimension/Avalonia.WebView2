@@ -2,7 +2,7 @@ namespace Avalonia.Controls;
 
 partial class WebView2
 {
-#if MACOS || WINDOWS || LINUX || NETFRAMEWORK
+#if WINDOWS || LINUX || NETFRAMEWORK
     TaskCompletionSource<nint> _hwndTaskSource = new();
 
     /// <summary>
@@ -22,7 +22,7 @@ partial class WebView2
     /// <inheritdoc />
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
-#if MACOS || WINDOWS || LINUX || NETFRAMEWORK
+#if WINDOWS || LINUX || NETFRAMEWORK
         if (e.Root is Window window)
         {
             var prevWindow = Window;

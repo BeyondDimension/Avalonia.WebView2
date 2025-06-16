@@ -38,7 +38,7 @@
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>MinimumOSVersion</key>
-	<string>18.0</string>
+	<string>18.4</string>
 	<key>NSAllowsArbitraryLoads</key>
 	<true/>
 </dict>
