@@ -67,7 +67,7 @@ eBounds: x={eBounds.X}, y={eBounds.Y}, w={eBounds.Width}, h={eBounds.Height}
     /// </summary>
     protected virtual Rectangle GetBoundsRectangle(Rect? bounds = null)
     {
-#if MACOS || WINDOWS || LINUX || NETFRAMEWORK
+#if WINDOWS || LINUX || NETFRAMEWORK
         var window = Window;
         var screen = GetScreenFromWindow(window);
         Visual? relativeTo = window;
@@ -101,7 +101,7 @@ eBounds: x={eBounds.X}, y={eBounds.Y}, w={eBounds.Width}, h={eBounds.Height}
         return Convert.ToInt32(result);
     }
 
-#if MACOS || WINDOWS || LINUX || NETFRAMEWORK
+#if WINDOWS || LINUX || NETFRAMEWORK
     /// <summary>
     /// 根据窗口获取屏幕
     /// </summary>
