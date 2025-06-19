@@ -18,6 +18,22 @@ public partial class MainView : UserControl, IStorageService
 
         WV.StorageService = this;
         //WV.Fill = new SolidColorBrush(Colors.Purple);
+
+        GoBackButton.Click += (s, e) =>
+        {
+            if (WV.CanGoBack)
+            {
+                WV.GoBack();
+            }
+        };
+        GoForwardButton.Click += (s, e) =>
+        {
+            if (WV.CanGoForward)
+            {
+                WV.GoForward();
+            }
+        };
+        Refresh.Click += (s, e) => WV.Reload();
     }
 
     IEnumerable<KeyValuePair<(StorageItemType type, string key), StorageItemValue>>? IStorageService.GetStorages(string requestUri)
