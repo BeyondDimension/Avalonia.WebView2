@@ -58,6 +58,9 @@ partial class WebView2
             }
 
             dictNavigationStarting.TryRemove(e.NavigationId, out var _);
+
+            SetAndRaise(CanGoBackProperty, ref _canGoBack, GetCanGoBack(this) ?? false);
+            SetAndRaise(CanGoForwardProperty, ref _canGoForward, GetCanGoForward(this) ?? false);
         }
     }
 

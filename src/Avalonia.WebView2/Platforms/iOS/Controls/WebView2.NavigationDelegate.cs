@@ -38,6 +38,18 @@ partial class WebView2
             }
         }
 
+        [Export("webView:didCommitNavigation:")]
+        public virtual void DidCommitNavigation(WKWebView webView, WKNavigation navigation)
+        {
+            var handler = Handler;
+
+            if (handler is null)
+                return;
+
+            var url = webView.GetCurrentUrl();
+            handler.VirtualView.PlatformWebView_NavigationStarting(webView, url);
+        }
+
         [Export("webView:didFinishNavigation:")]
         public virtual void DidFinishNavigation(WKWebView webView, WKNavigation navigation)
         {
@@ -69,6 +81,8 @@ partial class WebView2
             {
                 InjectJavaScript(platformView, virtualView, url);
             }
+
+            virtualView.PlatformWebView_NavigationStarting(webView, url);
         }
 
         [Export("webView:didFailNavigation:withError:")]

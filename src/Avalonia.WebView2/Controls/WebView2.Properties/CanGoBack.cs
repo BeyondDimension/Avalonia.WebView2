@@ -4,6 +4,8 @@ namespace Avalonia.Controls;
 
 partial class WebView2
 {
+    bool _canGoBack;
+
     /// <summary>
     /// Returns <see langword="true"/> if the <see cref="WebView2"/> can navigate to a previous page in the
     /// navigation history via the <see cref="GoBack"/> method.
@@ -19,13 +21,9 @@ partial class WebView2
         get
         {
 #if (!DISABLE_WEBVIEW2_CORE && (WINDOWS || NETFRAMEWORK)) || ANDROID || (IOS || MACCATALYST || (MACOS && !USE_DEPRECATED_WEBVIEW))
-            var canGoBack = GetCanGoBack(this);
-            if (canGoBack != null)
-            {
-                return canGoBack.Value;
-            }
+            _canGoBack = GetCanGoBack(this) ?? false;
 #endif
-            return false;
+            return _canGoBack;
         }
     }
 

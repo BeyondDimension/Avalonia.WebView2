@@ -273,6 +273,8 @@ partial class WebView2
                         }
                     }
                 }
+
+                handler.VirtualView.PlatformWebView_NavigationStarting(view, url);
             }
 
 
@@ -282,10 +284,18 @@ partial class WebView2
         public override void OnPageFinished(AWebView? view, string? url)
         {
             var handler = Handler;
-            if (!string.IsNullOrWhiteSpace(url))
+
+            if (handler != null)
             {
-                handler.VirtualView.SyncPlatformCookiesToWebView2(url).FireAndForget();
+                if (!string.IsNullOrWhiteSpace(url))
+                {
+                    handler.VirtualView.SyncPlatformCookiesToWebView2(url).FireAndForget();
+                }
+
+                handler.VirtualView.PlatformWebView_NavigationCompleted(view, url);
             }
+
+
 
             base.OnPageFinished(view, url);
         }

@@ -4,6 +4,8 @@ namespace Avalonia.Controls;
 
 partial class WebView2
 {
+    bool _canGoForward;
+
     /// <summary>
     /// Returns <see langword="true"/> if the <see cref="WebView2"/> can navigate to a next page in the
     /// navigation history via the <see cref="GoForward"/> method.
@@ -19,13 +21,9 @@ partial class WebView2
         get
         {
 #if (!DISABLE_WEBVIEW2_CORE && (WINDOWS || NETFRAMEWORK)) || ANDROID || (IOS || MACCATALYST || (MACOS && !USE_DEPRECATED_WEBVIEW))
-            var canGoForward = GetCanGoForward(this);
-            if (canGoForward != null)
-            {
-                return canGoForward.Value;
-            }
+            _canGoForward = GetCanGoForward(this) ?? false;
 #endif
-            return false;
+            return _canGoForward;
         }
     }
 
