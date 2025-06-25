@@ -31,17 +31,20 @@
                     <TextBlock.RenderTransform>
                         <TransformGroup>
                             <ScaleTransform ScaleX="2" ScaleY="2" />
-                            <TranslateTransform Y="-2" />
+                            <TranslateTransform Y="-4" />
                         </TransformGroup>
                     </TextBlock.RenderTransform>
                 </TextBlock>
             </Button>
-            <Button x:Name="GoForwardButton" Grid.Column="1">
+            <Button
+                x:Name="GoForwardButton"
+                Grid.Column="1"
+                IsEnabled="{Binding CanGoForward, ElementName=WV}">
                 <TextBlock Text="&#x2192;">
                     <TextBlock.RenderTransform>
                         <TransformGroup>
                             <ScaleTransform ScaleX="2" ScaleY="2" />
-                            <TranslateTransform Y="-2" />
+                            <TranslateTransform Y="-4" />
                         </TransformGroup>
                     </TextBlock.RenderTransform>
                 </TextBlock>
